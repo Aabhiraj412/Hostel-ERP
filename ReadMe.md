@@ -1,7 +1,6 @@
 # Hostel-ERP
 
-Mini Project
-
+1st Step
 
     cd .\Hostel-ERP\
 
