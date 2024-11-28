@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import ConnectDB from './DataBase/ConnectDB.js';
 
 dotenv.config({path: '../.env'});
 
@@ -12,4 +13,6 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, (req, res) => {
     console.log(`listening at port http://localhost:${PORT}`);
+    console.log(`env: ${process.env.NODE_ENV}`);
+    ConnectDB();
 })
