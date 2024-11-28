@@ -15,6 +15,10 @@ const PrivateGrivanceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    upvote:{
+        type: Number,
+        required: true
+    },
     date: {
         type: Date,
         required: true

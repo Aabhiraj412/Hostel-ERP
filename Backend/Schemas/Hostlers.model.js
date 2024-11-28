@@ -4,105 +4,105 @@ import { moveEmitHelpers } from "typescript";
 const HostlerSchema = new mongoose.Schema({
 
     name:{
-        type: string,
+        type: String,
         required: true
     },
     roll_no:{                  //unique User ID
-        type: string,
+        type: String,
         required: true
     },
     aadhar:{
-        type: string,
+        type: String,
         required: true
     },
     gender:{
-        type: string,
+        type: String,
         enum: ["male", "female", "other" ],
         required: true
     },
     fathers_name:{
-        type: string,
+        type: String,
         required: true
     },
     mothers_name:{
-        type: string,
+        type: String,
         required: true
     },
     phone_no:{
-        type: string,
+        type: String,
         required: true
     },
     email:{
-        type: string,
+        type: String,
         required: true
     },
     address:{
-        type: string,
+        type: String,
         required: true
     },
     year:{
-        type: string,
+        type: String,
         required: true
     },
     college:{
-        type: string,
+        type: String,
         required: true
     },
     hostel:{
-        type: string,
+        type: String,
         required: true
     },
     room_no:{
-        type: string,
+        type: String,
         required: true
     },
 
     password:{
-        type: string,
+        type: String,
         required: true
     },
 
     date_of_birth:{
-        type: string,
+        type: String,
         required: true
     },
     blood_group:{
-        type: string,
+        type: String,
     },
     local_guardian:{
-        type: string,
+        type: String,
         required: true
     },
     local_guardian_phone:{
-        type: string,
+        type: String,
         required: true
     },
     local_guardian_address:{
-        type: string,
+        type: String,
         required: true
     },
     fathers_no:{
-        type: string,
+        type: String,
         required: true
     },
     mothers_no:{
-        type: string,
+        type: String,
         required: true
     },
     fathers_email:{
-        type: string,
+        type: String,
         required: true
     },
     mothers_email:{
-        type: string,
+        type: String,
         required: true
     },
     course:{
-        type: string,
+        type: String,
         required: true
     },
     branch:{
-        type: string,
+        type: String,
         required: true
     },
     
