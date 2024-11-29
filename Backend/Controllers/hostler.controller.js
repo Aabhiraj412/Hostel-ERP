@@ -1,224 +1,158 @@
-import bcrypt from "bcryptjs";
 import Hostler from "../Schemas/Hostlers.model.js";
-import { generateHostlerToken } from "../Utils/GenerateToken.utils.js";
+import Notice from "../Schemas/Notices.model.js";
+import PrivateGrivance from "../Schemas/PrivateGrivance.model.js";
+import PublicGrivance from "../Schemas/PublicGrivance.model.js";
 
-export const hostlerregistration = async (req, res) => {
-  try {
-    const warden = req.warden;
+export const publicgrivance = async (req, res) => {
+	try {
+		const hostler = req.hostler;
 
-    if (!warden) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorised-no Warden Provided" });
-    }
+		if (!hostler)
+			return res
+				.status(401)
+				.json({ message: "Unauthorised-no Hostler Provided" });
 
-    const {
-      name,
-      roll_no,
-      aadhar,
-      gender,
-      fathers_name,
-      mothers_name,
-      phone_no,
-      email,
-      address,
-      year,
-      college,
-      hostel,
-      room_no,
-      password,
-      confirm_password,
-    } = req.body;
+		const { title, description } = req.body;
 
-    if (
-      !name ||
-      !roll_no ||
-      !aadhar ||
-      !gender ||
-      !fathers_name ||
-      !mothers_name ||
-      !phone_no ||
-      !email ||
-      !address ||
-      !year ||
-      !college ||
-      !hostel ||
-      !room_no ||
-      !password ||
-      !confirm_password
-    ) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+		if (!title || !description) {
+			return res
+				.status(400)
+				.json({ message: "Title and Description are required" });
+		}
 
-    if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password should be at least 6 characters long" });
-    }
+		const publicgrivance = new PublicGrivance({
+			student: hostler._id,
+			title,
+			description,
+			date: new Date(),
+			status: "Pending",
+			upvotes: [hostler._id],
+		});
 
-    if (password !== confirm_password) {
-      return res.status(400).json({ message: "Password do not match" });
-    }
-
-    const newroll_no = await Hostler.findOne({ roll_no });
-    const newphone = await Hostler.findOne({ phone_no });
-    const newemail = await Hostler.findOne({ email });
-    const newaadhar = await Hostler.findOne({ aadhar });
-
-    if (newroll_no)
-      return res.status(400).json({ message: "Roll number already exists" });
-
-    if (newphone)
-      return res.status(400).json({ message: "Phone number already exists" });
-
-    if (newemail)
-      return res.status(400).json({ message: "Email already exists" });
-
-    if (newaadhar)
-      return res.status(400).json({ message: "Aadhar number already exists" });
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newHostler = new Hostler({
-      name,
-      roll_no,
-      aadhar,
-      gender,
-      fathers_name,
-      mothers_name,
-      phone_no,
-      email,
-      address,
-      year,
-      college,
-      hostel,
-      room_no,
-      password: hashedPassword,
-
-      date_of_birth: " ",
-      blood_group: " ",
-      local_guardian: " ",
-      local_guardian_phone: " ",
-      local_guardian_address: " ",
-      fathers_no: " ",
-      mothers_no: " ",
-      fathers_email: " ",
-      mothers_email: " ",
-      course: " ",
-      branch: " ",
-
-      privete_grivance: [],
-      public_grivance: [],
-      outregister: [],
-      Leave: [],
-      present_on: [],
-      absent_on: [],
-    });
-
-    if (newHostler) {
-      generateHostlerToken(newHostler._id, res);
-
-      await newHostler.save();
-
-      res.status(201).json(newHostler);
-
-      console.log("Hostler registered successfully");
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const hostlerlogin = async(req, res) => {
-
-    try{
-
-        const {
-            user,
-            password,
-        } = req.body;
-
-        if(!user || !password){
-            return res.status(400).json({message: "All fields are required"});
-        }
-
-        const newuser = await Hostler.findOne({$or: [{roll_no: user},{phone_no: user}, {email: user}, {aadhar: user}]})
+        hostler.public_grivance.push(publicgrivance._id);
         
-        if(!newuser){
-            return res.status(400).json({message: "Invalid Credentials"});
-        }
-
-        const isMatch = await bcrypt.compare(password, newuser.password);
-
-        if(!isMatch){
-            return res.status(400).json({message: "Invalid Credentials"});
-        }
-
-        generateHostlerToken(newuser._id, res);
-
-        res.status(200).json(newuser);
-
-        console.log("Hostler logged in successfully");
-    }
-    catch(error){
-        console.error(`Error: ${error.message}`);
-        res.status(500).json({message: "Server Error"});
-    }
-
+        await hostler.save();
+		await publicgrivance.save();
+        
+		res.status(200).json(publicgrivance);
+		console.log("Public Grievance submitted successfully");
+		console.log(`Total Upvotes: ${publicgrivance.upvotes.length - 1}`);
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
 };
 
-export const hostlerlogout = (req, res) => {
-    res.clearCookie('jwt', { path: '/' });
-    res.status(200).json({ message: "Logged out successfully" });
+export const getPublicGrievances = async (req, res) => {
+	try {
+		const grievances = await PublicGrivance.find({}).sort({ date: -1 });
+		res.status(200).json(grievances);
+		console.log("Public Grievances fetched successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
 };
 
-export const addDetails = async (req, res) => {
+export const upvote = async (req, res) => {
+	try {
+		const hostler = req.hostler;
 
-    try{
+		if (!hostler) {
+			return res
+				.status(401)
+				.json({ message: "Unauthorised-no Hostler Provided" });
+		}
 
+		const grievanceId = req.params.id;
+
+		const grievance = await PublicGrivance.findById(grievanceId);
+
+		if (!grievance) {
+			return res.status(404).json({ message: "Grievance not found" });
+		}
+
+		if (grievance.upvotes.includes(hostler._id)) {
+			grievance.upvotes.remove(hostler._id);
+			await grievance.save();
+			res.status(200).json(grievance);
+			console.log("Upvote Removed successfully");
+			console.log(`Total Upvotes: ${grievance.upvotes.length - 1}`);
+		} else {
+			grievance.upvotes.push(hostler._id);
+			await grievance.save();
+			res.status(200).json(grievance);
+			console.log("Grievance upvoted successfully");
+			console.log(`Total Upvotes: ${grievance.upvotes.length - 1}`);
+		}
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
+export const privateGrievance = async (req, res) => {
+    try {
         const hostler = req.hostler;
 
-        if(!hostler){
-            return res.status(401).json({message: "Unauthorised-no Hostler Provided"});
+        if (!hostler)
+            return res
+                .status(401)
+                .json({ message: "Unauthorised-no Hostler Provided" });
+
+        const { title, description } = req.body;
+
+        if (!title || !description) {
+            return res
+                .status(400)
+                .json({ message: "Title and Description are required" });
         }
 
-        const {
-            date_of_birth,
-            blood_group,
-            local_guardian,
-            local_guardian_phone,
-            local_guardian_address,
-            fathers_no,
-            mothers_no,
-            fathers_email,
-            mothers_email,
-            course,
-            branch
+        const privategrivance = new PrivateGrivance({
+            student: hostler._id,
+            title,
+            description,
+            date: new Date(),
+            status: "Pending",
+        });
 
-        } = req.body;
-
-        if(!date_of_birth || !blood_group || !local_guardian || !local_guardian_phone || !local_guardian_address || !fathers_no || !mothers_no || !fathers_email || !mothers_email || !course || !branch){
-            return res.status(400).json({message: "All fields are required"});
-        }
-
-        hostler.date_of_birth = date_of_birth;
-        hostler.blood_group = blood_group;
-        hostler.local_guardian = local_guardian;
-        hostler.local_guardian_phone = local_guardian_phone;
-        hostler.local_guardian_address = local_guardian_address;
-        hostler.fathers_no = fathers_no;
-        hostler.mothers_no = mothers_no;
-        hostler.fathers_email = fathers_email;
-        hostler.mothers_email = mothers_email;
-        hostler.course = course;
-        hostler.branch = branch;
+        hostler.private_grivance.push(privategrivance._id);
 
         await hostler.save();
-        res.status(200).json(hostler);
+        await privategrivance.save();
 
-        console.log("Details added successfully");
+        res.status(200).json(privategrivance);
+        console.log("Private Grievance submitted successfully");
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
 
+export const getPrivateGrievances = async (req, res) => {
+    try {
+        const hostler = req.hostler;
+
+        if (!hostler)
+            return res
+               .status(401)
+               .json({ message: "Unauthorised-no Hostler Provided" });
+
+        const privateGrievances = await PrivateGrivance.find({ student: hostler._id });
+
+        res.status(200).json(privateGrievances);
+        console.log("Private Grievances fetched successfully");
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({ message: "Server Error" });
+    }
+}
+
+export const getNotices = async (req, res) => {
+    try{
+        const notices = await Notice.find({}).sort({date: -1});
+        res.status(200).json(notices);
+        console.log("Notices fetched successfully");
     }
     catch(error){
         console.error(`Error: ${error.message}`);

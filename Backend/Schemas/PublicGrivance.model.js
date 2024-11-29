@@ -22,7 +22,10 @@ const PublicGrivanceSchema = new mongoose.Schema({
         type: String,
         enum: ['Pending', 'Resolved', 'Cancelled'],
         required: true
-    }
+    },
+    upvotes: [{
+        type: mongoose.Schema.Types.ObjectId,
+    }]
 },
 {
     timestamps: true

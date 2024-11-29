@@ -106,7 +106,7 @@ const HostlerSchema = new mongoose.Schema({
         required: true
     },
     
-    privete_grivance:[{
+    private_grivance:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Private Grivance'
     }],
