@@ -1,71 +1,157 @@
-import Warden from "../Schemas/Warden.model.js";
-import bcrypt from 'bcryptjs';
-import { generateWardenToken } from "../Utils/GenerateToken.utils.js";
+import Hostler from "../Schemas/Hostlers.model.js";
+import PrivateGrivance from "../Schemas/PrivateGrivance.model.js";
+import PublicGrivance from "../Schemas/PublicGrivance.model.js";
 
-export const wardenRegisteration = async (req, res) => {
+export const getHostlers = async (req, res) => {
+	try {
+		const warden = req.warden;
+
+		if (!warden) {
+			return res
+				.status(401)
+				.json({ message: "Unauthorised-no Warden Provided" });
+		}
+
+		const hostlers = await Hostler.find();
+		res.status(200).json(hostlers);
+		console.log("Hostlers details fetched successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
+export const gethostler = async (req, res) => {
+	try {
+		const warden = req.warden;
+
+		if (!warden)
+			return res
+				.status(401)
+				.json({ message: "Unauthorised-no Warden Provided" });
+
+		const id = req.params.id;
+
+		const hostler = await Hostler.findById(id);
+
+		if (!hostler) {
+			return res.status(404).json({ message: "Hostler not found" });
+		}
+
+		res.status(200).json(hostler);
+		console.log("Hostler details fetched successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
+export const updateRoom = async (req, res) => {
+    try {
+        const warden = req.warden;
+
+        if(!warden)
+            return res.status(401).json({message: "Unauthorised-no Warden Provided"});
+
+        const { room } = req.body;
+
+        if(!room)
+            return res.status(400).json({message: "Invalid Room"});
+
+        const id = req.params.id;
+
+        const hostler = await Hostler.findByIdAndUpdate(id, { room_no: room }, { new: true });
+        res.status(200).json(hostler);
+        console.log("Room updated successfully");
+    }
+    catch(error){
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({message: "Server Error"});
+    }
+};
+
+export const getPublicGrievances = async (req, res) => {
+	try {
+		const grievances = await PublicGrivance.find({}).sort({ date: -1 });
+		res.status(200).json(grievances);
+		console.log("Public Grievances fetched successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
+export const getPrivateGrievances = async (req, res) => {
     try{
-        const {
-            name,
-            phone,
-            email,
-            aadhar,
-            gender,
-            hostel,
-            post,
-            address,
-            password,
-            confirm_password
-        } = req.body;
-        
-        if(!name || !phone || !email || !aadhar || !gender || !hostel || !post || !address || !password || !confirm_password){
-            return res.status(400).json({message: "All fields are required"});
-        }
+        const warden = req.warden;
 
-        if(password.length < 6){
-            return res.status(400).json({message: "Password should be at least 6 characters long"});
-        }
+        if(!warden)
+            return res.status(401).json({message: "Unauthorised-no Warden Provided"});
 
-        if(password !== confirm_password){
-            return res.status(400).json({message: "Password do not match"});
-        }
+        const grievances = await PrivateGrivance.find({}).sort({date: -1});
+        res.status(200).json(grievances);
+        console.log("Private Grievances fetched successfully");
+    }
+    catch(error){
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({message: "Server Error"});
+    }
+};
 
-        const newphone = await Warden.findOne({phone});
-        const newemail = await Warden.findOne({email});
-        const newaadhar = await Warden.findOne({aadhar});
+export const setPublicGrievance = async (req, res) => {
+    try{
 
-        if(newphone) 
-            return res.status(400).json({message: "Phone number already exists"});
-        
-        if(newemail)
-            return res.status(400).json({message: "Email already exists"});
+        const warden = req.warden;
 
-        if(newaadhar)
-            return res.status(400).json({message: "Aadhar number already exists"});
+        if(!warden)
+            return res.status(401).json({message: "Unauthorised-no Warden Provided"});
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const id = req.params.id;
 
-        const newwarden = new Warden({
-            name,
-            phone,
-            email,
-            aadhar,
-            gender,
-            hostel,
-            post,
-            address,
-            password: hashedPassword
-        });
+        const grievance = await PublicGrivance.findById(id);
 
-        if(newwarden){
-            generateWardenToken(newwarden._id, res);
+        const {status} = req.body;
 
-            await newwarden.save();
+        if(!status ||!['Pending', 'Resolved', 'Cancelled'].includes(status))
+            return res.status(400).json({message: "Invalid Status"});
 
-            res.status(201).json(newwarden);
+        grievance.status = status;
 
-            console.log("Warden registered successfully");
-        }
+        await grievance.save();
+
+        res.status(200).json(grievance);
+        console.log("Public Grievance status updated successfully");
+
+    }
+    catch(error){
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({message: "Server Error"});
+    }
+};
+
+export const setPrivateGrievance = async (req, res) => {
+    try{
+
+        const warden = req.warden;
+
+        if(!warden)
+            return res.status(401).json({message: "Unauthorised-no Warden Provided"});
+
+        const id = req.params.id;
+
+        const grievance = await PrivateGrivance.findById(id);
+
+        const {status} = req.body;
+
+        if(!status ||!['Pending', 'Resolved', 'Cancelled'].includes(status))
+            return res.status(400).json({message: "Invalid Status"});
+
+        grievance.status = status;
+
+        await grievance.save();
+
+        res.status(200).json(grievance);
+        console.log("Private Grievance status updated successfully");
 
     }
     catch(error){
@@ -73,52 +159,3 @@ export const wardenRegisteration = async (req, res) => {
         res.status(500).json({message: "Server Error"});
     }
 }
-
-export const wardenLogin = async(req, res) => {
-    
-    try{
-
-        const {
-            user,
-            password
-        } = req.body;
-    
-        if(!user || !password){
-            return res.status(400).json({message: "All fields are required"});
-        }
-    
-        const newuser = await Warden.findOne({$or: [{phone: user}, {email: user}, {aadhar: user}]})
-    
-        if(!newuser){
-            return res.status(400).json({message: "Invalid Credentials"});
-        }
-    
-        const isMatch = await bcrypt.compare(password, newuser.password);
-    
-        if(!isMatch){
-            return res.status(400).json({message: "Invalid Credentials"});
-        }
-    
-        generateWardenToken(newuser._id, res);
-    
-        res.status(200).json(newuser);
-        console.log("Warden logged in successfully");
-    }
-    catch(error){
-        console.error(`Error: ${error.message}`);
-        res.status(500).json({message: "Server Error"});
-    }
-}
-
-export const wardenLogout = async(req, res) => {
-    
-    try{
-        res.clearCookie('jwt');
-        res.status(200).json({message: "Warden Logged Out"});
-    }
-    catch(error){
-        console.error(`Error: ${error.message}`);
-        res.status(500).json({message: "Server Error"});
-    }
-}
-
