@@ -40,14 +40,6 @@ export const uploadMessMenu = async (req, res) => {
 					.json({ message: "Unauthorized - No Warden Provided" });
 			}
 
-			const { month } = req.body;
-
-			if (!month) {
-				return res
-					.status(400)
-					.json({ message: "Month is required" });
-			}
-
 			if (!req.file) {
 				return res.status(400).json({ message: "File is required" });
 			}

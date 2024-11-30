@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { moveEmitHelpers } from "typescript";
 
 const HostlerSchema = new mongoose.Schema({
 
@@ -53,6 +52,10 @@ const HostlerSchema = new mongoose.Schema({
         required: true
     },
     room_no:{
+        type: String,
+        required: true
+    },
+    temp_pass:{
         type: String,
         required: true
     },
