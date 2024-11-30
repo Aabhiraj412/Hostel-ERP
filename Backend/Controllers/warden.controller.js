@@ -4,8 +4,8 @@ import nodemailer from "nodemailer";
 import Hostler from "../Schemas/Hostlers.model.js";
 import PrivateGrivance from "../Schemas/PrivateGrivance.model.js";
 import PublicGrivance from "../Schemas/PublicGrivance.model.js";
-import { generateHostlerToken } from "../Utils/GenerateToken.utils.js";
 import Leave from "../Schemas/Leave.model.js";
+import OutRegister from "../Schemas/OutRegister.model.js";
 
 export const getHostlers = async (req, res) => {
 	try {
@@ -303,6 +303,7 @@ export const addHostler = async (req, res) => {
 				to: email,
 				subject: "Registration in Hostel",
 				text: ` Hello ${name},
+
 You have successfully registered in the Hostel Management System.
 Your details are as follows:
 
@@ -445,6 +446,25 @@ Have a Nice Day`,
         res.json(leave);
 
         console.log("Leave status updated successfully");
+
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+export const getOutRegister = async (req, res) => {
+    try {
+        const warden = req.warden;
+
+        if(!warden)
+            return res.status(401).json({message: "Unauthorised-no Warden Provided"});
+
+        const outRegister = await OutRegister.find().sort({ createdAt: -1 });
+
+        res.json(outRegister);
+
+        console.log("OutRegister fetched successfully");
 
     } catch (error) {
         console.error(`Error: ${error.message}`);

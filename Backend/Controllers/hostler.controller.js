@@ -4,6 +4,7 @@ import Notice from "../Schemas/Notices.model.js";
 import PrivateGrivance from "../Schemas/PrivateGrivance.model.js";
 import PublicGrivance from "../Schemas/PublicGrivance.model.js";
 import Leave from "../Schemas/Leave.model.js";
+import OutRegister from "../Schemas/OutRegister.model.js";
 
 export const publicgrivance = async (req, res) => {
 	try {
@@ -223,22 +224,20 @@ export const applyLeave = async (req, res) => {
 			// status,
 		} = req.body;
 
-		if (!days ||!from ||!to ||!reason ||!address ||!contact_no) {
-            return res
-                .status(400)
-                .json({ message: "All fields are required" });
-        }
+		if (!days || !from || !to || !reason || !address || !contact_no) {
+			return res.status(400).json({ message: "All fields are required" });
+		}
 
 		const leave = new Leave({
 			student: hostler._id,
-            days,
-            from,
-            to,
-            reason,
-            address,
-            contact_no,
-            status: "Pending",
-        });
+			days,
+			from,
+			to,
+			reason,
+			address,
+			contact_no,
+			status: "Pending",
+		});
 
 		hostler.Leave.push(leave._id);
 		await hostler.save();
@@ -246,29 +245,127 @@ export const applyLeave = async (req, res) => {
 		await leave.save();
 		res.status(200).json(leave);
 		console.log("Leave application submitted successfully");
-		
-
 	} catch (error) {
 		console.error(`Error: ${error.message}`);
-        res.status(500).json({ message: "Server Error" });
+		res.status(500).json({ message: "Server Error" });
 	}
 };
 
-export const getLeaves = async (req, res) =>{
-	try{
+export const getLeaves = async (req, res) => {
+	try {
 		const hostler = req.hostler;
 
-        if(!hostler)
-            return res
-                .status(401)
-                .json({ message: "Unauthorised-no Hostler Provided" });
+		if (!hostler)
+			return res
+				.status(401)
+				.json({ message: "Unauthorised-no Hostler Provided" });
 
-        const leaves = await Leave.find({ student: hostler._id });
-        res.status(200).json(leaves);
-        console.log("Leaves fetched successfully");
+		const leaves = await Leave.find({ student: hostler._id });
+		res.status(200).json(leaves);
+		console.log("Leaves fetched successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
 	}
-	catch(error){
-        console.error(`Error: ${error.message}`);
-        res.status(500).json({ message: "Server Error" });
-    }
 };
+
+export const openEntry = async (req, res) => {
+	try {
+		const hostler = req.hostler;
+
+		if (!hostler)
+			return res
+				.status(401)
+				.json({ message: "Unauthorised-no Hostler Provided" });
+
+		const { purpose } = req.body;
+
+		if (hostler.outregister.length > 0) {
+			const check = OutRegister.findById(hostler.outregister[-1]);
+
+			if (!check.in_time)
+				return res
+					.status(400)
+					.json({ message: "You have already opened an entry" });
+		}
+
+		if (!purpose)
+			return res.status(400).json({ message: "Purpose is required" });
+
+		const entry = new OutRegister({
+			student: hostler._id,
+			purpose,
+			out_time: new Date(),
+		});
+
+		hostler.outregister.push(entry._id);
+
+		await hostler.save();
+
+		await entry.save();
+
+		res.status(200).json(entry);
+
+		console.log("Entry opened successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
+export const closeEntry = async (req, res) => {
+	try {
+		const hostler = req.hostler;
+
+		if (!hostler)
+			return res
+				.status(401)
+				.json({ message: "Unauthorised-no Hostler Provided" });
+
+		if (hostler.outregister.length === 0)
+			return res
+                .status(400)
+                .json({ message: "You have no open entry" });
+
+		const entry = await OutRegister.findById(hostler.outregister.at(-1));
+
+		if (!entry)
+			return res
+				.status(400)
+				.json({ message: "You have not opened an entry" });
+
+		entry.in_time = new Date();
+
+		await entry.save();
+
+		res.status(200).json(entry);
+
+		console.log("Entry closed successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
+export const getEntry = async (req, res) => {
+	try {
+		const hostler = req.hostler;
+
+		if (!hostler)
+			return res
+				.status(401)
+				.json({ message: "Unauthorised-no Hostler Provided" });
+
+		const entries = await OutRegister.find({ student: hostler._id }).sort({
+			out_time: -1,
+		});
+		res.status(200).json(entries);
+
+		console.log("Entries fetched successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
+export const getAttendance = async (req, res) => {};
