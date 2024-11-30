@@ -10,7 +10,6 @@ router.post('/wardenlogin', wardenLogin);
 router.post('/wardenlogout', wardenLogout);
 
 // Hostlers Routes
-// router.post('/warden/hostlerregistration',wardenProtectRoute ,hostlerregistration);
 router.post('/hostlerlogin', hostlerlogin);
 router.post('/hostlerlogout', hostlerlogout);
 

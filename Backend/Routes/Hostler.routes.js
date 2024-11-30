@@ -6,10 +6,13 @@ import {
 import hostlerProtectRoute from "../Middlewares/Hostler.middleware.js";
 import {
 	applyLeave,
+	closeEntry,
+	getEntry,
 	getLeaves,
 	getNotices,
 	getPrivateGrievances,
 	getPublicGrievances,
+	openEntry,
 	privateGrievance,
 	publicgrivance,
 	setPass,
@@ -37,5 +40,9 @@ router.get("/getprivategrievance", hostlerProtectRoute, getPrivateGrievances);
 
 router.post("/applyleave", hostlerProtectRoute, applyLeave);
 router.get("/getleaves", hostlerProtectRoute, getLeaves);
+
+router.post("/openentry", hostlerProtectRoute, openEntry);
+router.get("/closeentry", hostlerProtectRoute, closeEntry);
+router.get("/getentry", hostlerProtectRoute, getEntry);
 
 export default router;

@@ -17,7 +17,6 @@ const OutRegisterSchema = new mongoose.Schema({
     },
     in_time: {
         type: Date,
-        required: true
     }
 },
 {
