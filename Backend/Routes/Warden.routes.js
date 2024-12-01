@@ -7,6 +7,7 @@ import {
 	getOutRegister,
 	getPrivateGrievances,
 	getPublicGrievances,
+	removeHostler,
 	setLeaves,
 	setPrivateGrievance,
 	setPublicGrievance,
@@ -45,5 +46,7 @@ router.get("/getleaves", wardenProtectRoute, getLeaves);
 router.post("/setleave/:id", wardenProtectRoute, setLeaves);
 
 router.get("/getentries", wardenProtectRoute, getOutRegister);
+
+router.get("/removehostler/:id",wardenProtectRoute, removeHostler);
 
 export default router;

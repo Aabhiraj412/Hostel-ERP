@@ -471,3 +471,62 @@ export const getOutRegister = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
+
+export const removeHostler = async (req,res) =>{
+	try{
+		const warden = req.warden;
+
+		if(!warden)
+            return res.status(401).json({message: "Unauthorised-no Warden Provided"});
+
+		const hostler = await Hostler.findByIdAndDelete(req.params.id);
+
+		if(!hostler)
+            return res.status(404).json({ message: "Hostler not found" });
+
+		
+		const transporter = nodemailer.createTransport({
+			service: "gmail",
+            auth: {
+				user: process.env.Email,
+                pass: process.env.Pass,
+            },
+        });
+
+		const mailOptions = {
+            from: process.env.Email,
+            to: hostler.email,
+            subject: "Hostler Removed",
+            text: `Hello ${hostler.name},
+			
+We are informing you that your hostel account has been removed from our system. 
+			
+If you have any further queries, please do not hesitate to contact us.
+
+Have a Nice Day`,
+        
+		};
+		
+		try{
+			const emailResponse = await new Promise((resolve, reject) => {
+				transporter.sendMail(mailOptions, (error, info) => {
+					if (error) reject(error);
+                    else resolve(info.response);
+                });
+            });
+            console.log("Email sent:", emailResponse);
+		}
+		catch(emailError){
+			console.error("Failed to send email:", emailError.message);
+            return res.status(500).json({ error: "Failed to send email." });
+        }
+		
+		res.json(hostler);
+		console.log("Hostler deleted successfully");
+
+	}catch(error){
+		console.error(`Error: ${error.message}`);
+        res.status(500).json({ message: "Server Error" });
+	}
+
+};
