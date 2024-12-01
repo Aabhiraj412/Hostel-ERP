@@ -1,0 +1,8 @@
+{
+	"name": "Hostel ERP",
+	"slug": "Hostel ERP",
+	"plugins": ["expo-secure-store"],
+	"extra": {
+		"localhost": "10.0.34.46"
+	}
+}

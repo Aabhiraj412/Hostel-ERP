@@ -115,6 +115,7 @@ export const wardenLogout = async(req, res) => {
     try{
         res.clearCookie('jwt');
         res.status(200).json({message: "Warden Logged Out"});
+        console.log("Warden logged out successfully");
     }
     catch(error){
         console.error(`Error: ${error.message}`);
