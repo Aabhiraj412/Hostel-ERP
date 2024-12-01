@@ -1,12 +1,14 @@
 import express from "express";
 import {
 	addHostler,
+	getAttendance,
 	gethostler,
 	getHostlers,
 	getLeaves,
 	getOutRegister,
 	getPrivateGrievances,
 	getPublicGrievances,
+	markAttendence,
 	removeHostler,
 	setLeaves,
 	setPrivateGrievance,
@@ -16,7 +18,8 @@ import {
 import wardenProtectRoute from "../Middlewares/Warden.middleware.js";
 import { getWarden } from "../Controllers/wardenAuth.controller.js";
 import { uploadNotice } from "../Controllers/notice.controller.js";
-import { uploadMessMenu } from "../Controllers/messmenu.controller.js";
+import { getMessMenu, uploadMessMenu } from "../Controllers/messmenu.controller.js";
+import { getNotices } from "../Controllers/hostler.controller.js";
 
 const router = express.Router();
 
@@ -48,5 +51,12 @@ router.post("/setleave/:id", wardenProtectRoute, setLeaves);
 router.get("/getentries", wardenProtectRoute, getOutRegister);
 
 router.get("/removehostler/:id",wardenProtectRoute, removeHostler);
+
+router.post("/markattendance", wardenProtectRoute, markAttendence);
+
+router.post("/attendanceof", wardenProtectRoute, getAttendance);
+
+router.get("/getmessmenu", wardenProtectRoute, getMessMenu);
+router.get("/getnotices", wardenProtectRoute, getNotices);
 
 export default router;
