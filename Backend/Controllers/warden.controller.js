@@ -60,18 +60,71 @@ export const updateRoom = async (req, res) => {
 				.status(401)
 				.json({ message: "Unauthorised-no Warden Provided" });
 
-		const { room } = req.body;
+		const { hostel, room } = req.body;
 
-		if (!room) return res.status(400).json({ message: "Invalid Room" });
+		if (!room || !hostel) return res.status(400).json({ message: "Invalid Room" });
 
 		const id = req.params.id;
 
-		const hostler = await Hostler.findByIdAndUpdate(
-			id,
-			{ room_no: room },
-			{ new: true }
-		);
-		res.status(200).json(hostler);
+        const check = await Hostler.find({ room_no: room, hostel: hostel})
+
+        if(check.length>1)
+            return res.status(400).json({ message: "Room already taken" });
+
+        const hostler = await Hostler.findById(id);
+
+        if(hostler.room_no === room)
+            return res.status(400).json({ message: "Room not changed" });
+
+        const pre = {
+            "room_no" : hostler.room_no,
+            "hostel": hostler.hostel
+        };
+
+        hostler.hostel = hostel;
+		hostler.room_no = room;
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.Email,
+                pass: process.env.Pass,
+            },
+        });
+        
+        const mailOptions = {
+            from: process.env.Email,
+            to: hostler.email,
+            subject: "Room Updated",
+            text: `Hello ${hostler.name},
+
+Your room has been updated to form ${pre.hostel} ${pre.room_no} to ${hostel} ${room}. 
+
+Please check your room details.
+
+Thank you.
+Regards,
+Hostel Management System`,
+        };
+        
+        try{
+            const emailResponse = await new Promise((resolve, reject) => {
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) reject(error);
+                    else resolve(info.response);
+                });
+            });
+            console.log("Email sent:", emailResponse);
+            
+        }
+        catch (emailError) {
+            console.error("Failed to send email:", emailError.message);
+            return res.status(500).json({ error: "Failed to send email." });
+        }
+        
+        await hostler.save();
+		
+        res.status(200).json(hostler);
 		console.log("Room updated successfully");
 	} catch (error) {
 		console.error(`Error: ${error.message}`);
@@ -249,6 +302,12 @@ export const addHostler = async (req, res) => {
 				.status(400)
 				.json({ message: "Aadhar number already exists" });
 
+        const inroom = await Hostler.find({hostel: hostel, room_no: room_no})
+
+        if(inroom.length > 1)
+            return res.status(400).json({ message: "Room is already occupied" });
+
+
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -307,19 +366,19 @@ export const addHostler = async (req, res) => {
 You have successfully registered in the Hostel Management System.
 Your details are as follows:
 
-Name:           ${name}
-Roll Number:    ${roll_no}
-Aadhar Number:  ${aadhar}
-Phone Number:   ${phone_no}
-Email:          ${email}
-Address:        ${address}
-Fathers Name:   ${fathers_name}
-Mothers Name:   ${mothers_name}
-Address:        ${address}
-Year:           ${year}
-College:        ${college}
-Hostel:         ${hostel}
-Room No:        ${room_no}
+Name: ${name}
+Roll Number: ${roll_no}
+Aadhar Number: ${aadhar}
+Phone Number: ${phone_no}
+Email: ${email}
+Address: ${address}
+Fathers Name: ${fathers_name}
+Mothers Name: ${mothers_name}
+Address: ${address}
+Year: ${year}
+College: ${college}
+Hostel: ${hostel}
+Room No: ${room_no}
 
 You can now login to the system using your phone number as the userid and your temperary password.
                 
@@ -334,9 +393,7 @@ Have a Nice Day`,
             await newHostler.save();
             
 			try {
-                console.log(process.env.Email)
-                console.log(process.env.Pass);
-				const emailResponse = await new Promise((resolve, reject) => {
+                const emailResponse = await new Promise((resolve, reject) => {
 					transporter.sendMail(mailOptions, (error, info) => {
 						if (error) reject(error);
 						else resolve(info.response);
@@ -398,8 +455,7 @@ export const setLeaves = async (req, res) => {
         if(status === leave.status) {
             return res.status(400).json({ message: "Status is same as current status" });
         }
-        // const leave = await Leave.findByIdAndUpdate(req.params.id, { status }, { new: true });
-
+        
         leave.status = status
 
         const student = await Hostler.findById(leave.student);
@@ -426,8 +482,6 @@ Have a Nice Day`,
 };
 
         try {
-            console.log(process.env.Email)
-            console.log(process.env.Pass);
             const emailResponse = await new Promise((resolve, reject) => {
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) reject(error);
@@ -529,4 +583,95 @@ Have a Nice Day`,
         res.status(500).json({ message: "Server Error" });
 	}
 
+};
+
+export const markAttendence = async (req,res) => {
+    try {
+        const warden = req.warden;
+
+        if(!warden)
+            return res.status(401).json({message: "Unauthorised-no Warden Provided"});
+
+        const { 
+            hostel,
+            present,
+            absent
+        } = req.body;
+
+        if(!hostel ||!Array.isArray(present) ||!Array.isArray(absent))
+            return res.status(400).json({ message: "Hostel, Present, and Absent are required" });
+
+        const hostlers = await Hostler.find({hostel}).sort({room_no:1});
+        
+        const now = new Date();
+        const date = now.toLocaleDateString("en-US");
+
+        if(!hostlers || hostlers.length === 0)
+            return res.status(404).json({ message: `Hostlers not found in ${hostel} Hostel` });
+        
+        for (const hostler of hostlers) {
+            const hostlerId = hostler._id.toString();
+
+            if (present.includes(hostlerId)) 
+                hostler.present_on.push(date);
+            
+            else if (absent.includes(hostlerId)) 
+                hostler.absent_on.push(date);
+            
+        }
+
+        await Promise.all(hostlers.map((hostler) => hostler.save()));
+        
+        res.json(hostlers);
+
+        console.log("Attendance marked successfully");
+
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+export const getAttendance = async (req, res) => {
+    try{
+        const warden = req.warden;
+
+        if(!warden)
+            return res.status(401).json({message: "Unauthorised-no Warden Provided"});
+
+        const { hostel, date } = req.body;
+
+        if(!hostel ||!date)
+            return res.status(400).json({ message: "Hostel and Date are required" });
+
+        const hostlers = await Hostler.find({hostel}).sort({room_no:1});
+        
+        if(!hostlers || hostlers.length === 0)
+            return res.status(404).json({ message: `Hostlers not found in ${hostel} Hostel` });
+        
+        const [day, month, year] = date.split("-"); // Split by the hyphen to extract month, day, and year
+
+        const iso = new Date(Date.UTC(year, month - 1, day, 18, 30, 0, 0)); // Month is 0-indexed
+
+        const getdate = iso.toISOString();
+
+        console.log(getdate); 
+
+        const present = hostlers.filter((hostler) =>
+            hostler.present_on.some((attendanceDate) => attendanceDate.toISOString() === getdate)
+        );
+
+        const absent = hostlers.filter((hostler) =>
+            hostler.absent_on.some((attendanceDate) => attendanceDate.toISOString() === getdate)
+        );
+        
+        res.json({ present, absent });
+
+        console.log("Attendance fetched successfully");
+
+    }
+    catch(error){
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({ message: "Server Error" });
+    }
 };
