@@ -6,8 +6,8 @@ import { create } from "zustand";
 const useStore = create((set) => ({
     cookie: '',
     setCookie: (c) => set({ cookie: c }),
-    username: '',
-    setUsername: (name) => set({ username: name }),
+    user: '',
+    setUser: (name) => set({ user: name }),
 }));
 
 export default useStore;
