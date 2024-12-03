@@ -155,7 +155,7 @@ export const getPrivateGrievances = async (req, res) => {
 
 export const getNotices = async (req, res) => {
 	try {
-		const notices = await Notice.find({}).sort({ date: -1 });
+		const notices = await Notice.find({}).sort({ createdAt: -1 });
 		res.status(200).json(notices);
 		console.log("Notices fetched successfully");
 	} catch (error) {
