@@ -58,7 +58,20 @@ export const uploadMessMenu = async (req, res) => {
 export const getMessMenu = async (req, res) => {
     try {
         const menu = '/Mess Menu/Mess Menu.png';
-        res.status(200).sendFile(menu, { root: '.' });
+		res.status(200).sendFile(menu, { root: '.' });
+        // res.status(200).json({ "path": menu });
+        console.log("Mess Menu fetched successfully");
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({ message: "Server Error" });
+    }
+}
+	export const getNotice = async (req, res) => {
+    try {
+        // const menu = '/Mess Menu/Mess Menu.png';
+		const path = `/Notices/${req.params.path}`;
+		console.log(path);
+        res.status(200).sendFile(path, { root: '.' });
         console.log("Mess Menu fetched successfully");
     } catch (error) {
         console.error(`Error: ${error.message}`);

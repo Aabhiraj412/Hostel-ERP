@@ -2,8 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
-// interface
-const Card: React.FC = ({title,onPress}) => {
+const Card: React.FC<{ title: string; onPress: () => void }> = ({ title, onPress }) => {
+
 	return (
 		<TouchableOpacity style={styles.cardClient} onPress={onPress}>
 			<View style={styles.userPicture}>
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 10,
 		alignItems: "center",
 		justifyContent: "center",
+		margin: 20
 	},
 	userPicture: {
 		width: 80,
