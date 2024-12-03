@@ -633,44 +633,51 @@ export const markAttendence = async (req,res) => {
 };
 
 export const getAttendance = async (req, res) => {
-    try{
+    try {
         const warden = req.warden;
 
-        if(!warden)
-            return res.status(401).json({message: "Unauthorised-no Warden Provided"});
+        if (!warden)
+            return res.status(401).json({ message: "Unauthorised-no Warden Provided" });
 
         const { hostel, date } = req.body;
 
-        if(!hostel ||!date)
+        if (!hostel || !date)
             return res.status(400).json({ message: "Hostel and Date are required" });
 
-        const hostlers = await Hostler.find({hostel}).sort({room_no:1});
-        
-        if(!hostlers || hostlers.length === 0)
+        const hostlers = await Hostler.find({ hostel }).sort({ room_no: 1 });
+
+        if (!hostlers || hostlers.length === 0)
             return res.status(404).json({ message: `Hostlers not found in ${hostel} Hostel` });
-        
-        const [day, month, year] = date.split("-"); // Split by the hyphen to extract month, day, and year
 
-        const iso = new Date(Date.UTC(year, month - 1, day, 18, 30, 0, 0)); // Month is 0-indexed
+        const [day, month, year] = date.split("-"); // Split by the hyphen to extract day, month, and year
 
-        const getdate = iso.toISOString();
+        // Convert the input date to ISO format and set time to midnight to compare only the date
+        const iso = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0)); // Month is 0-indexed
+        const getdate = iso.toISOString().split('T')[0];  // Extract YYYY-MM-DD from the ISO string
 
-        console.log(getdate); 
+        const getDateOnly = (dateString) => {
+            const date = new Date(dateString);
+            date.setHours(0, 0, 0, 0);  // Set the time to midnight
+            return date.toISOString().split('T')[0];  // Return only the YYYY-MM-DD part
+        };
 
         const present = hostlers.filter((hostler) =>
-            hostler.present_on.some((attendanceDate) => attendanceDate.toISOString() === getdate)
+            hostler.present_on?.some((attendanceDate) =>
+                getDateOnly(attendanceDate.toISOString()) === getdate
+            )
         );
 
         const absent = hostlers.filter((hostler) =>
-            hostler.absent_on.some((attendanceDate) => attendanceDate.toISOString() === getdate)
+            hostler.absent_on?.some((attendanceDate) =>
+                getDateOnly(attendanceDate.toISOString()) === getdate
+            )
         );
-        
+
         res.json({ present, absent });
 
         console.log("Attendance fetched successfully");
 
-    }
-    catch(error){
+    } catch (error) {
         console.error(`Error: ${error.message}`);
         res.status(500).json({ message: "Server Error" });
     }

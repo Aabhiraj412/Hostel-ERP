@@ -87,7 +87,7 @@ const AddHostler = () => {
 
 			if (response.ok) {
 				Alert.alert("Success", "Hostler added successfully!");
-				navigation.replace("HostlerDetails", { hostler: result });
+				navigation.replace("Hostler Details", { hostler: result });
 			} else {
 				Alert.alert(
 					"Error",
@@ -194,12 +194,25 @@ const AddHostler = () => {
 				value={formData.address}
 				onChangeText={(value) => handleInputChange("address", value)}
 			/>
-			<TextInput
-				style={styles.input}
-				placeholder="Year"
-				value={formData.year}
-				onChangeText={(value) => handleInputChange("year", value)}
-			/>
+			
+			<View style={styles.inputContainer}>
+				<Text style={styles.label}>Year</Text>
+				<View style={styles.dropdownContainer}>
+					<Picker
+						selectedValue={formData.year}
+						onValueChange={(value) =>
+							handleInputChange("year", value)
+						}
+					>
+						<Picker.Item label="Select Year" value="" />
+						<Picker.Item label="1st" value="1st" />
+						<Picker.Item label="2nd" value="2ns" />
+						<Picker.Item label="3rd" value="3rd" />
+						<Picker.Item label="4th" value="4th" />
+					</Picker>
+				</View>
+			</View>
+
 			<TextInput
 				style={styles.input}
 				placeholder="College"

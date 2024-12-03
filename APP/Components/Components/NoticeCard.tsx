@@ -46,7 +46,7 @@ const NoticeCard: React.FC<NoticeCardProps> = ({ data }) => {
 				Published On: {new Date(data.createdAt).toLocaleDateString()}
 			</Text>
 			<TouchableOpacity style={styles.downloadButton} onPress={onPress}>
-				<Text style={styles.downloadButtonText}>Download PDF</Text>
+				<Text style={styles.downloadButtonText}>Download Notice</Text>
 			</TouchableOpacity>
 		</View>
 	);

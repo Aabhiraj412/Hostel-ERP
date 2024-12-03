@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import useStore from "../../Store/Store";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
+import { Picker } from "@react-native-picker/picker";
 
 // Define the prop types for better type safety
 interface HostlerDetailsProps {
@@ -76,7 +77,10 @@ const HostlerDetails = () => {
 			if (req.status === 200) {
 				Alert.alert("Success", "Room changed successfully!");
 			} else {
-				Alert.alert("Error", response.message || "Failed to change room.");
+				Alert.alert(
+					"Error",
+					response.message || "Failed to change room."
+				);
 			}
 		} catch (error) {
 			console.error("Error changing room:", error);
@@ -117,7 +121,10 @@ const HostlerDetails = () => {
 				Alert.alert("Success", "Hostler removed successfully!");
 				navigation.goBack();
 			} else {
-				Alert.alert("Error", response.message || "Failed to remove hostler.");
+				Alert.alert(
+					"Error",
+					response.message || "Failed to remove hostler."
+				);
 			}
 		} catch (error) {
 			console.error("Error removing hostler:", error);
@@ -220,16 +227,45 @@ const HostlerDetails = () => {
 				</View>
 			</ScrollView>
 
-			<Modal animationType="slide" transparent={true} visible={modalVisible}>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+			>
 				<View style={styles.modalContainer}>
 					<View style={styles.modalContent}>
 						<Text style={styles.modalTitle}>Change Room</Text>
-						<TextInput
-							style={styles.input}
-							placeholder="Enter new Hostel"
-							value={hostel}
-							onChangeText={setHostel}
-						/>
+						
+						<View style={styles.inputContainer}>
+							{/* <Text style={styles.label}>Hostel</Text> */}
+							<View style={styles.dropdownContainer}>
+								<Picker
+									selectedValue={hostel}
+									onValueChange={(value) =>
+										setHostel(value)
+									}
+									style={{ width: 270 }}
+								>
+									<Picker.Item
+										label="Select Hostel"
+										value=""
+									/>
+									<Picker.Item
+										label="Aryabhatt"
+										value="Aryabhatt"
+									/>
+									<Picker.Item
+										label="RN Tagore"
+										value="RN Tagore"
+									/>
+									<Picker.Item
+										label="Sarojni Naidu"
+										value="Sarojni Naidu"
+									/>
+								</Picker>
+							</View>
+						</View>
+
 						<TextInput
 							style={styles.input}
 							placeholder="Enter new Room Number"
@@ -241,13 +277,20 @@ const HostlerDetails = () => {
 								style={styles.modalButton}
 								onPress={changeRoom}
 							>
-								<Text style={styles.modalButtonText}>Submit</Text>
+								<Text style={styles.modalButtonText}>
+									Submit
+								</Text>
 							</TouchableOpacity>
 							<TouchableOpacity
-								style={[styles.modalButton, { backgroundColor: "#e74c3c" }]}
+								style={[
+									styles.modalButton,
+									{ backgroundColor: "#e74c3c" },
+								]}
 								onPress={() => setModalVisible(false)}
 							>
-								<Text style={styles.modalButtonText}>Cancel</Text>
+								<Text style={styles.modalButtonText}>
+									Cancel
+								</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -315,7 +358,8 @@ const styles = StyleSheet.create({
 	buttonContainer: {
 		marginTop: 20,
 		width: "100%",
-	},modalContainer: {
+	},
+	modalContainer: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
@@ -333,6 +377,20 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		marginBottom: 20,
 		color: "#2cb5a0",
+	},
+	inputContainer: {
+		marginBottom: 15,
+	},
+	label: {
+		fontSize: 16,
+		color: "#444",
+		marginBottom: 5,
+	},dropdownContainer: {
+		// width: "100%",
+		borderWidth: 1,
+		borderColor: "#ddd",
+		borderRadius: 10,
+		backgroundColor: "#fff",
 	},
 	input: {
 		width: "100%",

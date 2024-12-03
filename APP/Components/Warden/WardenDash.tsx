@@ -32,7 +32,7 @@ const WardenDash = () => {
         navigation.navigate('Notices');
     };
 
-    const markAttendance = async () => {
+    const viewAttendance = async () => {
         navigation.navigate('Hostlers Attendance');
     };
 
@@ -70,8 +70,8 @@ const WardenDash = () => {
 
 				<View style={styles.row}>
 					<MiniCard
-						title="Mark Attendance"
-						onPress={markAttendance}
+						title="View Attendance"
+						onPress={viewAttendance}
 						IconComponent={({ size, color }) => (
 							<Ionicons
 								name="clipboard-outline"
@@ -118,6 +118,30 @@ const WardenDash = () => {
 					/>
 				</View>
 
+				<View style={styles.row}>
+					<MiniCard
+						title="Out Register"
+						onPress={viewMessMenu}
+						IconComponent={({ size, color }) => (
+							<Ionicons
+								name="restaurant-outline"
+								size={size}
+								color={color}
+							/>
+						)}
+					/>
+					<MiniCard
+						title="Change Attendance IP"
+						onPress={viewNotices}
+						IconComponent={({ size, color }) => (
+							<Ionicons
+								name="document-text-outline"
+								size={size}
+								color={color}
+							/>
+						)}
+					/>
+				</View>
 				<View style={styles.row}>
 					<MiniCard
 						title="Mess Menu"

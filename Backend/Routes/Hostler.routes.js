@@ -12,6 +12,7 @@ import {
 	getNotices,
 	getPrivateGrievances,
 	getPublicGrievances,
+	markAttendence,
 	openEntry,
 	privateGrievance,
 	publicgrivance,
@@ -34,6 +35,8 @@ router.post("/publicgrievance", hostlerProtectRoute, publicgrivance);
 router.get("/publicgrievance/upvote/:id", hostlerProtectRoute, upvote);
 
 router.post("/privategrievance", hostlerProtectRoute, privateGrievance);
+
+router.get("/markattendance", hostlerProtectRoute, markAttendence);
 
 router.get("/getpublicgrievance", getPublicGrievances);
 router.get("/getprivategrievance", hostlerProtectRoute, getPrivateGrievances);
