@@ -15,8 +15,10 @@ const PORT = process.env.PORT || 5000;
 app.get("/", (req, res) => {
 	res.send("Hello World!");
 });
+app.use(express.json({ limit: "50mb" })); // For JSON payloads
+app.use(express.urlencoded({ extended: true, limit: "50mb" })); // For URL-encoded payloads
 
-app.use(express.json());
+// app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);

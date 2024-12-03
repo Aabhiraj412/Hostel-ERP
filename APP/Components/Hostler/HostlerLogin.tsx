@@ -1,32 +1,30 @@
 import React, { useState } from "react";
 import {
 	ActivityIndicator,
-	Button,
 	StyleSheet,
 	Text,
 	TextInput,
 	View,
 	TouchableOpacity,
-	Image,
+	Alert,
 } from "react-native";
 import useStore from "../../Store/Store";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons"; // Make sure you have expo installed
 
-const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
+const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 	const { setCookie, setUser, setData, localhost } = useStore();
-	const [userId, setUserId] = useState("");
+	const [userId, setuserId] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [passwordVisible, setPasswordVisible] = useState(false);
 
-	
 	const Login = async () => {
 		setLoading(true);
 		setError(null);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/auth/wardenlogin`,
+				`http://${localhost}:3000/api/auth/hostlerlogin`,
 				{
 					method: "POST",
 					headers: {
@@ -41,19 +39,22 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 
 			if (!response.ok) {
 				const errorResponse = await response.json();
+				if (errorResponse.message === "Invalid Credentials") {
+					throw new Error("Invalid credentials. Please try again.");
+				}
 				throw new Error(
-					errorResponse.message || "Login failed. Please try again."
+					`Login failed with status code: ${response.status}`
 				);
 			}
 
 			const cookies = response.headers.get("set-cookie");
 			if (cookies) setCookie(cookies);
-			setUser("Warden");
+			setUser("Hostler");
 
-			const data = await response.json(); // Parse the JSON response
+			const data = await response.json();
 			setData(data);
-			navigation.replace("Warden");
-		} catch (error) {
+			navigation.replace("Hostler");
+		} catch (error: any) {
 			setError(error.message); // Handle errors
 		} finally {
 			setLoading(false); // Stop loading
@@ -67,28 +68,26 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 			</View>
 		);
 	}
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
-				<Text style={styles.title}>Warden Login</Text>
-				<Text style={styles.subtitle}>
-					Please enter your UserID and Password
-				</Text>
+				<Text style={styles.title}>Hostler Login</Text>
+				<Text style={styles.subtitle}>Please enter your UserID and Password</Text>
 
 				<TextInput
 					placeholder="UserID"
 					style={styles.input}
-					onChangeText={(e) => setUserId(e)}
+					onChangeText={(e) => setuserId(e)}
 					value={userId}
 				/>
-				
 				<View style={styles.passwordContainer}>
 					<TextInput
 						placeholder="Password"
 						style={styles.input}
+						secureTextEntry={!passwordVisible}
 						onChangeText={(e) => setPassword(e)}
 						value={password}
-						secureTextEntry={!passwordVisible}
 					/>
 					<TouchableOpacity
 						style={styles.eyeIcon}
@@ -102,10 +101,12 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 					</TouchableOpacity>
 				</View>
 
-				<Button title="Login" onPress={Login} color="#2cb5a0" />
-			</View>
+				<TouchableOpacity style={styles.loginButton} onPress={Login} disabled={loading}>
+					<Text style={styles.buttonText}>Login</Text>
+				</TouchableOpacity>
 
-			{error && <Text style={styles.errorText}>Error: {error}</Text>}
+				{error && <Text style={styles.errorText}>{error}</Text>}
+			</View>
 		</View>
 	);
 };
@@ -113,9 +114,9 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#f5f5f5",
 		justifyContent: "center",
 		alignItems: "center",
+		backgroundColor: "#f5f5f5",
 	},
 	loadingContainer: {
 		flex: 1,
@@ -128,32 +129,32 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		borderRadius: 10,
 		shadowColor: "#000",
-		shadowOpacity: 0.2,
 		shadowOffset: { width: 0, height: 2 },
-		shadowRadius: 5,
+		shadowOpacity: 0.1,
+		shadowRadius: 4,
 		elevation: 3,
 	},
 	title: {
-		fontSize: 32,
+		fontSize: 30,
 		fontWeight: "bold",
-		color: "#2cb5a0",
 		textAlign: "center",
-		marginBottom: 10,
+		color: "#2cb5a0",
+		marginBottom: 20,
 	},
 	subtitle: {
 		fontSize: 18,
-		color: "#777",
 		textAlign: "center",
+		color: "#555",
 		marginBottom: 20,
 	},
 	input: {
-		height: 50,
-		borderColor: "#ccc",
+		borderColor: "#ddd",
 		borderWidth: 1,
-		marginBottom: 15,
 		borderRadius: 5,
-		paddingLeft: 10,
+		padding: 10,
 		fontSize: 18,
+		marginBottom: 15,
+		width: "100%",
 	},
 	passwordContainer: {
 		position: "relative",
@@ -164,11 +165,24 @@ const styles = StyleSheet.create({
 		top: "35%",
 		transform: [{ translateY: -12 }],
 	},
+	loginButton: {
+		backgroundColor: "#2cb5a0",
+		paddingVertical: 12,
+		borderRadius: 5,
+		width: "100%",
+		alignItems: "center",
+	},
+	buttonText: {
+		color: "#fff",
+		fontSize: 20,
+		fontWeight: "bold",
+	},
 	errorText: {
 		color: "red",
-		marginTop: 20,
 		textAlign: "center",
+		fontSize: 16,
+		marginTop: 10,
 	},
 });
 
-export default WardenLogin;
+export default HostlerLogin;

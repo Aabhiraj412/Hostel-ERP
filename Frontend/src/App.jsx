@@ -5,10 +5,9 @@ export default function App() {
   return (
     // Dont Touch this File
     <div>
-      Hello World
-      {/* <Routes>
+      <Routes>
         <Route path="/" element={<Home />} />
-      </Routes> */}
+      </Routes>
     </div>
   )
 }
