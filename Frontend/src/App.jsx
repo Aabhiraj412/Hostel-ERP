@@ -1,13 +1,18 @@
-import { Route, Routes } from "react-router-dom";
-import Home from "./Components/Home";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './Pages/HomePage/HomePage.jsx';
+import AdminLogin from './Pages/AdminLogin/AdminLogin.jsx';
+import HostelerLogin from './Pages/HostelerLogin/HostelerLogin.jsx';
 
-export default function App() {
+function App() {
   return (
-    // Dont Touch this File
-    <div>
+    <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/hosteler-login" element={<HostelerLogin />} />
       </Routes>
-    </div>
-  )
+    </Router>
+  );
 }
+
+export default App;
