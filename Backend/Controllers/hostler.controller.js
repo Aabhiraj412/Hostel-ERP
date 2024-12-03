@@ -368,4 +368,48 @@ export const getEntry = async (req, res) => {
 	}
 };
 
+export const markAttendence = async (req, res) => {
+	try {
+		const hostler = req.hostler;
+
+		if (!hostler)
+			return res
+				.status(401)
+				.json({ message: "Unauthorized - No Hostler Provided" });
+
+		// Get today's date
+		const date = new Date();
+		const day = date.getDate(); // Get the day of the month
+		const month = date.getMonth() + 1; // Months are 0-indexed, so we add 1
+		const year = date.getFullYear();
+		// Format the date as yyyy-mm-dd
+		const attendanceDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+		
+		console.log("Attendance Date: ", attendanceDate);
+
+		// Check if attendance is already marked for the current date
+		// Convert each Date object to ISO string and split at 'T' to check only the date part (yyyy-mm-dd)
+		if (hostler.present_on.some(dateObj => {
+			// If the item is a Date object, convert it to ISO string, otherwise keep it as is
+			const dateString = dateObj instanceof Date ? dateObj.toISOString() : dateObj;
+			return dateString.split('T')[0] === attendanceDate;
+		}))
+			return res
+				.status(400)
+				.json({ message: "Attendance already marked" });
+
+		// Mark attendance
+		hostler.present_on.push(`${attendanceDate}T18:30:00.000Z`); // Store the full ISO string with time
+		console.log("Updated Attendance Dates: ", hostler.present_on);
+
+		await hostler.save();
+
+		res.status(200).json({ message: "Attendance marked successfully" });
+		console.log("Attendance marked successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
 export const getAttendance = async (req, res) => {};

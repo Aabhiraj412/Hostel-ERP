@@ -12,12 +12,13 @@ import WardenDash from "./Components/Warden/WardenDash";
 import AddHostler from "./Components/Warden/AddHostler";
 import Hostlers from "./Components/Warden/Hostlers";
 import Leaves from "./Components/Warden/Leaves";
-import MarkAttendance from "./Components/Warden/MarkAttendance";
+import ViewAttendance from "./Components/Warden/ViewAttendance";
 import MessMenu from "./Components/Warden/MessMenu";
 import Notices from "./Components/Warden/Notices";
 import PublishNotice from "./Components/Warden/PublishNotice";
 import Grivances from "./Components/Warden/Grivances";
 import HostlerDetails from "./Components/Warden/HostlerDetails";
+import SplashScreen from "./Components/Components/SplashScreen";
 
 const Stack = createStackNavigator();
 
@@ -49,24 +50,43 @@ const App: React.FC = () => {
 
 	return (
 		<NavigationContainer>
-			<Stack.Navigator id={undefined} initialRouteName={initialRouteName}>
+			<Stack.Navigator
+				id={undefined}
+				initialRouteName="Hostler ERP"
+				screenOptions={{
+					headerStyle: {
+						backgroundColor: "#2cb5a0", // Set the background color of the nav bar
+					},
+					headerTintColor: "#fff", // Set the color of the title and back button
+					headerTitleStyle: {
+						fontWeight: "bold", // Optionally customize the font style of the title
+					},
+				}}
+			>
+				<Stack.Screen name="Hostler ERP" component={SplashScreen} />
 				<Stack.Screen name="Home" component={Landing} />
 
 				<Stack.Screen name="Warden Login" component={WardenLogin} />
 				<Stack.Screen name="Warden" component={Warden} />
-        <Stack.Screen name="Warden Dashboard" component={WardenDash} />
+				<Stack.Screen name="Warden Dashboard" component={WardenDash} />
 
-        <Stack.Screen name="Add Hostler" component={AddHostler} />
-        <Stack.Screen name="Hostlers" component={Hostlers} />
-        <Stack.Screen name="Hostlers Attendance" component={MarkAttendance} />
-        <Stack.Screen name="Publish Notice" component={PublishNotice} />
-        <Stack.Screen name="Leaves" component={Leaves} />
-        <Stack.Screen name="Grivances" component={Grivances} />
-        <Stack.Screen name="Mess Menu" component={MessMenu} />
-        <Stack.Screen name="Notices" component={Notices} />
-        <Stack.Screen name="Hostler Details" component={HostlerDetails} />
+				<Stack.Screen name="Add Hostler" component={AddHostler} />
+				<Stack.Screen name="Hostlers" component={Hostlers} />
+				<Stack.Screen
+					name="Hostlers Attendance"
+					component={ViewAttendance}
+				/>
+				<Stack.Screen name="Publish Notice" component={PublishNotice} />
+				<Stack.Screen name="Leaves" component={Leaves} />
+				<Stack.Screen name="Grivances" component={Grivances} />
+				<Stack.Screen name="Mess Menu" component={MessMenu} />
+				<Stack.Screen name="Notices" component={Notices} />
+				<Stack.Screen
+					name="Hostler Details"
+					component={HostlerDetails}
+				/>
 
-        <Stack.Screen name="Hostler Login" component={HostlerLogin} />
+				<Stack.Screen name="Hostler Login" component={HostlerLogin} />
 				<Stack.Screen name="Hostler" component={Hostler} />
 			</Stack.Navigator>
 		</NavigationContainer>

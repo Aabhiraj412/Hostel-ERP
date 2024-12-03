@@ -9,12 +9,15 @@ import hostlerRouter from "./Routes/Hostler.routes.js";
 
 dotenv.config({ path: "../.env" });
 
+
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
 	res.send("Hello World!");
 });
+
 app.use(express.json({ limit: "50mb" })); // For JSON payloads
 app.use(express.urlencoded({ extended: true, limit: "50mb" })); // For URL-encoded payloads
 
