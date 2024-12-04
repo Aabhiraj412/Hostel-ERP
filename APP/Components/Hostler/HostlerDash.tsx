@@ -103,7 +103,9 @@ const HostlerDash = () => {
 				);
 
 				if (!markResponse.ok) {
-					throw new Error("Failed to mark attendance.");
+          const fail = await markResponse.json();
+
+          throw new Error(fail.message);
 				}
 
 				const markResult = await markResponse.json();
