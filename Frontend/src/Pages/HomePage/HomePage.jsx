@@ -1,41 +1,45 @@
 import React from 'react';
+import logo from '@/assets/whiteBlack.svg';
+//import NavBar from '../../components/NavBar';
+import MiniVariantDrawer from '../../components/MiniVariantDrawer';
+
 
 const HomePage = () => {
   return (
+    <>
+    
     <div 
-      className="min-h-screen flex flex-col items-center justify-center"
-      style={{
-        background: 'radial-gradient(circle, rgba(0, 128, 128, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%)',
-      }}
-    >
-      <h1 className="text-4xl font-bold text-white mb-10">Hostel-ERP</h1>
-      <div className="flex space-x-6">
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
+      {/* <h1 className="text-4xl font-bold text-white mb-10">Hostel-ERP</h1> */}
+      <img src={logo} className="pb-10"/>
+      {/* <div className=''>Hostel ERP</div> */}
+    
+      <div className="flex space-x-10">
         {/* Admin Card */}
-        <div className="w-[300px] p-6 bg-white/30 backdrop-blur-lg rounded-lg shadow-lg hover:scale-105 transform transition duration-300">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 text-center">Login as Warden</h2>
-          <p className="text-gray-700 text-center mb-4">Manage hostel operations, rooms, and facilities.</p>
+        
+        <div className="w-[300px] p-6 bg-white/30 backdrop-blur-lg rounded-lg shadow-lg hover:scale-105 transform transition duration-300 shadow-teal-400/50">
+          <h2 className="text-xl font-semibold text-black mb-4 text-center">Login as Warden</h2>
+          <p className="text-gray-900 text-center mb-4">Easily manage hostel operations, approve leaves, and share important notices!</p>
           <a
             href="/admin-login"
-            className="block w-full bg-teal-600 text-white text-center py-2 rounded-lg hover:bg-teal-700"
-          >
+            className="block w-full bg-black text-white text-center py-2 rounded-lg  hover:bg-gradient-to-r hover:from-teal-500 hover:to-slate-600 hover:text-black transition-all duration-300">
             Continue
-            
           </a>
         </div>
 
         {/* Hosteler Card */}
-        <div className="w-[300px] p-6 bg-white/30 backdrop-blur-lg rounded-lg shadow-lg hover:scale-105 transform transition duration-300">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 text-center">Login as Hosteler</h2>
-          <p className="text-gray-700 text-center mb-4">Access personal details, room info, and complaints.</p>
+        <div className="w-[300px] p-6 bg-white/30 backdrop-blur-lg rounded-lg shadow-lg hover:scale-105 transform transition duration-300 shadow-teal-400/50">
+          <h2 className="text-xl font-semibold text-black mb-4 text-center">Login as Hosteler</h2>
+          <p className="text-gray-900 text-center mb-4">Stay connected by tracking attendance, applying for leave, and voicing your concerns easily!</p>
           <a
             href="/hosteler-login"
-            className="block w-full bg-teal-600 text-white text-center py-2 rounded-lg hover:bg-teal-700"
-          >
+            className="block w-full bg-black text-white text-center py-2 rounded-lg  hover:bg-gradient-to-r hover:from-teal-500 hover:to-slate-600 hover:text-black transition-all duration-300">
             Continue
           </a>
         </div>
       </div>
     </div>
+    </>
   );
 };
 
