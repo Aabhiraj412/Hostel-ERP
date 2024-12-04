@@ -22,6 +22,13 @@ import SplashScreen from "./Components/Components/SplashScreen";
 import OutRegister from "./Components/Warden/OutRegister";
 import PrivateGrivance from "./Components/Warden/PrivateGrivance";
 import HostlerDash from "./Components/Hostler/HostlerDash";
+import AddDetails from "./Components/Hostler/AddDetails";
+import HLeaves from "./Components/Hostler/Leaves";
+import HMessMenu from "./Components/Hostler/MessMenu";
+import HNotices from "./Components/Hostler/Notices";
+import HOutRegister from "./Components/Hostler/OutRegister";
+import HPrivateGrievances from "./Components/Hostler/PrivateGrievances";
+import HPublicGrievances from "./Components/Hostler/PublicGrievances";
 
 const Stack = createStackNavigator();
 
@@ -84,6 +91,14 @@ const App: React.FC = () => {
 				<Stack.Screen name="Hostler" component={Hostler} />
 
 				<Stack.Screen name="Hostler Dashboard" component={HostlerDash} />
+
+				<Stack.Screen name="Add Details" component={AddDetails} />
+				<Stack.Screen name="Leaves " component={HLeaves} />
+				<Stack.Screen name="Mess Menu " component={HMessMenu} />
+				<Stack.Screen name="Notices " component={HNotices} />
+				<Stack.Screen name="Out Register " component={HOutRegister} />
+				<Stack.Screen name="Private Grievances " component={HPrivateGrievances} />
+				<Stack.Screen name="Public Grievances " component={HPublicGrievances} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

@@ -281,12 +281,13 @@ export const openEntry = async (req, res) => {
 		const { purpose } = req.body;
 
 		if (hostler.outregister.length > 0) {
-			const check = OutRegister.findById(hostler.outregister[-1]);
-
-			if (!check.in_time)
+			const check = await OutRegister.findById(hostler.outregister.at(-1));
+			const entry = await OutRegister.findById(check);
+			if (!entry.in_time)
 				return res
 					.status(400)
 					.json({ message: "You have already opened an entry" });
+			console.log("Test successful");
 		}
 
 		if (!purpose)
@@ -323,9 +324,7 @@ export const closeEntry = async (req, res) => {
 				.json({ message: "Unauthorised-no Hostler Provided" });
 
 		if (hostler.outregister.length === 0)
-			return res
-                .status(400)
-                .json({ message: "You have no open entry" });
+			return res.status(400).json({ message: "You have no open entry" });
 
 		const entry = await OutRegister.findById(hostler.outregister.at(-1));
 
@@ -383,17 +382,22 @@ export const markAttendence = async (req, res) => {
 		const month = date.getMonth() + 1; // Months are 0-indexed, so we add 1
 		const year = date.getFullYear();
 		// Format the date as yyyy-mm-dd
-		const attendanceDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-		
+		const attendanceDate = `${year}-${month < 10 ? "0" + month : month}-${
+			day < 10 ? "0" + day : day
+		}`;
+
 		console.log("Attendance Date: ", attendanceDate);
 
 		// Check if attendance is already marked for the current date
 		// Convert each Date object to ISO string and split at 'T' to check only the date part (yyyy-mm-dd)
-		if (hostler.present_on.some(dateObj => {
-			// If the item is a Date object, convert it to ISO string, otherwise keep it as is
-			const dateString = dateObj instanceof Date ? dateObj.toISOString() : dateObj;
-			return dateString.split('T')[0] === attendanceDate;
-		}))
+		if (
+			hostler.present_on.some((dateObj) => {
+				// If the item is a Date object, convert it to ISO string, otherwise keep it as is
+				const dateString =
+					dateObj instanceof Date ? dateObj.toISOString() : dateObj;
+				return dateString.split("T")[0] === attendanceDate;
+			})
+		)
 			return res
 				.status(400)
 				.json({ message: "Attendance already marked" });
@@ -411,33 +415,34 @@ export const markAttendence = async (req, res) => {
 		res.status(500).json({ message: "Server Error" });
 	}
 };
-import fs from 'fs';
-const filePath = './ip.txt';  // Path to the file storing the IP
+import fs from "fs";
+const filePath = "./ip.txt"; // Path to the file storing the IP
 
 export const getIP = async (req, res) => {
-  try {
-    const hostler = req.hostler;
+	try {
+		const hostler = req.hostler;
 
-    if (!hostler) {
-      return res.status(401).json({ message: "Unauthorized - No Hostler Provided" });
-    }
+		if (!hostler) {
+			return res
+				.status(401)
+				.json({ message: "Unauthorized - No Hostler Provided" });
+		}
 
-    // Read the IP from the file if it exists
-    let ip = '';
-    if (fs.existsSync(filePath)) {
-      ip = fs.readFileSync(filePath, 'utf8');
-    } else {
-      return res.status(404).json({ message: "IP not found" });
-    }
+		// Read the IP from the file if it exists
+		let ip = "";
+		if (fs.existsSync(filePath)) {
+			ip = fs.readFileSync(filePath, "utf8");
+		} else {
+			return res.status(404).json({ message: "IP not found" });
+		}
 
-    // Send the IP back in the response
-    res.status(200).json({ ip });
-    console.log("IP fetched successfully:", ip);
-    
-  } catch (error) {
-    console.error(`Error: ${error.message}`);
-    res.status(500).json({ message: "Server Error" });
-  }
+		// Send the IP back in the response
+		res.status(200).json({ ip });
+		console.log("IP fetched successfully:", ip);
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
 };
 
 export const getAttendance = async (req, res) => {};
