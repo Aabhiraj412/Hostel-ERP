@@ -6,17 +6,23 @@ import {
 	Text,
 	View,
 	TouchableOpacity,
-	Alert,
+	// Alert,
 } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import useStore from "../../Store/Store";
+import ErrorAlert from "../Components/ErrorAlert";
+import SuccessAlert from "../Components/SuccessAlert";
 
 const MessMenu = () => {
 	const { localhost, cookie } = useStore();
 	const [imageUri, setImageUri] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
 
 	const blobToBase64 = (blob) => {
 		return new Promise((resolve, reject) => {
@@ -41,7 +47,11 @@ const MessMenu = () => {
 			);
 
 			if (!response.ok) {
-				throw new Error(`Failed to fetch with status code: ${response.status}`);
+				const errorMessage = await response.json();
+				throw new Error(
+					errorMessage.message ||
+						`Failed to fetch with status code: ${response.status}`
+				);
 			}
 
 			const blob = await response.blob();
@@ -56,7 +66,8 @@ const MessMenu = () => {
 			setImageUri(filePath + "?" + new Date().getTime()); // Force re-render by appending timestamp
 		} catch (error) {
 			console.error("Error fetching mess menu:", error);
-			Alert.alert("Error", "Failed to fetch the mess menu.");
+			setAlertMessage("Failed to fetch the mess menu.");
+			setAlert(true);
 		} finally {
 			setLoading(false);
 		}
@@ -97,15 +108,18 @@ const MessMenu = () => {
 			);
 
 			if (!response.ok) {
-				const errorDetails = await response.text();
-				throw new Error(errorDetails);
+				const errorResponse = await response.json();
+				throw new Error(
+					errorResponse.message || "Login failed. Please try again."
+				);
 			}
 
-			Alert.alert("Success", "Mess menu uploaded successfully.");
+			setSuccessMessage("Mess menu uploaded successfully.");
+			setSuccess(true);
 			fetchMessMenu(); // Refresh the image after upload
 		} catch (error) {
-			console.error("Upload failed:", error);
-			Alert.alert("Error", "Failed to upload the mess menu.");
+			setAlertMessage(error.message);
+			setAlert(true);
 		} finally {
 			setLoading(false);
 		}
@@ -113,33 +127,36 @@ const MessMenu = () => {
 
 	const downloadMenu = async () => {
 		if (!imageUri) {
-			Alert.alert("Error", "No menu available to download.");
+			setAlertMessage("No menu available to download.");
+			setAlert(true);
 			return;
 		}
-	
+
 		try {
 			// Request permissions to save files to the gallery
 			const { status } = await MediaLibrary.requestPermissionsAsync();
 			if (status !== "granted") {
-				Alert.alert("Permission Denied", "Cannot save to gallery without permissions.");
+				setAlertMessage("Cannot save to gallery without permissions.");
+				setAlert(true);
 				return;
 			}
-	
+
 			// Download the image from the server to the app's cache directory
 			const downloadPath = `${FileSystem.cacheDirectory}mess_menu.png`;
 			const { uri } = await FileSystem.downloadAsync(
 				`http://${localhost}:3000/api/warden/getmessmenu`,
 				downloadPath
 			);
-	
+
 			// Save the downloaded file to the gallery
 			const asset = await MediaLibrary.createAssetAsync(uri);
 			await MediaLibrary.createAlbumAsync("Download", asset, false);
-	
-			Alert.alert("Success", `Menu saved to your gallery.`);
+
+			setSuccessMessage(`Menu saved to your gallery.`);
+			setSuccess(true);
 		} catch (error) {
-			console.error("Error saving file to gallery:", error);
-			Alert.alert("Error", "Failed to save the menu to your gallery.");
+			setAlertMessage("Failed to save the menu to your gallery.");
+			setAlert(true);
 		}
 	};
 
@@ -178,6 +195,16 @@ const MessMenu = () => {
 			<TouchableOpacity style={styles.uploadButton} onPress={uploadMenu}>
 				<Text style={styles.uploadButtonText}>Upload Menu</Text>
 			</TouchableOpacity>
+			<ErrorAlert
+				message={alertMessage}
+				alert={alert}
+				setAlert={setAlert}
+			/>
+			<SuccessAlert
+				message={successMessage}
+				success={success}
+				setSuccess={setSuccess}
+			/>
 		</View>
 	);
 };
@@ -203,13 +230,13 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: "90%",
-        height: 400,
-        resizeMode: "contain",
-        borderRadius: 10,
-        marginBottom: 20,
-        borderWidth: 5, // Thickness of the frame
-        borderColor: "#2cb5a0", // Frame color
-        backgroundColor: "#fff"
+		height: 400,
+		resizeMode: "contain",
+		borderRadius: 10,
+		marginBottom: 20,
+		borderWidth: 5, // Thickness of the frame
+		borderColor: "#2cb5a0", // Frame color
+		backgroundColor: "#fff",
 	},
 	downloadButton: {
 		marginTop: 20,

@@ -5,11 +5,12 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	FlatList,
-	Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker"; // For dropdown
 import useStore from "../../Store/Store";
+import SuccessAlert from "../Components/SuccessAlert";
+import ErrorAlert from "../Components/ErrorAlert";
 
 const ViewAttendance = () => {
 	const { localhost, cookie } = useStore();
@@ -18,6 +19,10 @@ const ViewAttendance = () => {
 	const [selectedHostel, setSelectedHostel] = useState("All");
 	const [hostlers, setHostlers] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
 
 	useEffect(() => {
 		if (selectedHostel) {
@@ -27,7 +32,8 @@ const ViewAttendance = () => {
 
 	const fetchHostlers = async () => {
 		if (!selectedHostel) {
-			Alert.alert("Error", "Please select a hostel.");
+			setAlertMessage("Please select a hostel.");
+			setAlert(true);
 			return;
 		}
 
@@ -48,21 +54,19 @@ const ViewAttendance = () => {
 					},
 				}
 			);
+			const data = await response.json();
 
 			if (!response.ok) {
-				throw new Error(
-					`Failed to fetch hostlers. Status: ${response.status}`
-				);
+				throw new Error(data.message || "Unable to fetch Hostlers");
 			}
 
-			const data = await response.json();
 			const filteredByDate = filterHostlersByDate(data, formattedDate);
 			const filteredByHostel = filterHostlersByHostel(filteredByDate);
 
 			setHostlers(filteredByHostel);
 		} catch (error) {
-			console.error("Error fetching hostlers:", error);
-			Alert.alert("Error", "Failed to fetch hostlers.");
+			setAlertMessage(error.message || "Un able to fetch Hostlers");
+			setAlert(true);
 		} finally {
 			setLoading(false);
 		}
@@ -168,6 +172,16 @@ const ViewAttendance = () => {
 				data={hostlers}
 				keyExtractor={(item) => item._id}
 				renderItem={renderHostlerItem}
+			/>
+			<ErrorAlert
+				message={alertMessage}
+				alert={alert}
+				setAlert={setAlert}
+			/>
+			<SuccessAlert
+				message={successMessage}
+				success={success}
+				setSuccess={setSuccess}
 			/>
 		</View>
 	);

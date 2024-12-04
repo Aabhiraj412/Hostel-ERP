@@ -32,8 +32,9 @@ const Hostlers = () => {
 				}
 			);
 			if (!response.ok) {
+				const errorResponse = await response.json();
 				throw new Error(
-					`Request failed with status code: ${response.status}`
+					errorResponse.message || "Login failed. Please try again."
 				);
 			}
 			const data = await response.json();

@@ -28,6 +28,13 @@ const PublicGrievances = () => {
         }
       );
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Unable to fetch grievances"
+        );
+      }
+      
       setGrievances(data);
     } catch (error) {
       console.error("Error fetching grievances:", error);
@@ -52,6 +59,12 @@ const PublicGrievances = () => {
         }
       );
       const updatedGrievance = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          updatedGrievance.message || "Failed to update grievance status."
+        );
+      }
 
       // Update the local state
       setGrievances((prevGrievances) =>
