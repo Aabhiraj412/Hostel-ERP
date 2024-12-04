@@ -223,40 +223,46 @@ const HOutRegister = () => {
 							transparent={true}
 							onRequestClose={() => setModalVisible(false)}
 						>
-							<View style={styles.modalContainer}>
-								<View style={styles.modalContent}>
-									<Text style={styles.modalTitle}>
-										Open New Entry
-									</Text>
-									<TextInput
-										style={styles.input}
-										placeholder="Purpose"
-										value={purpose}
-										onChangeText={setPurpose}
-									/>
-									{open ? (
-										<ActivityIndicator
-											size="large"
-											color="#2cb5a0"
+							<TouchableWithoutFeedback
+								onPress={() => setModalVisible(false)}
+							>
+								<View style={styles.modalContainer}>
+									<View style={styles.modalContent}>
+										<Text style={styles.modalTitle}>
+											Open New Entry
+										</Text>
+										<TextInput
+											style={styles.input}
+											placeholder="Purpose"
+											value={purpose}
+											onChangeText={setPurpose}
 										/>
-									) : (
-										<View style={styles.buttonContainer}>
-											<Button
-												title="Cancel"
-												color="red"
-												onPress={() =>
-													setModalVisible(false)
-												}
-											/>
-											<Button
-												title="Submit"
+										{open ? (
+											<ActivityIndicator
+												size="large"
 												color="#2cb5a0"
-												onPress={openEntry}
 											/>
-										</View>
-									)}
+										) : (
+											<View
+												style={styles.buttonContainer}
+											>
+												<TouchableOpacity
+													style={styles.submitButton}
+													onPress={openEntry}
+												>
+													<Text
+														style={
+															styles.submitButtonText
+														}
+													>
+														Submit
+													</Text>
+												</TouchableOpacity>
+											</View>
+										)}
+									</View>
 								</View>
-							</View>
+							</TouchableWithoutFeedback>
 						</Modal>
 
 						{/* Modal for Close Entry Confirmation */}
@@ -352,6 +358,17 @@ const styles = StyleSheet.create({
 		elevation: 5,
 		borderLeftWidth: 5,
 		borderLeftColor: "#2cb5a0",
+	},
+	submitButton: {
+		backgroundColor: "#2cb5a0",
+		padding: 10,
+		borderRadius: 5,
+		flex: 1,
+	},
+	submitButtonText: {
+		color: "#fff",
+		fontWeight: "bold",
+		textAlign: "center",
 	},
 	purpose: {
 		fontWeight: "bold",
