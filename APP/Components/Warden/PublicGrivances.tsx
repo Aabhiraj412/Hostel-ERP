@@ -78,6 +78,7 @@ const PublicGrievances = () => {
     >
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.description}>{item.description}</Text>
+      <Text style={styles.upvote}>{item.upvotes.length} Upvotes</Text>
       <Text style={styles.date}>
         Date: {new Date(item.date).toLocaleDateString()}
       </Text>
@@ -133,9 +134,23 @@ const PublicGrievances = () => {
                     {new Date(selectedGrievance.date).toLocaleDateString()}
                   </Text>
                   <Text style={styles.modalText}>
-                    Status: {selectedGrievance.status}
-                  </Text>
-                  <Text style={styles.modalText}>
+										Status:{" "}
+										<Text
+											style={{
+												color:
+													selectedGrievance.status ===
+													"Pending"
+														? "orange"
+														: selectedGrievance.status ===
+														  "Resolved"
+														? "green"
+														: "red",
+											}}
+										>
+											{selectedGrievance.status}
+										</Text>
+									</Text>
+									<Text style={styles.modalText}>
                     Upvotes: {selectedGrievance.upvotes.length}
                   </Text>
 
@@ -210,7 +225,12 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: "#555",
-    marginBottom: 10,
+    marginBottom: 5,
+  },
+  upvote:{
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 5,
   },
   date: {
     fontSize: 12,
