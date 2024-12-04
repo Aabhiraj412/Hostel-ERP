@@ -1,0 +1,400 @@
+import React, { useEffect, useState } from "react";
+import {
+	View,
+	StyleSheet,
+	TouchableWithoutFeedback,
+	Keyboard,
+	Alert,
+	Modal,
+	TextInput,
+	Button,
+	Text,
+	TouchableOpacity,
+	ActivityIndicator,
+} from "react-native";
+import MiniCard from "../Components/MiniCard";
+import { ScrollView } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import useStore from "../../Store/Store";
+
+const HostlerDash = () => {
+	const navigation = useNavigation<any>();
+	const { localhost, cookie, data, setData } = useStore();
+	const [loading, setLoading] = useState(false);
+	const [check, setCheck] = useState(true);
+	const [modalVisible, setModalVisible] = useState(false);
+	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false); // Toggle for password visibility
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle for confirm password visibility
+
+	const mycheck = () => {
+		if (
+			!data ||
+			data.password === " " ||
+			data.date_of_birth === " " ||
+			data.blood_group === " " ||
+			data.local_guardian === " " ||
+			data.local_guardian_phone === " " ||
+			data.local_guardian_address === " " ||
+			data.fathers_no === " " ||
+			data.mothers_no === " " ||
+			data.fathers_email === " " ||
+			data.mothers_email === " " ||
+			data.course === " " ||
+			data.branch === " "
+		) {
+			return true;
+		}
+		return false;
+	};
+
+	useEffect(() => {
+		if (data) {
+			setCheck(mycheck());
+		}
+	}, [data]);
+
+	const navigateTo = (route: string) => () => {
+		if (route) {
+			navigation.navigate(route);
+		} else {
+			Alert.alert("Error", "Invalid navigation route");
+		}
+	};
+
+	const markAttendance = () => {
+		Alert.alert(
+			"Feature coming soon",
+			"Attendance marking functionality is under development."
+		);
+	};
+
+	const handleSubmitPassword = async () => {
+		setLoading(true);
+		if (password !== confirmPassword) {
+			Alert.alert("Error", "Passwords do not match.");
+			return;
+		}
+
+		try {
+			const response = await fetch(
+				`http://${localhost}:3000/api/hostler/setpass`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Cookie: cookie || "",
+					},
+					body: JSON.stringify({
+						password,
+						confirm_password: confirmPassword,
+					}),
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error("Failed to update password.");
+			}
+
+			const result = await response.json();
+			Alert.alert(
+				"Success",
+				result.message || "Password updated successfully."
+			);
+			setModalVisible(false);
+			setData(result);
+		} catch (error) {
+			Alert.alert("Error", error.message || "Something went wrong.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const updatePassword = () => {
+		setModalVisible(true);
+	};
+
+	return (
+		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+			<View style={styles.container}>
+				<ScrollView contentContainerStyle={styles.scrollContent}>
+					{check && (
+						<View style={styles.row}>
+							<MiniCard
+								title="Add Details"
+								onPress={navigateTo("Add Details")}
+								IconComponent={({ size, color }) => (
+									<Ionicons
+										name="person-add-outline"
+										size={size}
+										color={color}
+									/>
+								)}
+							/>
+							<MiniCard
+								title="Set Password"
+								onPress={updatePassword}
+								IconComponent={({ size, color }) => (
+									<Ionicons
+										name="lock-closed-outline"
+										size={size}
+										color={color}
+									/>
+								)}
+							/>
+						</View>
+					)}
+
+					<View style={styles.row}>
+						<MiniCard
+							title="Profile"
+							onPress={navigateTo("Hostler")}
+							IconComponent={({ size, color }) => (
+								<Ionicons
+									name="person-circle-outline"
+									size={size}
+									color={color}
+								/>
+							)}
+						/>
+						<MiniCard
+							title="Mark Attendance"
+							onPress={markAttendance}
+							IconComponent={({ size, color }) => (
+								<Ionicons
+									name="checkmark-done-outline"
+									size={size}
+									color={color}
+								/>
+							)}
+						/>
+					</View>
+					{/* Row 3: Leaves */}
+					<View style={styles.row}>
+						<MiniCard
+							title="Leaves"
+							onPress={navigateTo("Leaves ")}
+							IconComponent={({ size, color }) => (
+								<Ionicons
+									name="calendar-outline"
+									size={size}
+									color={color}
+								/>
+							)}
+						/>
+						<MiniCard
+							title="Out Register"
+							onPress={navigateTo("Out Register ")}
+							IconComponent={({ size, color }) => (
+								<Ionicons
+									name="clipboard-outline"
+									size={size}
+									color={color}
+								/>
+							)}
+						/>
+					</View>
+
+					{/* Row 4: Grievances */}
+					<View style={styles.row}>
+						<MiniCard
+							title="Public Grievances"
+							onPress={navigateTo("Public Grievances ")}
+							IconComponent={({ size, color }) => (
+								<Ionicons
+									name="help-circle-outline"
+									size={size}
+									color={color}
+								/>
+							)}
+						/>
+						<MiniCard
+							title="Private Grievances"
+							onPress={navigateTo("Private Grievances ")}
+							IconComponent={({ size, color }) => (
+								<Ionicons
+									name="lock-closed-outline"
+									size={size}
+									color={color}
+								/>
+							)}
+						/>
+					</View>
+
+					{/* Row 5: Mess Menu */}
+					<View style={styles.row}>
+						<MiniCard
+							title="Mess Menu"
+							onPress={navigateTo("Mess Menu ")}
+							IconComponent={({ size, color }) => (
+								<Ionicons
+									name="restaurant-outline"
+									size={size}
+									color={color}
+								/>
+							)}
+						/>
+						<MiniCard
+							title="Notices"
+							onPress={navigateTo("Notices ")}
+							IconComponent={({ size, color }) => (
+								<Ionicons
+									name="megaphone-outline"
+									size={size}
+									color={color}
+								/>
+							)}
+						/>
+					</View>
+
+					<Modal
+						visible={modalVisible}
+						animationType="slide"
+						transparent={true}
+						onRequestClose={() => setModalVisible(false)}
+					>
+						<View style={styles.modalContainer}>
+							<View style={styles.modalContent}>
+								<Text style={styles.modalTitle}>
+									Set Password
+								</Text>
+								<View style={styles.inputContainer}>
+									<TextInput
+										style={styles.input}
+										placeholder="Enter Password"
+										secureTextEntry={!showPassword}
+										value={password}
+										onChangeText={setPassword}
+									/>
+									<TouchableOpacity
+										onPress={() =>
+											setShowPassword(!showPassword)
+										}
+									>
+										<Ionicons
+											name={
+												showPassword
+													? "eye-outline"
+													: "eye-off-outline"
+											}
+											size={20}
+											color="#888"
+										/>
+									</TouchableOpacity>
+								</View>
+
+								<View style={styles.inputContainer}>
+									<TextInput
+										style={styles.input}
+										placeholder="Confirm Password"
+										secureTextEntry={!showConfirmPassword}
+										value={confirmPassword}
+										onChangeText={setConfirmPassword}
+									/>
+									<TouchableOpacity
+										onPress={() =>
+											setShowConfirmPassword(
+												!showConfirmPassword
+											)
+										}
+									>
+										<Ionicons
+											name={
+												showConfirmPassword
+													? "eye-outline"
+													: "eye-off-outline"
+											}
+											size={20}
+											color="#888"
+										/>
+									</TouchableOpacity>
+								</View>
+								{loading ? (
+									<ActivityIndicator
+										size="large"
+										color="#2cb5a0"
+									/>
+								) : (
+									<View style={styles.buttonContainer}>
+										<Button
+											title="Cancel"
+											color="red"
+											onPress={() =>
+												setModalVisible(false)
+											}
+										/>
+										<Button
+											title="Submit"
+											color="#2cb5a0"
+											onPress={handleSubmitPassword}
+										/>
+									</View>
+								)}
+							</View>
+						</View>
+					</Modal>
+				</ScrollView>
+			</View>
+		</TouchableWithoutFeedback>
+	);
+};
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "#f8f9fa",
+		paddingHorizontal: 10,
+	},
+	scrollContent: {
+		paddingVertical: 10,
+	},
+	row: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginBottom: 15,
+	},
+	modalContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	modalContent: {
+		width: "80%",
+		backgroundColor: "#fff",
+		padding: 20,
+		borderRadius: 10,
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+	},
+	modalTitle: {
+		fontSize: 20,
+		fontWeight: "bold",
+		marginBottom: 20,
+		textAlign: "center",
+    color: "#2cb5a0",
+	},
+	inputContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		borderWidth: 1,
+		borderColor: "#ccc",
+		borderRadius: 5,
+		padding: 10,
+		marginBottom: 15,
+	},
+	input: {
+		flex: 1,
+	},
+	buttonContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+});
+
+export default HostlerDash;

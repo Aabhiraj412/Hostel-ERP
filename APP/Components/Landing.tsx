@@ -1,38 +1,86 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import Card from './Cards';
-import useStore from '../Store/Store';
+import React from "react";
+import { View, StyleSheet, Text, ScrollView } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import useStore from "../Store/Store";
+import Card from "./Components/Cards";
 
 const Landing: React.FC<{ navigation: any }> = ({ navigation }) => {
-    const {user,cookie} = useStore();
-    // console.log(user);
-    // console.log(cookie);
+  const { user, cookie } = useStore();
+
   const navigateToWarden = () => {
-    if(cookie && user==="Warden")
-        navigation.navigate('Warden');
-    else
-        navigation.navigate('WardenLogin');
+    if (cookie && user === "Warden") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Warden Dashboard" }],
+      });
+    } else {
+      navigation.navigate("Warden Login");
+    }
   };
 
   const navigateToHostler = () => {
-    // navigation.navigate('Hostler');
-    console.log('Navigate to hostler');
+    if (cookie && user === "Hostler") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home Dashboard" }],
+      });
+    } else {
+      navigation.navigate("Hostler Login");
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Card title="Warden" onPress={navigateToWarden} />
-      <Card title="Hostler" onPress={navigateToHostler} />
-    </View>
+    <LinearGradient
+      colors={["#ffffff", "#f0f8ff"]}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.welcomeText}>
+          Welcome !!
+        </Text>
+        <Card
+          title="Warden"
+          onPress={navigateToWarden}
+          IconComponent={({ size, color }) => (
+            <FontAwesome name="user-secret" size={size} color={color} />
+          )}
+        />
+        <Card
+          title="Hostler"
+          onPress={navigateToHostler}
+          IconComponent={({ size, color }) => (
+            <MaterialCommunityIcons
+              name="account-group"
+              size={size}
+              color={color}
+            />
+          )}
+        />
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scrollContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 50,
+  },
+  welcomeText: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#2cd5a0",
+    marginBottom: 30,
+    textShadowColor: "rgba(0, 0, 0, 0.2)",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 5,
   },
 });
 

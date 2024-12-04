@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
 	ActivityIndicator,
 	Button,
@@ -6,28 +6,27 @@ import {
 	Text,
 	TextInput,
 	View,
+	TouchableOpacity,
+	Image,
 } from "react-native";
 import useStore from "../../Store/Store";
-import Constants from "expo-constants";
+import { FontAwesome } from "@expo/vector-icons";
 
-export default function WardenLogin() {
-	const { setCookie, setUser, cookie, user } = useStore();
-	const [userId, setuserId] = useState("");
+const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
+	const { setCookie, setUser, setData, localhost } = useStore();
+	const [userId, setUserId] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [responseData, setResponseData] = useState(null);
-	const [error, setError] = useState(null);
+	const [error, setError] = useState<string | null>(null);
+	const [passwordVisible, setPasswordVisible] = useState(false);
 
-	const localhost =
-		Constants.manifest2.extra.expoClient.hostUri.split(":")[0];
-
+	
 	const Login = async () => {
 		setLoading(true);
 		setError(null);
 		try {
 			const response = await fetch(
 				`http://${localhost}:3000/api/auth/wardenlogin`,
-				// `http://${Constants.manifest2.extra.localhost}:3000/api/auth/wardenlogin`,
 				{
 					method: "POST",
 					headers: {
@@ -40,14 +39,23 @@ export default function WardenLogin() {
 				}
 			);
 
-			const cookies = response.headers.get("set-cookie");
+			if (!response.ok) {
+				const errorResponse = await response.json();
+				throw new Error(
+					errorResponse.message || "Login failed. Please try again."
+				);
+			}
 
-			if (cookies) 
-                setCookie(cookies);
-                setUser('Warden');
+			const cookies = response.headers.get("set-cookie");
+			if (cookies) setCookie(cookies);
+			setUser("Warden");
+
 			const data = await response.json(); // Parse the JSON response
-			console.log(data);
-			setResponseData(data); // Store the response data
+			setData(data);
+			navigation.reset({
+				index: 0, // Set the index to 0 to make the new screen the first screen in the stack
+				routes: [{ name: 'Warden Dashboard' }], // Provide the name of the screen you want to navigate to
+			  }); // Navigate to the Warden Dashboard
 		} catch (error) {
 			setError(error.message); // Handle errors
 		} finally {
@@ -55,184 +63,115 @@ export default function WardenLogin() {
 		}
 	};
 
-	const Logout = async () => {
-		try {
-			const response = await fetch(
-				`http://${localhost}:3000/api/auth/wardenlogout`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Cookie: cookie,
-					},
-				}
-			);
-			const cookies = response.headers.get("set-cookie");
-
-			if (cookies) 
-                setCookie(cookies);
-                setUser(null);
-			const data = await response.json();
-
-			console.log(data);
-			console.log("Logged Out");
-			setResponseData(null);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const getHostlers = async () => {
-		try {
-			const response = await fetch(
-				`http://${localhost}:3000/api/warden/gethostlers`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Cookie: cookie,
-					},
-				}
-			);
-
-			const data = await response.json();
-
-			console.log(data);
-			setResponseData(data);
-		} catch (error) {
-			console.log(error.message);
-		}
-	};
-
+	if (loading) {
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size="large" color="#2cb5a0" />
+			</View>
+		);
+	}
 	return (
-		<View
-			style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-		>
-			{!responseData && (
-				<View
-					style={{
-						flex: 1,
-						justifyContent: "center",
-						padding: 20,
-						width: "100%",
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 40,
-							margin: 20,
-							textAlign: "center",
-						}}
-					>
-						Warden Login
-					</Text>
-					<Text
-						style={{
-							fontSize: 20,
-							margin: 20,
-							textAlign: "center",
-						}}
-					>
-						Please enter your UserID and Password
-					</Text>
-					<TextInput
-						placeholder="UserID"
-						style={{
-							borderColor: "black",
-							borderWidth: 1,
-							margin: 10,
-							borderRadius: 5,
-							fontSize: 20,
-						}}
-						onChangeText={(e) => setuserId(e)}
-						value={userId}
-					></TextInput>
+		<View style={styles.container}>
+			<View style={styles.formContainer}>
+				<Text style={styles.title}>Warden Login</Text>
+				<Text style={styles.subtitle}>
+					Please enter your UserID and Password
+				</Text>
+
+				<TextInput
+					placeholder="UserID"
+					style={styles.input}
+					onChangeText={(e) => setUserId(e)}
+					value={userId}
+				/>
+				
+				<View style={styles.passwordContainer}>
 					<TextInput
 						placeholder="Password"
-						style={{
-							borderColor: "black",
-							borderWidth: 1,
-							margin: 10,
-							borderRadius: 5,
-							fontSize: 20,
-						}}
+						style={styles.input}
 						onChangeText={(e) => setPassword(e)}
 						value={password}
-					></TextInput>
-
-					<Button title="Login" onPress={Login} />
-				</View>
-			)}
-
-			{loading && <ActivityIndicator size="large" color="#0000ff" />}
-
-			{error && <Text style={{ color: "red" }}>Error: {error}</Text>}
-
-			{responseData && (
-				<View
-					style={{
-						flex: 1,
-						justifyContent: "center",
-						padding: 20,
-						width: "100%",
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 40,
-							textAlign: "center",
-							margin: 20,
-						}}
+						secureTextEntry={!passwordVisible}
+					/>
+					<TouchableOpacity
+						style={styles.eyeIcon}
+						onPress={() => setPasswordVisible((prev) => !prev)}
 					>
-						Warden Details
-					</Text>
-					<View
-						style={{
-							flex: 0.5,
-							width: "80%",
-							justifyContent: "Center",
-							alignContent: "center",
-							marginLeft: "20%",
-						}}
-					>
-						<Text style={{ fontSize: 20 }}>
-							Name : {responseData.name}
-						</Text>
-						<Text style={{ fontSize: 20 }}>
-							Phone No. : {responseData.phone}
-						</Text>
-						<Text style={{ fontSize: 20 }}>
-							Email : {responseData.email}
-						</Text>
-						<Text style={{ fontSize: 20 }}>
-							Aadhar No. : {responseData.aadhar}
-						</Text>
-						<Text style={{ fontSize: 20 }}>
-							Gender : {responseData.gender}
-						</Text>
-						<Text style={{ fontSize: 20 }}>
-							Hostel : {responseData.hostel}
-						</Text>
-						<Text style={{ fontSize: 20 }}>
-							Post : {responseData.post}
-						</Text>
-						<Text style={{ fontSize: 20 }}>
-							Address : {responseData.address}
-						</Text>
-					</View>
-					<Button title="Logout" onPress={Logout} />
+						<FontAwesome
+							name={passwordVisible ? "eye-slash" : "eye"}
+							size={24}
+							color="gray"
+						/>
+					</TouchableOpacity>
 				</View>
-			)}
-			<Button title="Get Hostlers" onPress={getHostlers} />
+
+				<Button title="Login" onPress={Login} color="#2cb5a0" />
+			</View>
+
+			{error && <Text style={styles.errorText}>Error: {error}</Text>}
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
+		backgroundColor: "#f5f5f5",
 		justifyContent: "center",
+		alignItems: "center",
+	},
+	loadingContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	formContainer: {
+		width: "80%",
+		padding: 20,
+		backgroundColor: "#fff",
+		borderRadius: 10,
+		shadowColor: "#000",
+		shadowOpacity: 0.2,
+		shadowOffset: { width: 0, height: 2 },
+		shadowRadius: 5,
+		elevation: 3,
+	},
+	title: {
+		fontSize: 32,
+		fontWeight: "bold",
+		color: "#2cb5a0",
+		textAlign: "center",
+		marginBottom: 10,
+	},
+	subtitle: {
+		fontSize: 18,
+		color: "#777",
+		textAlign: "center",
+		marginBottom: 20,
+	},
+	input: {
+		height: 50,
+		borderColor: "#ccc",
+		borderWidth: 1,
+		marginBottom: 15,
+		borderRadius: 5,
+		paddingLeft: 10,
+		fontSize: 18,
+	},
+	passwordContainer: {
+		position: "relative",
+	},
+	eyeIcon: {
+		position: "absolute",
+		right: 10,
+		top: "35%",
+		transform: [{ translateY: -12 }],
+	},
+	errorText: {
+		color: "red",
+		marginTop: 20,
+		textAlign: "center",
 	},
 });
+
+export default WardenLogin;
