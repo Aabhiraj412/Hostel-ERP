@@ -1,6 +1,7 @@
 import express from "express";
 import {
 	addHostler,
+	changeIP,
 	getAttendance,
 	gethostler,
 	getHostlers,
@@ -41,7 +42,7 @@ router.post(
 	setPrivateGrievance
 );
 
-router.post("/uploadnotice",wardenProtectRoute, uploadNotice);
+router.post("/uploadnotice", uploadNotice);
 
 router.post("/uploadmessmenu", wardenProtectRoute, uploadMessMenu);
 
@@ -59,5 +60,7 @@ router.post("/attendanceof", wardenProtectRoute, getAttendance);
 router.get("/getmessmenu", getMessMenu);
 router.get("/getnotices", wardenProtectRoute, getNotices);
 router.get("/getnotice/:path",  getNotice);
+
+router.post('/changeip', wardenProtectRoute, changeIP);
 
 export default router;

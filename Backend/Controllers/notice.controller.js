@@ -59,11 +59,11 @@ export const uploadNotice = async (req, res) => {
 		}
 
 		try {
-			const warden = req.warden;
+			// const warden = req.warden;
 
-			if(!warden) {
-				return res.status(403).json({ message: "Unauthorized" });
-			}
+			// if(!warden) {
+			// 	return res.status(403).json({ message: "Unauthorized" });
+			// }
 
 			const { title, description } = req.body;
 

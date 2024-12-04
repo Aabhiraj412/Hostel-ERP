@@ -682,3 +682,37 @@ export const getAttendance = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
+
+import fs from 'fs';
+const filePath = './ip.txt';  // Adjusted to use a consistent relative path
+
+export const changeIP = async (req, res) => {
+  try {
+    const warden = req.warden;
+
+    if (!warden) {
+      return res.status(401).json({ message: "Unauthorised-no Warden Provided" });
+    }
+
+    const { localhost } = req.body;
+    if (!localhost) {
+      return res.status(400).json({ message: "IP is required" });
+    }
+
+    // Read the existing IP from the file if available
+    let ip = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+
+    // Change the IP to the one provided
+    ip = localhost;
+
+    // Persist the new IP to the file
+    fs.writeFileSync(filePath, ip);
+
+    console.log(`Changing IP to ${ip}`);
+    res.json({ message: "IP changed successfully" });
+
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

@@ -36,6 +36,7 @@ export default function Warden() {
 			{ cancelable: false }
 		);
 	};
+
 	const logout = async () => {
 		try {
 			const response = await fetch(
@@ -63,7 +64,10 @@ export default function Warden() {
 			setUser(null); // Clear user in store
 
 			// Alert.alert("Logout Successful", "You have been logged out.");
-			navigation.navigate("Home");
+			navigation.reset({
+				index: 0, // Set the index to 0 to make the new screen the first screen in the stack
+				routes: [{ name: 'Home' }], // Provide the name of the screen you want to navigate to
+			});
 		} catch (error: any) {
 			console.error("Logout error:", error.message);
 			Alert.alert(
@@ -73,22 +77,16 @@ export default function Warden() {
 		}
 	};
 
-	const Dashbord = () => {
-		navigation.navigate("Warden Dashboard");
-	};
-
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Warden Details</Text>
-			<TouchableOpacity style={styles.dashboardButton} onPress={Dashbord}>
-				<Text style={styles.dashboardButtonText}>Go To Dashboard</Text>
-			</TouchableOpacity>
+			{/* Fixed the typo here */}
 			<View style={styles.detailsContainer}>
 				<Text style={styles.text}>Name: {wardenData.name}</Text>
 				<Text style={styles.text}>Phone No.: {wardenData.phone}</Text>
 				<Text style={styles.text}>Email: {wardenData.email}</Text>
 				<Text style={styles.text}>Aadhar No.: {wardenData.aadhar}</Text>
-				<Text style={styles.text}>Gender: {wardenData.gender==="male"?"Male":"Female"}</Text>
+				<Text style={styles.text}>Gender: {wardenData.gender === "male" ? "Male" : "Female"}</Text>
 				<Text style={styles.text}>Hostel: {wardenData.hostel}</Text>
 				<Text style={styles.text}>Post: {wardenData.post}</Text>
 				<Text style={styles.text}>Address: {wardenData.address}</Text>
