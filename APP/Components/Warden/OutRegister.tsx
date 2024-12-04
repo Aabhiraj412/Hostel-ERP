@@ -6,7 +6,6 @@ import {
 	ActivityIndicator,
 	TouchableOpacity,
 	TouchableWithoutFeedback,
-	Keyboard,
 	Animated,
 	Easing,
 } from "react-native";
@@ -30,6 +29,11 @@ const OutRegister = () => {
 				}
 			);
 			const data = await response.json();
+			if (!response.ok) {
+                throw new Error(
+                    data.message || "Unable to fetch entries"
+                );
+            }
 			setEntries(data);
 		} catch (error) {
 			console.error("Error fetching entries:", error);
@@ -48,6 +52,11 @@ const OutRegister = () => {
 				}
 			);
 			const data = await response.json();
+			if (!response.ok) {
+                throw new Error(
+                    data.message || "Unable to fetch student details"
+                );
+            }
 			setSelectedStudent(data);
 			animatePopup(true);
 		} catch (error) {

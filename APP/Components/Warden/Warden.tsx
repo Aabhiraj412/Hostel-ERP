@@ -1,11 +1,18 @@
-import React from "react";
-import { Text, StyleSheet, View, TouchableOpacity, Alert } from "react-native";
+import React, { useState } from "react";
+import { Text, StyleSheet, View, TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
 import useStore from "../../Store/Store";
 import { useNavigation } from "@react-navigation/native";
+import SuccessAlert from "../Components/SuccessAlert";
+import ErrorAlert from "../Components/ErrorAlert";
 
 export default function Warden() {
 	const { data, localhost, setCookie, setUser, setData } = useStore();
 	const navigation = useNavigation<any>(); // Use navigation hook with any type
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
+	const [logout, setLogout] = useState(false);
 
 	const wardenData = data;
 
@@ -21,23 +28,7 @@ export default function Warden() {
 	}
 
 	// Logout handler
-	const Logout = () => {
-		Alert.alert(
-			"Logout",
-			"Are you sure you want to logout?",
-			[
-				{
-					text: "No",
-					onPress: () => console.log("Cancel Pressed"),
-					style: "cancel",
-				},
-				{ text: "Yes", onPress: () => logout() },
-			],
-			{ cancelable: false }
-		);
-	};
-
-	const logout = async () => {
+	const Logout = async () => {
 		try {
 			const response = await fetch(
 				`http://${localhost}:3000/api/auth/wardenlogout`,
@@ -56,7 +47,10 @@ export default function Warden() {
 			}
 
 			const result = await response.json();
-			console.log("Logout response:", result);
+
+			if (!response.ok) {
+				throw new Error(result.message);
+			}
 
 			// Clear stored cookie and navigate to home
 			setCookie(null); // Clear cookie in store
@@ -66,14 +60,14 @@ export default function Warden() {
 			// Alert.alert("Logout Successful", "You have been logged out.");
 			navigation.reset({
 				index: 0, // Set the index to 0 to make the new screen the first screen in the stack
-				routes: [{ name: 'Home' }], // Provide the name of the screen you want to navigate to
+				routes: [{ name: "Home" }], // Provide the name of the screen you want to navigate to
 			});
 		} catch (error: any) {
 			console.error("Logout error:", error.message);
-			Alert.alert(
-				"Logout Failed",
+			setAlertMessage(
 				"An error occurred while logging out. Please try again."
 			);
+			setAlert(true);
 		}
 	};
 
@@ -86,14 +80,52 @@ export default function Warden() {
 				<Text style={styles.text}>Phone No.: {wardenData.phone}</Text>
 				<Text style={styles.text}>Email: {wardenData.email}</Text>
 				<Text style={styles.text}>Aadhar No.: {wardenData.aadhar}</Text>
-				<Text style={styles.text}>Gender: {wardenData.gender === "male" ? "Male" : "Female"}</Text>
+				<Text style={styles.text}>
+					Gender: {wardenData.gender === "male" ? "Male" : "Female"}
+				</Text>
 				<Text style={styles.text}>Hostel: {wardenData.hostel}</Text>
 				<Text style={styles.text}>Post: {wardenData.post}</Text>
 				<Text style={styles.text}>Address: {wardenData.address}</Text>
 			</View>
-			<TouchableOpacity style={styles.logoutButton} onPress={Logout}>
+			<TouchableOpacity style={styles.logoutButton} onPress={()=>setLogout(true)}>
 				<Text style={styles.logoutText}>Logout</Text>
 			</TouchableOpacity>
+			<ErrorAlert
+				message={alertMessage}
+				alert={alert}
+				setAlert={setAlert}
+			/>
+			<SuccessAlert
+				message={successMessage}
+				success={success}
+				setSuccess={setSuccess}
+			/>
+			<Modal animationType="slide" transparent={true} visible={logout}>
+					<TouchableWithoutFeedback onPress={() => setLogout(false)}>
+						<View style={styles.modalContainer}>
+							<View style={styles.modalContent}>
+								<Text style={styles.modalTitle}>
+									Log Out
+								</Text>
+
+								<Text style={styles.modalText}>
+									Are you sure you want to Logout?
+								</Text>
+
+								<View style={styles.modalButtonContainer}>
+									<TouchableOpacity
+										style={styles.modalButton}
+										onPress={Logout}
+									>
+										<Text style={styles.modalButtonText}>
+											Confirm
+										</Text>
+									</TouchableOpacity>
+								</View>
+							</View>
+						</View>
+					</TouchableWithoutFeedback>
+				</Modal>
 		</View>
 	);
 }
@@ -105,6 +137,52 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "#f5f5f5",
+	},
+	modalButtonContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginBottom: 20,
+	},
+	modalContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	buttonContainer: {
+		marginTop: 30,
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+	modalContent: {
+		width: "80%",
+		backgroundColor: "white",
+		borderRadius: 10,
+		padding: 20,
+		alignItems: "center",
+	},
+	modalTitle: {
+		fontSize: 24,
+		fontWeight: "bold",
+		marginBottom: 10,
+		color: "red",
+	},
+	modalText: {
+		fontSize: 18,
+		textAlign: "center",
+		marginBottom: 20,
+	},
+	modalButton: {
+		flex: 1,
+		marginTop: 10,
+		backgroundColor: "#e74c3c",
+		padding: 10,
+		borderRadius: 5,
+		alignItems: "center",
+	},
+	modalButtonText: {
+		color: "white",
+		fontWeight: "bold",
 	},
 	title: {
 		fontSize: 28,

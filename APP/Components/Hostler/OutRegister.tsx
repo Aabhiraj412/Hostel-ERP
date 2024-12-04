@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
-import { ScrollView } from "react-native-gesture-handler";
 
 const HOutRegister = () => {
 	const { localhost, cookie } = useStore();

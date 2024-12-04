@@ -51,8 +51,15 @@ import {
 			body: JSON.stringify({ status }),
 		  }
 		);
+
 		const updatedLeave = await response.json();
   
+		if (!response.ok){
+			throw new Error(
+                updatedLeave.message || "Failed to update leave status. Please try again."
+            );
+		}
+
 		// Update the local state
 		setLeaves((prevLeaves) =>
 		  prevLeaves.map((leave) =>
