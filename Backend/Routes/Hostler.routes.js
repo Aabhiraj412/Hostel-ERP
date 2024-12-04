@@ -8,6 +8,7 @@ import {
 	applyLeave,
 	closeEntry,
 	getEntry,
+	getIP,
 	getLeaves,
 	getNotices,
 	getPrivateGrievances,
@@ -47,5 +48,7 @@ router.get("/getleaves", hostlerProtectRoute, getLeaves);
 router.post("/openentry", hostlerProtectRoute, openEntry);
 router.get("/closeentry", hostlerProtectRoute, closeEntry);
 router.get("/getentry", hostlerProtectRoute, getEntry);
+
+router.get("/getip", hostlerProtectRoute, getIP);
 
 export default router;

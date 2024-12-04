@@ -16,9 +16,12 @@ import ViewAttendance from "./Components/Warden/ViewAttendance";
 import MessMenu from "./Components/Warden/MessMenu";
 import Notices from "./Components/Warden/Notices";
 import PublishNotice from "./Components/Warden/PublishNotice";
-import Grivances from "./Components/Warden/Grivances";
+import PublicGrivances from "./Components/Warden/PublicGrivances";
 import HostlerDetails from "./Components/Warden/HostlerDetails";
 import SplashScreen from "./Components/Components/SplashScreen";
+import OutRegister from "./Components/Warden/OutRegister";
+import PrivateGrivance from "./Components/Warden/PrivateGrivance";
+import HostlerDash from "./Components/Hostler/HostlerDash";
 
 const Stack = createStackNavigator();
 
@@ -36,18 +39,7 @@ const App: React.FC = () => {
 		}
 	}, [setLocalhost]); // Run effect when `setLocalhost` changes (unlikely)
 
-	// Define the initial route dynamically
-	let initialRouteName = "Home"; // Default route
-
-	if (cookie) {
-		initialRouteName =
-			user === "Warden"
-				? "Warden"
-				: user === "Hostler"
-				? "Hostler"
-				: "Home";
-	}
-
+	// Navigation stack
 	return (
 		<NavigationContainer>
 			<Stack.Navigator
@@ -78,9 +70,11 @@ const App: React.FC = () => {
 				/>
 				<Stack.Screen name="Publish Notice" component={PublishNotice} />
 				<Stack.Screen name="Leaves" component={Leaves} />
-				<Stack.Screen name="Grivances" component={Grivances} />
+				<Stack.Screen name="Public Grievances" component={PublicGrivances} />
+				<Stack.Screen name="Private Grievances" component={PrivateGrivance} />
 				<Stack.Screen name="Mess Menu" component={MessMenu} />
 				<Stack.Screen name="Notices" component={Notices} />
+				<Stack.Screen name="Out Register" component={OutRegister} />
 				<Stack.Screen
 					name="Hostler Details"
 					component={HostlerDetails}
@@ -88,6 +82,8 @@ const App: React.FC = () => {
 
 				<Stack.Screen name="Hostler Login" component={HostlerLogin} />
 				<Stack.Screen name="Hostler" component={Hostler} />
+
+				<Stack.Screen name="Hostler Dashboard" component={HostlerDash} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

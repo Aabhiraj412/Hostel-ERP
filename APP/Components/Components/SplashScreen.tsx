@@ -19,9 +19,9 @@ const SplashScreen = ({ navigation }) => {
     const timer = setTimeout(() => {
       const nextRouteName = cookie
         ? user === "Warden"
-          ? "Warden"
+          ? "Warden Dashboard"
           : user === "Hostler"
-          ? "Hostler"
+          ? "Hostler Dashboard"
           : "Home"
         : "Home";
       navigation.replace(nextRouteName);

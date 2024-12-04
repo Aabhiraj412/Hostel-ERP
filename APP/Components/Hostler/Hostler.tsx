@@ -62,7 +62,10 @@ export default function Hostler() {
 			setData(null); // Clear data in store
 			setUser(null); // Clear user in store
 
-			navigation.navigate("Home");
+			navigation.reset({
+				index: 0, // Set the index to 0 to make the new screen the first screen in the stack
+				routes: [{ name: 'Home' }], // Provide the name of the screen you want to navigate to
+			  });
 		} catch (error: any) {
 			console.error("Logout error:", error.message);
 			Alert.alert(
@@ -72,14 +75,9 @@ export default function Hostler() {
 		}
 	};
 
-	const Dashbord = () => {};
-
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Hostler Details</Text>
-			<TouchableOpacity style={styles.dashboardButton} onPress={Dashbord}>
-				<Text style={styles.dashboardButtonText}>Go To Dashboard</Text>
-			</TouchableOpacity>
 			<View style={styles.detailsContainer}>
 				<Text style={styles.text}>Name: {hostlerData.name}</Text>
 				<Text style={styles.text}>

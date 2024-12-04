@@ -52,7 +52,10 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 
 			const data = await response.json(); // Parse the JSON response
 			setData(data);
-			navigation.replace("Warden");
+			navigation.reset({
+				index: 0, // Set the index to 0 to make the new screen the first screen in the stack
+				routes: [{ name: 'Warden Dashboard' }], // Provide the name of the screen you want to navigate to
+			  }); // Navigate to the Warden Dashboard
 		} catch (error) {
 			setError(error.message); // Handle errors
 		} finally {
