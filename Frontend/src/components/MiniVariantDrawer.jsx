@@ -117,6 +117,7 @@
 
 
 import React, { useState } from 'react';
+import logo from "@/assets/whiteBlack.svg";
 import {
   AppBar,
   Box,
@@ -203,7 +204,7 @@ function MiniVariantDrawer() {
             {open ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
           <Typography variant="h6" noWrap sx={{ color: 'black' }}>
-            My Mini Drawer App
+            <img src={logo} className="h-11"/>
           </Typography>
         </Toolbar>
       </GlassAppBar>
