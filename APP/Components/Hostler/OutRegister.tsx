@@ -66,7 +66,10 @@ const HOutRegister = () => {
 	// Open a new entry
 	const openEntry = async () => {
 		if (localhost !== ip) {
-			Alert.alert("Error", "You are not authorized to open an entry.");
+			Alert.alert(
+				"Error",
+				"You are not authorized to open an entry. Connect to Hostel Wi-Fi to procide further."
+			);
 			return;
 		}
 		if (!purpose.trim()) {
@@ -122,7 +125,10 @@ const HOutRegister = () => {
 	// Close an existing entry
 	const closeEntry = async (entryId) => {
 		if (localhost !== ip) {
-			Alert.alert("Error", "You are not authorized to close an entry.");
+			Alert.alert(
+				"Error",
+				"You are not authorized to close an entry. Connect to Hostel Wi-Fi to procide further."
+			);
 			return;
 		}
 		setClose(true); // Show the confirmation modal
@@ -190,19 +196,18 @@ const HOutRegister = () => {
 					</View>
 				) : (
 					<>
-						<ScrollView>
-							<FlatList
-								data={entries}
-								keyExtractor={(item) => item._id}
-								renderItem={renderEntry}
-								contentContainerStyle={styles.list}
-								ListEmptyComponent={
-									<Text style={styles.empty}>
-										No entries found
-									</Text>
-								}
-							/>
-						</ScrollView>
+						<FlatList
+							data={entries}
+							keyExtractor={(item) => item._id}
+							renderItem={renderEntry}
+							contentContainerStyle={styles.list}
+							ListEmptyComponent={
+								<Text style={styles.empty}>
+									No entries found
+								</Text>
+							}
+						/>
+
 						{/* Open Entry Button */}
 						<TouchableOpacity
 							style={styles.openButton}
