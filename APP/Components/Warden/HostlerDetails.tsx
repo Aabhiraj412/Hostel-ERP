@@ -7,6 +7,7 @@ import {
 	ActivityIndicator,
 	Modal,
 	TouchableOpacity,
+	TouchableWithoutFeedback,
 } from "react-native";
 import React, { useState } from "react";
 import useStore from "../../Store/Store";
@@ -41,6 +42,7 @@ const HostlerDetails = () => {
 	const [room, setRoom] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [remove, setRemove] = useState(false);
 
 	const route =
 		useRoute<
@@ -92,17 +94,6 @@ const HostlerDetails = () => {
 	};
 
 	const removeHostler = async () => {
-		Alert.alert(
-			"Remove Hostler",
-			"Are you sure you want to remove this hostler?",
-			[
-				{ text: "Yes", onPress: removeHostlerAlert },
-				{ text: "No", style: "cancel" },
-			]
-		);
-	};
-
-	const removeHostlerAlert = async () => {
 		try {
 			setLoading(true);
 			const req = await fetch(
@@ -220,7 +211,7 @@ const HostlerDetails = () => {
 					<View style={{ marginBottom: 20 }}>
 						<Button
 							title="Remove Hostler"
-							onPress={removeHostler}
+							onPress={() => setRemove(true)}
 							color="#e74c3c"
 						/>
 					</View>
@@ -231,77 +222,111 @@ const HostlerDetails = () => {
 				animationType="slide"
 				transparent={true}
 				visible={modalVisible}
+				onRequestClose={() => setModalVisible(false)}
 			>
-				<View style={styles.modalContainer}>
-					<View style={styles.modalContent}>
-						<Text style={styles.modalTitle}>Change Room</Text>
-						
-						<View style={styles.inputContainer}>
-							{/* <Text style={styles.label}>Hostel</Text> */}
-							<View style={styles.dropdownContainer}>
-								<Picker
-									selectedValue={hostel}
-									onValueChange={(value) =>
-										setHostel(value)
-									}
-									style={{ width: 270 }}
-								>
-									<Picker.Item
-										label="Select Hostel"
-										value=""
-									/>
-									<Picker.Item
-										label="Aryabhatt"
-										value="Aryabhatt"
-									/>
-									<Picker.Item
-										label="RN Tagore"
-										value="RN Tagore"
-									/>
-									<Picker.Item
-										label="Sarojni Naidu"
-										value="Sarojni Naidu"
-									/>
-								</Picker>
-							</View>
-						</View>
+				<TouchableWithoutFeedback
+					onPress={() => setModalVisible(false)}
+				>
+					<View style={styles.modalContainer}>
+						<View style={styles.modalContent}>
+							<Text style={styles.modalTitle}>Change Room</Text>
 
-						<TextInput
-							style={styles.input}
-							placeholder="Enter new Room Number"
-							value={room}
-							onChangeText={setRoom}
-						/>
-						<View style={styles.modalButtonContainer}>
-							<TouchableOpacity
-								style={styles.modalButton}
-								onPress={changeRoom}
-							>
-								<Text style={styles.modalButtonText}>
-									Submit
-								</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								style={[
-									styles.modalButton,
-									{ backgroundColor: "#e74c3c" },
-								]}
-								onPress={() => setModalVisible(false)}
-							>
-								<Text style={styles.modalButtonText}>
-									Cancel
-								</Text>
-							</TouchableOpacity>
+							<View style={styles.inputContainer}>
+								{/* <Text style={styles.label}>Hostel</Text> */}
+								<View style={styles.dropdownContainer}>
+									<Picker
+										selectedValue={hostel}
+										onValueChange={(value) =>
+											setHostel(value)
+										}
+										style={{ width: 270 }}
+									>
+										<Picker.Item
+											label="Select Hostel"
+											value=""
+										/>
+										<Picker.Item
+											label="Aryabhatt"
+											value="Aryabhatt"
+										/>
+										<Picker.Item
+											label="RN Tagore"
+											value="RN Tagore"
+										/>
+										<Picker.Item
+											label="Sarojni Naidu"
+											value="Sarojni Naidu"
+										/>
+									</Picker>
+								</View>
+							</View>
+
+							<TextInput
+								style={styles.input}
+								placeholder="Enter new Room Number"
+								value={room}
+								onChangeText={setRoom}
+							/>
+							{loading ? (
+								<ActivityIndicator
+									size="large"
+									color="#2cb5a0"
+								/>
+							) : (
+								<View style={styles.modalButtonContainer}>
+									<TouchableOpacity
+										style={styles.modalButton}
+										onPress={changeRoom}
+									>
+										<Text style={styles.modalButtonText}>
+											Submit
+										</Text>
+									</TouchableOpacity>
+								</View>
+							)}
 						</View>
 					</View>
-				</View>
+				</TouchableWithoutFeedback>
+			</Modal>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={remove}
+				onRequestClose={() => setRemove(false)}
+			>
+				<TouchableWithoutFeedback onPress={() => setRemove(false)}>
+					<View style={styles.modalContainer}>
+						<View style={styles.modalContent}>
+							<Text style={styles.modalTitle}>
+								Remove Hostler
+							</Text>
+
+							<Text style={styles.modalText}>
+								Are you sure you want to remove this hostler?
+							</Text>
+
+							{loading ? (
+								<ActivityIndicator
+									size="large"
+									color="#e74c3c"
+								/>
+							) : (
+								<View style={styles.modalButtonContainer}>
+									<TouchableOpacity
+										style={styles.modalRemove}
+										onPress={removeHostler}
+									>
+										<Text style={styles.modalButtonText}>
+											Remove Hostler
+										</Text>
+									</TouchableOpacity>
+								</View>
+							)}
+						</View>
+					</View>
+				</TouchableWithoutFeedback>
 			</Modal>
 
-			{loading && (
-				<View style={styles.loadingContainer}>
-					<ActivityIndicator size="large" color="#2cb5a0" />
-				</View>
-			)}
 		</View>
 	);
 };
@@ -313,6 +338,20 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start",
 		alignItems: "center",
 		backgroundColor: "#f5f5f5",
+	},
+	modalRemove: {
+		flex: 1,
+		backgroundColor: "#e74c3c",
+		padding: 10,
+		marginHorizontal: 5,
+		borderRadius: 5,
+		alignItems: "center",
+	},
+	modalText: {
+		fontSize: 18,
+		marginBottom: 20,
+		textAlign: "center",
+		color: "#e74c3c", // A pink color
 	},
 	title: {
 		fontSize: 32,
@@ -363,7 +402,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgba(0, 0, 0, 0.5)",
+		backgroundColor: "rgba(0, 0, 0, 0.5)", // Darkened background to close modal
 	},
 	modalContent: {
 		width: "80%",
@@ -385,8 +424,8 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: "#444",
 		marginBottom: 5,
-	},dropdownContainer: {
-		// width: "100%",
+	},
+	dropdownContainer: {
 		borderWidth: 1,
 		borderColor: "#ddd",
 		borderRadius: 10,

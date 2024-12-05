@@ -8,7 +8,6 @@ import {
 	Alert,
 	ActivityIndicator,
 	ScrollView,
-	Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import useStore from "../../Store/Store";

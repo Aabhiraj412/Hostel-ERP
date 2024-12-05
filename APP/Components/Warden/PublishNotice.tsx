@@ -3,8 +3,6 @@ import {
 	View,
 	Text,
 	TextInput,
-	Button,
-	Alert,
 	StyleSheet,
 	TouchableOpacity,
 	ActivityIndicator,
@@ -13,6 +11,8 @@ import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import useStore from "../../Store/Store";
 import { useNavigation } from "@react-navigation/native";
+import SuccessAlert from "../Components/SuccessAlert";
+import ErrorAlert from "../Components/ErrorAlert";
 
 const PublishNotice = () => {
 	const { localhost, cookie } = useStore();
@@ -21,6 +21,10 @@ const PublishNotice = () => {
 	const [description, setDescription] = useState("");
 	const [file, setFile] = useState<any>(null);
 	const [loading, setLoading] = useState(false);
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
 
 	const handleFilePick = async () => {
 		try {
@@ -41,13 +45,15 @@ const PublishNotice = () => {
 			}
 		} catch (err) {
 			console.error("Error selecting file:", err);
-			Alert.alert("Error", "Failed to pick a file.");
+			setAlertMessage("Failed to pick a file.");
+			setAlert(true);
 		}
 	};
 
 	const handleSubmit = async () => {
 		if (!title || !description || !file) {
-			Alert.alert("Error", "Please fill all fields and upload a file.");
+			setAlertMessage("Please fill all fields and upload a file.");
+			setAlert(true);
 			return;
 		}
 
@@ -77,12 +83,12 @@ const PublishNotice = () => {
 
 			if (!response.ok) {
 				const errorDetails = await response.text();
-				console.log("Error response from server:", errorDetails);
-				throw new Error("Server error: " + errorDetails);
+				throw new Error(errorDetails.message);
 			}
 
 			const responseData = await response.json();
-			Alert.alert("Success", "Notice published successfully.");
+			setSuccessMessage("Notice published successfully.");
+			setSuccess(true);
 			setTitle("");
 			setDescription("");
 			setFile(null);
@@ -90,10 +96,10 @@ const PublishNotice = () => {
 			navigation.replace("Notices");
 		} catch (error) {
 			console.error("Upload failed:", error);
-			Alert.alert(
-				"Error",
+			setAlertMessage(
 				error.message || "An error occurred while uploading the notice."
 			);
+			setAlert(true);
 		} finally {
 			setLoading(false);
 		}
@@ -137,6 +143,16 @@ const PublishNotice = () => {
 			<TouchableOpacity style={styles.btn} onPress={handleSubmit}>
 				<Text style={styles.fileText}>PUBLISH NOTICE</Text>
 			</TouchableOpacity>
+			<ErrorAlert
+				message={alertMessage}
+				alert={alert}
+				setAlert={setAlert}
+			/>
+			<SuccessAlert
+				message={successMessage}
+				success={success}
+				setSuccess={setSuccess}
+			/>
 		</View>
 	);
 };
