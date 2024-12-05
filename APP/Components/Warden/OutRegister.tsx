@@ -17,6 +17,7 @@ const OutRegister = () => {
 	const [entries, setEntries] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedStudent, setSelectedStudent] = useState(null);
+	const [fetching, setFetching] = useState(false);
 	const slideAnim = useRef(new Animated.Value(0)).current;
 
 	// Fetch out register entries
@@ -30,10 +31,8 @@ const OutRegister = () => {
 			);
 			const data = await response.json();
 			if (!response.ok) {
-                throw new Error(
-                    data.message || "Unable to fetch entries"
-                );
-            }
+				throw new Error(data.message || "Unable to fetch entries");
+			}
 			setEntries(data);
 		} catch (error) {
 			console.error("Error fetching entries:", error);
@@ -44,6 +43,7 @@ const OutRegister = () => {
 
 	// Fetch student details
 	const fetchStudentDetails = async (studentId) => {
+		setFetching(true);
 		try {
 			const response = await fetch(
 				`http://${localhost}:3000/api/warden/getdetail/${studentId}`,
@@ -53,14 +53,16 @@ const OutRegister = () => {
 			);
 			const data = await response.json();
 			if (!response.ok) {
-                throw new Error(
-                    data.message || "Unable to fetch student details"
-                );
-            }
+				throw new Error(
+					data.message || "Unable to fetch student details"
+				);
+			}
 			setSelectedStudent(data);
 			animatePopup(true);
 		} catch (error) {
 			console.error("Error fetching student details:", error);
+		} finally {
+			setFetching(false);
 		}
 	};
 
@@ -135,12 +137,11 @@ const OutRegister = () => {
 									{
 										transform: [
 											{
-												translateY: slideAnim.interpolate(
-													{
+												translateY:
+													slideAnim.interpolate({
 														inputRange: [0, 1],
 														outputRange: [300, 0],
-													}
-												),
+													}),
 											},
 										],
 									},
@@ -149,21 +150,32 @@ const OutRegister = () => {
 								<Text style={styles.detailsTitle}>
 									Student Details
 								</Text>
-								<Text style={styles.detailText}>
-									Name: {selectedStudent.name}
-								</Text>
-								<Text style={styles.detailText}>
-									Roll No: {selectedStudent.roll_no}
-								</Text>
-								<Text style={styles.detailText}>
-									Phone: {selectedStudent.phone_no}
-								</Text>
-								<Text style={styles.detailText}>
-									Hostel: {selectedStudent.hostel}
-								</Text>
-								<Text style={styles.detailText}>
-									Room No: {selectedStudent.room_no}
-								</Text>
+								{fetching ? (
+									<View style={styles.loadingContainer}>
+										<ActivityIndicator
+											size="large"
+											color="#2cb5a0"
+										/>
+									</View>
+								) : (
+									<View>
+										<Text style={styles.detailText}>
+											Name: {selectedStudent.name}
+										</Text>
+										<Text style={styles.detailText}>
+											Roll No: {selectedStudent.roll_no}
+										</Text>
+										<Text style={styles.detailText}>
+											Phone: {selectedStudent.phone_no}
+										</Text>
+										<Text style={styles.detailText}>
+											Hostel: {selectedStudent.hostel}
+										</Text>
+										<Text style={styles.detailText}>
+											Room No: {selectedStudent.room_no}
+										</Text>
+									</View>
+								)}
 							</Animated.View>
 						)}
 					</>

@@ -5,19 +5,21 @@ import {
 	TextInput,
 	View,
 	Button,
-	Alert,
 	ActivityIndicator,
 	ScrollView,
+	TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import useStore from "../../Store/Store";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
+import ErrorAlert from "../Components/ErrorAlert";
+import SuccessAlert from "../Components/SuccessAlert";
 
 const AddDetails = () => {
 	const { localhost, cookie } = useStore();
 	const navigation = useNavigation<any>();
-
+	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [formData, setFormData] = useState({
 		date_of_birth: "",
 		blood_group: "",
@@ -33,6 +35,10 @@ const AddDetails = () => {
 	});
 	const [loading, setLoading] = useState(false);
 	const [showDatePicker, setShowDatePicker] = useState(false);
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
 
 	const handleInputChange = (key: string, value: string) => {
 		setFormData({ ...formData, [key]: value });
@@ -68,7 +74,8 @@ const AddDetails = () => {
 			!course ||
 			!branch
 		) {
-			Alert.alert("Error", "Please fill all required fields.");
+			setAlertMessage("Please fill all required fields.");
+			setAlert(true);
 			setLoading(false);
 			return;
 		}
@@ -89,19 +96,30 @@ const AddDetails = () => {
 			const result = await response.json();
 
 			if (response.ok) {
-				Alert.alert("Success", "Details added successfully!");
+				setSuccessMessage("Details added successfully!");
+				setSuccess(true);
 				navigation.replace("Hostler"); // Go back to the previous screen
 			} else {
-				Alert.alert(
-					"Error",
-					result.message || "Failed to add details."
-				);
+				setAlertMessage(result.message || "Failed to add details.");
+				setAlert(true);
 			}
 		} catch (error) {
 			console.error("Error adding details: ", error);
-			Alert.alert("Error", "Failed to add details.");
+			setAlertMessage("Failed to add details.");
+			setAlert(true);
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const handleDateChange = (event: any, date: Date | undefined) => {
+		setShowDatePicker(false);
+		if (date) {
+			setSelectedDate(date);
+			handleInputChange(
+				"date_of_birth",
+				date.toISOString().split("T")[0] // Format as YYYY-MM-DD
+			);
 		}
 	};
 
@@ -119,16 +137,25 @@ const AddDetails = () => {
 
 			<View style={styles.inputContainer}>
 				<Text style={styles.label}>Date of Birth</Text>
-				<TextInput
-					style={styles.input}
-					placeholder="Date of Birth (DD-MM-YYYY)"
-					value={formData.date_of_birth}
-					onChangeText={(value) =>
-						handleInputChange("date_of_birth", value)
-					}
-				/>
+				<TouchableOpacity
+					style={styles.datePickerButton}
+					onPress={() => setShowDatePicker(true)}
+				>
+					<Text style={styles.datePickerText}>
+						{selectedDate
+							? selectedDate.toDateString()
+							: "Select Date of Birth"}
+					</Text>
+				</TouchableOpacity>
+				{showDatePicker && (
+					<DateTimePicker
+						value={selectedDate || new Date()}
+						mode="date"
+						display="default"
+						onChange={handleDateChange}
+					/>
+				)}
 			</View>
-
 			{/* Blood Group Picker */}
 			<View style={styles.inputContainer}>
 				<Text style={styles.label}>Blood Group</Text>
@@ -229,6 +256,16 @@ const AddDetails = () => {
 					color="#2cb5a0"
 				/>
 			</View>
+			<ErrorAlert
+				message={alertMessage}
+				alert={alert}
+				setAlert={setAlert}
+			/>
+			<SuccessAlert
+				message={successMessage}
+				success={success}
+				setSuccess={setSuccess}
+			/>
 		</ScrollView>
 	);
 };
@@ -250,6 +287,19 @@ const styles = StyleSheet.create({
 		color: "#2cb5a0",
 		textAlign: "center",
 		marginBottom: 20,
+	},
+	datePickerButton: {
+		paddingVertical: 10,
+		paddingHorizontal: 20,
+		backgroundColor: "#2cb5a0",
+		borderRadius: 8,
+		marginBottom: 16,
+		alignItems: "center",
+	},
+	datePickerText: {
+		color: "#fff",
+		fontWeight: "bold",
+		fontSize: 16,
 	},
 	input: {
 		borderWidth: 1,

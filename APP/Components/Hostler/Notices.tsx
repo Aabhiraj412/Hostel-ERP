@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
 import { ActivityIndicator } from "react-native";
@@ -21,12 +21,12 @@ const HNotices = () => {
 					},
 				}
 			);
+			const data = await response.json();
 			if (!response.ok) {
 				throw new Error(
-					`Request failed with status code: ${response.status}`
+					data.message || "Unable to fetch Notices"
 				);
 			}
-			const data = await response.json();
 			setData(data);
 			// console.log(data);
 		} catch (error) {

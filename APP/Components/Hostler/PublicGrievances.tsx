@@ -142,7 +142,9 @@ const PrivateGrievances = () => {
 	return (
 		<View style={styles.container}>
 			{loading ? (
-				<ActivityIndicator size="large" color="#2cb5a0" />
+				<View style={styles.loading}>
+					<ActivityIndicator size="large" color="#2cb5a0" />
+				</View>
 			) : (
 				<FlatList
 					data={grievances}
@@ -319,6 +321,11 @@ const styles = StyleSheet.create({
 		color: "#fff",
 		fontWeight: "bold",
 		textAlign: "center",
+	},
+	loading:{
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	card: {
 		backgroundColor: "#ffffff",

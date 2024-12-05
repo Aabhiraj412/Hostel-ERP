@@ -144,7 +144,7 @@ import {
 					  To: {new Date(selectedLeave.to).toLocaleDateString()}
 					</Text>
 					<Text style={styles.modalText}>
-					  Days: {selectedLeave.days}
+					  No of Days: {selectedLeave.days}
 					</Text>
 					<Text style={styles.modalText}>
 					  Contact: {selectedLeave.contact_no}
