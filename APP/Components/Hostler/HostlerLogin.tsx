@@ -22,8 +22,9 @@ const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 		setLoading(true);
 		setError(null);
 		try {
+			console.log(`http://${localhost}/api/auth/hostlerlogin`);
 			const response = await fetch(
-				`http://${localhost}:3000/api/auth/hostlerlogin`, // Consider using environment variables here
+				`http://${localhost}/api/auth/hostlerlogin`, // Consider using environment variables here
 				{
 					method: "POST",
 					headers: {

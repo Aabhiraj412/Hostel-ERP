@@ -24,7 +24,7 @@ const Hostlers = () => {
 		setError(null);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/gethostlers`,
+				`http://${localhost}/api/warden/gethostlers`,
 				{
 					headers: {
 						Cookie: cookie,

@@ -65,7 +65,7 @@ const HostlerDetails = () => {
 		try {
 			setLoading(true);
 			const req = await fetch(
-				`http://${localhost}:3000/api/warden/setroom/${hostler._id}`,
+				`http://${localhost}/api/warden/setroom/${hostler._id}`,
 				{
 					method: "POST",
 					headers: {
@@ -97,7 +97,7 @@ const HostlerDetails = () => {
 		try {
 			setLoading(true);
 			const req = await fetch(
-				`http://${localhost}:3000/api/warden/removehostler/${hostler._id}`,
+				`http://${localhost}/api/warden/removehostler/${hostler._id}`,
 				{
 					method: "GET",
 					headers: {

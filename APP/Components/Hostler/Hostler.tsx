@@ -31,7 +31,7 @@ export default function Hostler() {
 		const fetchHostlerData = async () => {
 			try {
 				const response = await fetch(
-					`http://${localhost}:3000/api/hostler/getdetails`,
+					`http://${localhost}/api/hostler/getdetails`,
 					{
 						method: "GET",
 						headers: {
@@ -87,7 +87,7 @@ export default function Hostler() {
 	const Logout = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/auth/hostlerlogout`,
+				`http://${localhost}/api/auth/hostlerlogout`,
 				{
 					method: "POST",
 					headers: {

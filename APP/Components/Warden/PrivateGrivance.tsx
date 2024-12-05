@@ -16,13 +16,15 @@ const PrivateGrievances = () => {
 	const [grievances, setGrievances] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedGrievance, setSelectedGrievance] = useState(null);
+	const [selectedHostler, setSelectedHostler] = useState(null);
 	const [updating, setUpdating] = useState(false);
 
 	// Fetch grievances
 	const fetchGrievances = async () => {
+		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/getprivategrievance`,
+				`http://${localhost}/api/warden/getprivategrievance`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -39,12 +41,31 @@ const PrivateGrievances = () => {
 		}
 	};
 
+	// Fetch selected hostler details
+	const fetchHostlerDetails = async (studentId) => {
+		try {
+			const response = await fetch(
+				`http://${localhost}/api/warden/getdetail/${studentId}`,
+				{
+					headers: { Cookie: cookie },
+				}
+			);
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(data.message || "Unable to fetch hostler data");
+			}
+			setSelectedHostler(data);
+		} catch (error) {
+			console.error("Error fetching hostler details:", error);
+		}
+	};
+
 	// Update grievance status
 	const updateGrievanceStatus = async (grievanceId, status) => {
 		setUpdating(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/setprivategrievance/${grievanceId}`,
+				`http://${localhost}/api/warden/setprivategrievance/${grievanceId}`,
 				{
 					method: "POST",
 					headers: {
@@ -58,8 +79,7 @@ const PrivateGrievances = () => {
 
 			if (!response.ok) {
 				throw new Error(
-					updatedGrievance.message ||
-						"Failed to update grievance status."
+					updatedGrievance.message || "Failed to update grievance status."
 				);
 			}
 			// Update the local state
@@ -68,7 +88,7 @@ const PrivateGrievances = () => {
 					grievance._id === grievanceId ? updatedGrievance : grievance
 				)
 			);
-			setSelectedGrievance(null); // Close modal after updating
+			setSelectedGrievance(null);
 		} catch (error) {
 			console.error("Error updating grievance status:", error);
 		} finally {
@@ -83,7 +103,10 @@ const PrivateGrievances = () => {
 	const renderGrievance = ({ item }) => (
 		<TouchableOpacity
 			style={styles.card}
-			onPress={() => setSelectedGrievance(item)}
+			onPress={() => {
+				setSelectedGrievance(item);
+				fetchHostlerDetails(item.student); // Fetch hostler details when grievance is selected
+			}}
 		>
 			<Text style={styles.title}>{item.title}</Text>
 			<Text style={styles.description}>{item.description}</Text>
@@ -121,7 +144,7 @@ const PrivateGrievances = () => {
 					renderItem={renderGrievance}
 					contentContainerStyle={styles.list}
 					ListEmptyComponent={
-						<Text style={styles.empty}>No public grievances</Text>
+						<Text style={styles.empty}>No private grievances</Text>
 					}
 				/>
 			)}
@@ -129,36 +152,43 @@ const PrivateGrievances = () => {
 			{selectedGrievance && (
 				<Modal transparent={true} animationType="slide">
 					<TouchableWithoutFeedback
-						onPress={() => setSelectedGrievance(null)}
+						onPress={() => {
+							setSelectedGrievance(null);
+							setSelectedHostler(null);
+						}}
 					>
 						<View style={styles.modalContainer}>
 							<TouchableWithoutFeedback>
 								<View style={styles.modalContent}>
-									<Text style={styles.modalTitle}>
-										Grievance Details
-									</Text>
+									<Text style={styles.modalTitle}>Grievance Details</Text>
 									<Text style={styles.modalText}>
 										Title: {selectedGrievance.title}
 									</Text>
 									<Text style={styles.modalText}>
-										Description:{" "}
-										{selectedGrievance.description}
+										Description: {selectedGrievance.description}
 									</Text>
 									<Text style={styles.modalText}>
 										Date:{" "}
-										{new Date(
-											selectedGrievance.date
-										).toLocaleDateString()}
+										{new Date(selectedGrievance.date).toLocaleDateString()}
 									</Text>
+
+									{selectedHostler && (
+										<>
+											<Text style={styles.modalText}>
+												Submitted By: {selectedHostler.name}
+											</Text>
+											<Text style={styles.modalText}>
+												Room No: {selectedHostler.room_no}
+											</Text>
+										</>
+									)}
+
 									<Text style={styles.modalText}>
 										Status: {selectedGrievance.status}
 									</Text>
 
 									{updating ? (
-										<ActivityIndicator
-											size="large"
-											color="#2cb5a0"
-										/>
+										<ActivityIndicator size="large" color="#2cb5a0" />
 									) : (
 										<View style={styles.buttonContainer}>
 											<TouchableOpacity
@@ -171,9 +201,7 @@ const PrivateGrievances = () => {
 												}
 												disabled={updating}
 											>
-												<Text style={styles.buttonText}>
-													Resolve
-												</Text>
+												<Text style={styles.buttonText}>Resolve</Text>
 											</TouchableOpacity>
 											<TouchableOpacity
 												style={styles.cancelButton}
@@ -185,9 +213,7 @@ const PrivateGrievances = () => {
 												}
 												disabled={updating}
 											>
-												<Text style={styles.buttonText}>
-													Cancel
-												</Text>
+												<Text style={styles.buttonText}>Cancel</Text>
 											</TouchableOpacity>
 										</View>
 									)}
@@ -200,6 +226,7 @@ const PrivateGrievances = () => {
 		</View>
 	);
 };
+
 
 export default PrivateGrievances;
 

@@ -31,7 +31,7 @@ export default function Warden() {
 	const Logout = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/auth/wardenlogout`,
+				`http://${localhost}/api/auth/wardenlogout`,
 				{
 					method: "POST",
 					headers: {

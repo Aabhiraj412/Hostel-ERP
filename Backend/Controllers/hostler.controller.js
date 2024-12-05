@@ -7,6 +7,7 @@ import Leave from "../Schemas/Leave.model.js";
 import OutRegister from "../Schemas/OutRegister.model.js";
 
 export const publicgrivance = async (req, res) => {
+	console.log("publicgrivance called");
 	try {
 		const hostler = req.hostler;
 
@@ -15,6 +16,7 @@ export const publicgrivance = async (req, res) => {
 				.status(401)
 				.json({ message: "Unauthorised-no Hostler Provided" });
 
+		
 		const { title, description } = req.body;
 
 		if (!title || !description) {

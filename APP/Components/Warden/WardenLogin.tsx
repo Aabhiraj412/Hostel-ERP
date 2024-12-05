@@ -19,13 +19,12 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 	const [error, setError] = useState<string | null>(null);
 	const [passwordVisible, setPasswordVisible] = useState(false);
 
-	
 	const Login = async () => {
 		setLoading(true);
 		setError(null);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/auth/wardenlogin`,
+				`http://${localhost}/api/auth/wardenlogin`,
 				{
 					method: "POST",
 					headers: {
@@ -53,8 +52,8 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 			setData(data);
 			navigation.reset({
 				index: 0, // Set the index to 0 to make the new screen the first screen in the stack
-				routes: [{ name: 'Warden Dashboard' }], // Provide the name of the screen you want to navigate to
-			  }); // Navigate to the Warden Dashboard
+				routes: [{ name: "Warden Dashboard" }], // Provide the name of the screen you want to navigate to
+			}); // Navigate to the Warden Dashboard
 		} catch (error) {
 			setError(error.message); // Handle errors
 		} finally {
@@ -69,6 +68,7 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 			</View>
 		);
 	}
+	
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
@@ -83,7 +83,7 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 					onChangeText={(e) => setUserId(e)}
 					value={userId}
 				/>
-				
+
 				<View style={styles.passwordContainer}>
 					<TextInput
 						placeholder="Password"
@@ -105,9 +105,8 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 				</View>
 
 				<Button title="Login" onPress={Login} color="#2cb5a0" />
+				{error && <Text style={styles.errorText}>Error: {error}</Text>}
 			</View>
-
-			{error && <Text style={styles.errorText}>Error: {error}</Text>}
 		</View>
 	);
 };

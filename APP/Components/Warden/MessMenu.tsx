@@ -37,7 +37,7 @@ const MessMenu = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/getmessmenu`,
+				`http://${localhost}/api/warden/getmessmenu`,
 				{
 					method: "GET",
 					headers: {
@@ -96,7 +96,7 @@ const MessMenu = () => {
 			});
 
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/uploadmessmenu`,
+				`http://${localhost}/api/warden/uploadmessmenu`,
 				{
 					method: "POST",
 					headers: {
@@ -144,7 +144,7 @@ const MessMenu = () => {
 			// Download the image from the server to the app's cache directory
 			const downloadPath = `${FileSystem.cacheDirectory}mess_menu.png`;
 			const { uri } = await FileSystem.downloadAsync(
-				`http://${localhost}:3000/api/warden/getmessmenu`,
+				`http://${localhost}/api/warden/getmessmenu`,
 				downloadPath
 			);
 

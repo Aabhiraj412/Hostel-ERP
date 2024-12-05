@@ -17,7 +17,7 @@ import SuccessAlert from "../Components/SuccessAlert";
 import ErrorAlert from "../Components/ErrorAlert";
 
 const HOutRegister = () => {
-	const { localhost, cookie } = useStore();
+	const { localhost, cookie, testlocalhost } = useStore();
 	const [entries, setEntries] = useState([]);
 	const [ip, setIP] = useState();
 	const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ const HOutRegister = () => {
 	const getIP = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/getip`,
+				`http://${localhost}/api/hostler/getip`,
 				{
 					method: "GET",
 					headers: {
@@ -53,7 +53,7 @@ const HOutRegister = () => {
 	const fetchEntries = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/getentry`,
+				`http://${localhost}/api/hostler/getentry`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -74,7 +74,7 @@ const HOutRegister = () => {
 			setAlert(true);
 			return;
 		}
-		if (localhost !== ip) {
+		if (testlocalhost !== ip) {
 			setAlertMessage(
 				"You are not authorized to open an entry. Connect to Hostel Wi-Fi to procide further."
 			);
@@ -89,7 +89,7 @@ const HOutRegister = () => {
 			console.log("Request body:", body);
 
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/openentry`,
+				`http://${localhost}/api/hostler/openentry`,
 				{
 					method: "POST",
 					headers: {
@@ -123,7 +123,7 @@ const HOutRegister = () => {
 
 	// Close an existing entry
 	const closeEntry = async (entryId) => {
-		if (localhost !== ip) {
+		if (testlocalhost !== ip) {
 			setAlertMessage(
 				"You are not authorized to close an entry. Connect to Hostel Wi-Fi to procide further."
 			);
@@ -133,7 +133,7 @@ const HOutRegister = () => {
 		setClose(true); // Show the confirmation modal
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/closeentry`,
+				`http://${localhost}/api/hostler/closeentry`,
 				{
 					method: "GET",
 					headers: {

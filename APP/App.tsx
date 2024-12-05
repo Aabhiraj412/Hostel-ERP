@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Constants from "expo-constants";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { NetworkInfo } from "react-native-network-info"; // Import the library
 import Landing from "./Components/Landing";
 import WardenLogin from "./Components/Warden/WardenLogin";
 import Warden from "./Components/Warden/Warden";
@@ -18,7 +19,6 @@ import Notices from "./Components/Warden/Notices";
 import PublishNotice from "./Components/Warden/PublishNotice";
 import PublicGrivances from "./Components/Warden/PublicGrivances";
 import HostlerDetails from "./Components/Warden/HostlerDetails";
-import SplashScreen from "./Components/Components/SplashScreen";
 import OutRegister from "./Components/Warden/OutRegister";
 import PrivateGrivance from "./Components/Warden/PrivateGrivance";
 import HostlerDash from "./Components/Hostler/HostlerDash";
@@ -33,25 +33,43 @@ import HPublicGrievances from "./Components/Hostler/PublicGrievances";
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
-	const { cookie, user, setLocalhost } = useStore();
+	const { cookie, user, setLocalhost, setTestLocalhost } =
+		useStore();
+	const nextRouteName = cookie
+		? user === "Warden"
+			? "Warden Dashboard"
+			: user === "Hostler"
+			? "Hostler Dashboard"
+			: "Home"
+		: "Home";
 
 	useEffect(() => {
-		// Safely extract localhost
+		// Set to your remote server URL
+		setLocalhost("hostel-erp-9w6h.onrender.com");
+
+		// Fetch the device's IPv4 address
+		NetworkInfo.getIPV4Address().then((ipv4) => {
+			if (ipv4) {
+				setTestLocalhost(ipv4);
+			} else {
+				console.warn("Unable to fetch IPv4 address.");
+			}
+		});
+
+		// Fallback: If unable to fetch IPv4, fallback to Constants (if available)
 		const hostUri = Constants.manifest2?.extra?.expoClient?.hostUri;
 		if (hostUri) {
-			const localhost = hostUri.split(":")[0];
-			setLocalhost(localhost); // Update the localhost in your store
-		} else {
-			console.warn("Host URI not found in Constants.");
+			const fallbackLocalhost = hostUri.split(":")[0];
+			setTestLocalhost(fallbackLocalhost);
 		}
-	}, [setLocalhost]); // Run effect when `setLocalhost` changes (unlikely)
+	}, [setLocalhost, setTestLocalhost]);
 
 	// Navigation stack
 	return (
 		<NavigationContainer>
 			<Stack.Navigator
 				id={undefined}
-				initialRouteName="Hostler ERP"
+				initialRouteName={nextRouteName}
 				screenOptions={{
 					headerStyle: {
 						backgroundColor: "#2cb5a0", // Set the background color of the nav bar
@@ -62,7 +80,6 @@ const App: React.FC = () => {
 					},
 				}}
 			>
-				<Stack.Screen name="Hostler ERP" component={SplashScreen} />
 				<Stack.Screen name="Home" component={Landing} />
 
 				<Stack.Screen name="Warden Login" component={WardenLogin} />
@@ -77,8 +94,14 @@ const App: React.FC = () => {
 				/>
 				<Stack.Screen name="Publish Notice" component={PublishNotice} />
 				<Stack.Screen name="Leaves" component={Leaves} />
-				<Stack.Screen name="Public Grievances" component={PublicGrivances} />
-				<Stack.Screen name="Private Grievances" component={PrivateGrivance} />
+				<Stack.Screen
+					name="Public Grievances"
+					component={PublicGrivances}
+				/>
+				<Stack.Screen
+					name="Private Grievances"
+					component={PrivateGrivance}
+				/>
 				<Stack.Screen name="Mess Menu" component={MessMenu} />
 				<Stack.Screen name="Notices" component={Notices} />
 				<Stack.Screen name="Out Register" component={OutRegister} />
@@ -90,15 +113,24 @@ const App: React.FC = () => {
 				<Stack.Screen name="Hostler Login" component={HostlerLogin} />
 				<Stack.Screen name="Hostler" component={Hostler} />
 
-				<Stack.Screen name="Hostler Dashboard" component={HostlerDash} />
+				<Stack.Screen
+					name="Hostler Dashboard"
+					component={HostlerDash}
+				/>
 
 				<Stack.Screen name="Add Details" component={AddDetails} />
 				<Stack.Screen name="Leaves " component={HLeaves} />
 				<Stack.Screen name="Mess Menu " component={HMessMenu} />
 				<Stack.Screen name="Notices " component={HNotices} />
 				<Stack.Screen name="Out Register " component={HOutRegister} />
-				<Stack.Screen name="Private Grievances " component={HPrivateGrievances} />
-				<Stack.Screen name="Public Grievances " component={HPublicGrievances} />
+				<Stack.Screen
+					name="Private Grievances "
+					component={HPrivateGrievances}
+				/>
+				<Stack.Screen
+					name="Public Grievances "
+					component={HPublicGrievances}
+				/>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

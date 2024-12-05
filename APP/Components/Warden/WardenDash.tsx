@@ -18,7 +18,7 @@ import { Modal } from "react-native";
 
 const WardenDash = () => {
 	const navigation = useNavigation<any>();
-	const { localhost, cookie } = useStore();
+	const { localhost, cookie, testlocalhost } = useStore();
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 	const [success, setSuccess] = useState(false);
@@ -35,7 +35,7 @@ const WardenDash = () => {
 		setIP(false);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/changeip`,
+				`http://${localhost}/api/warden/changeip`,
 				{
 					method: "POST",
 					headers: {
@@ -43,7 +43,7 @@ const WardenDash = () => {
 						Cookie: cookie,
 					},
 					body: JSON.stringify({
-						localhost: localhost, // Send the localhost IP to the backend
+						localhost: testlocalhost, // Send the localhost IP to the backend
 					}),
 				}
 			);

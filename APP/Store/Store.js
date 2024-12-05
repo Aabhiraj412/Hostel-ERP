@@ -9,6 +9,8 @@ const useStore = create((set) => ({
     setData: (d) => set({ data: d }),
     localhost: null,
     setLocalhost: (h) => set({ localhost: h }),
+    testlocalhost: null,
+    setTestLocalhost: (t) => set({ testlocalhost: t }),
 }));
 
 export default useStore;

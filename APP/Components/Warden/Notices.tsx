@@ -14,7 +14,7 @@ const Notices = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/getnotices`,
+				`http://${localhost}/api/warden/getnotices`,
 				{
 					headers: {
 						Cookie: cookie,
