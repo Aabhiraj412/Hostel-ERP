@@ -6,16 +6,21 @@ import {
 	Text,
 	View,
 	TouchableOpacity,
-	Alert,
 } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system";
 import useStore from "../../Store/Store";
+import SuccessAlert from "../Components/SuccessAlert";
+import ErrorAlert from "../Components/ErrorAlert";
 
 const HMessMenu = () => {
 	const { localhost, cookie } = useStore();
 	const [imageUri, setImageUri] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
 
 	const blobToBase64 = (blob: Blob): Promise<string> => {
 		return new Promise((resolve, reject) => {
@@ -40,8 +45,10 @@ const HMessMenu = () => {
 			);
 
 			if (!response.ok) {
+				const errorMessage = await response.json();
 				throw new Error(
-					`Failed to fetch with status code: ${response.status}`
+					errorMessage.message ||
+                        `Failed to fetch with status code: ${response.status}`
 				);
 			}
 
@@ -57,7 +64,8 @@ const HMessMenu = () => {
 			setImageUri(filePath + "?" + new Date().getTime()); // Force re-render by appending timestamp
 		} catch (error) {
 			console.error("Error fetching mess menu:", error);
-			Alert.alert("Error", "Failed to fetch the mess menu.");
+			setAlertMessage("Failed to fetch the mess menu.");
+			setAlert(true);
 		} finally {
 			setLoading(false);
 		}
@@ -65,7 +73,8 @@ const HMessMenu = () => {
 
 	const downloadMenu = async () => {
 		if (!imageUri) {
-			Alert.alert("Error", "No menu available to download.");
+			setAlertMessage("No menu available to download.");
+			setAlert(true);
 			return;
 		}
 
@@ -73,10 +82,10 @@ const HMessMenu = () => {
 			// Request permissions to save files to the gallery
 			const { status } = await MediaLibrary.requestPermissionsAsync();
 			if (status !== "granted") {
-				Alert.alert(
-					"Permission Denied",
+				setAlertMessage(
 					"Cannot save to gallery without permissions."
 				);
+				setAlert(true);
 				return;
 			}
 
@@ -91,10 +100,12 @@ const HMessMenu = () => {
 			const asset = await MediaLibrary.createAssetAsync(uri);
 			await MediaLibrary.createAlbumAsync("Download", asset, false);
 
-			Alert.alert("Success", `Menu saved to your gallery.`);
+			setSuccessMessage(`Menu saved to your gallery.`);
+			setSuccess(true);
 		} catch (error) {
 			console.error("Error saving file to gallery:", error);
-			Alert.alert("Error", "Failed to save the menu to your gallery.");
+			setAlertMessage("Failed to save the menu to your gallery.");
+			setAlert(true);
 		}
 	};
 
@@ -130,6 +141,16 @@ const HMessMenu = () => {
 			>
 				<Text style={styles.downloadButtonText}>Download Menu</Text>
 			</TouchableOpacity>
+			<ErrorAlert
+				message={alertMessage}
+				alert={alert}
+				setAlert={setAlert}
+			/>
+			<SuccessAlert
+				message={successMessage}
+				success={success}
+				setSuccess={setSuccess}
+			/>
 		</View>
 	);
 };

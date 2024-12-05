@@ -6,18 +6,20 @@ import {
 	View,
 	TextInput,
 	TouchableOpacity,
-	Alert,
 	ScrollView,
 	ActivityIndicator,
 	Button,
 } from "react-native";
 import useStore from "../../Store/Store";
 import { useNavigation } from "@react-navigation/native";
+import ErrorAlert from "../Components/ErrorAlert";
 
 const AddHostler = () => {
 	const { localhost, cookie } = useStore();
 	const navigation = useNavigation<any>();
 	const [loading, setLoading] = useState(false);
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
 	const [formData, setFormData] = useState({
 		name: "",
 		roll_no: "",
@@ -41,7 +43,6 @@ const AddHostler = () => {
 	};
 
 	const handleSubmit = async () => {
-		setLoading(true);
 		const {
 			name,
 			roll_no,
@@ -61,15 +62,18 @@ const AddHostler = () => {
 		} = formData;
 
 		if (!name || !roll_no || !email || !password || !confirm_password) {
-			Alert.alert("Error", "Please fill all required fields.");
+			setAlertMessage("All required fields must be filled.");
+			setAlert(true);
 			return;
 		}
 
 		if (password !== confirm_password) {
-			Alert.alert("Error", "Passwords do not match.");
+			setAlertMessage("Passwords do not match.");
+			setAlert(true);
 			return;
 		}
 
+		setLoading(true);
 		try {
 			const response = await fetch(
 				`http://${localhost}:3000/api/warden/addhostler`,
@@ -86,17 +90,15 @@ const AddHostler = () => {
 			const result = await response.json();
 
 			if (response.ok) {
-				Alert.alert("Success", "Hostler added successfully!");
 				navigation.replace("Hostler Details", { hostler: result });
 			} else {
-				Alert.alert(
-					"Error",
-					result.message || "Failed to add hostler."
-				);
+				setAlertMessage(result.message || "Failed to add hostler.");
+				setAlert(true);
 			}
 		} catch (error) {
 			console.error("Error adding hostler: ", error);
-			Alert.alert("Error", "Failed to add hostler.");
+			setAlertMessage("Failed to add hostler.");
+			setAlert(true);
 		} finally {
 			setLoading(false);
 		}
@@ -194,7 +196,7 @@ const AddHostler = () => {
 				value={formData.address}
 				onChangeText={(value) => handleInputChange("address", value)}
 			/>
-			
+
 			<View style={styles.inputContainer}>
 				<Text style={styles.label}>Year</Text>
 				<View style={styles.dropdownContainer}>
@@ -268,6 +270,11 @@ const AddHostler = () => {
 					color="#2cb5a0"
 				/>
 			</View>
+			<ErrorAlert
+				message={alertMessage}
+				alert={alert}
+				setAlert={setAlert}
+			/>
 		</ScrollView>
 	);
 };

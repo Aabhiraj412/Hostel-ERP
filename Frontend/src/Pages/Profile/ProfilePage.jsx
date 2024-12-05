@@ -1,40 +1,73 @@
 import React from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
-import { Card, styled } from '@mui/material';
+import { Card, styled, Typography, Button } from '@mui/material';
 
 const GlassCard = styled(Card)`
-    width: 70%;   // 70% of the total width
-    height: 70%;  // 70% of the total height
-    display: flex;
-    justify-content: center;   // Center content horizontally
-    align-items: center;       // Center content vertically
-    background: rgba(255, 255, 255, 0.2);  // Light transparent background
-    backdrop-filter: blur(10px);    // Blur effect for glassmorphism
-    -webkit-backdrop-filter: blur(40px);  // Safari support for blur effect
-    border: 1px solid rgba(255, 255, 255, 0.3);  // Optional border for frosted look
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); // Soft shadow to make it pop
-    border-radius: 15px; // Optional: Rounded corners for a smooth effect
-    position: relative;  // Ensures the card is positioned above everything
-    z-index: 10;         // Make sure it's above other elements
-    transform: translateY(-10px); // Slight upward shift for "pop-up" effect
-    transition: transform 0.3s ease;  // Smooth transition for popping effect
+  width: 90%;   /* 90% of the total width for responsiveness */
+  height: 80%;  
+  margin-top: 30px;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative; /* Ensure the button is positioned relative to this card */
+  background: rgba(255, 255, 255, 0.2); /* Light transparent background */
+  backdrop-filter: blur(10px); /* Blur effect for glassmorphism */
+  -webkit-backdrop-filter: blur(10px); /* Safari support for blur effect */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Optional border for frosted look */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Soft shadow to make it pop */
+  border-radius: 15px; /* Optional: Rounded corners for a smooth effect */ 
 `;
 
+const LogoutButton = styled(Button)`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-weight: bold;
+`;
+
+
 const ProfilePage = () => {
-    return (
-        <>
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black relative">
-                {/* Apply blur to everything except the GlassCard */}
-                <div className="absolute inset-0 bg-black opacity-50 backdrop-blur-md z-0" />
-                <MiniVariantDrawer />
-                <GlassCard className="z-10">
-                    <h1 className="text-center text-3xl font-bold text-white">
-                        The quick brown fox jumps over the lazy dog near the shimmering river at dusk.
-                    </h1>
-                </GlassCard>
-            </div>
-        </>
-    );
+  // Dummy logout function
+  const handleLogout = () => {
+    alert("Logged out!");
+  };
+
+  return (
+    <>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
+        <MiniVariantDrawer title="Hostler Profile" />
+        {/* GlassCard Section */}
+        <GlassCard>
+  <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '20px', fontWeight: 'bold' }}>
+    Hostler Details
+  </Typography>
+  {/* Student Data */}
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Name:</strong> Abhay Gypta</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Roll No.:</strong> 2200461540002</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Aadhar No.:</strong> 84563289297</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Gender:</strong> Male</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Father's Name:</strong> Vipin Gypta</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Mother's Name:</strong> Manju Gypta</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Phone No.:</strong> 9369274691</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Email:</strong> ag4081315@gmail.com</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Address:</strong> Hardoi</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Year:</strong> 3rd</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>College:</strong> Mpec</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Hostel:</strong> Aryabhatt</Typography>
+  <Typography variant="body1" style={{ marginBottom: '10px' }}><strong>Room No.:</strong> 316</Typography>
+  {/* Logout Button */}
+  <LogoutButton
+    variant="contained"
+    color="error"
+    onClick={handleLogout}
+  >
+    Logout
+  </LogoutButton>
+</GlassCard>
+
+      </div>
+    </>
+  );
 };
 
 export default ProfilePage;

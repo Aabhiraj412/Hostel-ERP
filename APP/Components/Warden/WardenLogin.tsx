@@ -7,7 +7,6 @@ import {
 	TextInput,
 	View,
 	TouchableOpacity,
-	Image,
 } from "react-native";
 import useStore from "../../Store/Store";
 import { FontAwesome } from "@expo/vector-icons";

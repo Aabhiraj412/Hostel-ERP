@@ -51,8 +51,15 @@ import {
 			body: JSON.stringify({ status }),
 		  }
 		);
+
 		const updatedLeave = await response.json();
   
+		if (!response.ok){
+			throw new Error(
+                updatedLeave.message || "Failed to update leave status. Please try again."
+            );
+		}
+
 		// Update the local state
 		setLeaves((prevLeaves) =>
 		  prevLeaves.map((leave) =>
@@ -137,7 +144,7 @@ import {
 					  To: {new Date(selectedLeave.to).toLocaleDateString()}
 					</Text>
 					<Text style={styles.modalText}>
-					  Days: {selectedLeave.days}
+					  No of Days: {selectedLeave.days}
 					</Text>
 					<Text style={styles.modalText}>
 					  Contact: {selectedLeave.contact_no}
