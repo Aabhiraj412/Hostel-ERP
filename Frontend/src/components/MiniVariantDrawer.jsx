@@ -140,42 +140,43 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
+import { useNavigate } from 'react-router-dom';
+
 const drawerWidth = 240;
 const miniDrawerWidth = 60;
 
-// Styled glassmorphic AppBar
 const GlassAppBar = styled(AppBar)`
-  background: rgba(255, 255, 255, 0.2); /* Light transparency */
-  backdrop-filter: blur(10px);           /* Blurring effect */
-  -webkit-backdrop-filter: blur(10px);   /* Safari support */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Optional border for frosted effect */
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  background: rgba(255, 255, 255, 0.2); 
+  backdrop-filter: blur(10px);          
+  -webkit-backdrop-filter: blur(10px);  
+  border: 1px solid rgba(255, 255, 255, 0.3); 
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
 `;
 
-// Styled glassmorphic Drawer
 const GlassDrawer = styled(Drawer)`
   & .MuiDrawer-paper {
-    background: rgba(255, 255, 255, 0.2); /* Light transparency */
-    backdrop-filter: blur(10px);          /* Blurring effect */
-    -webkit-backdrop-filter: blur(10px);  /* Safari support */
-    border-right: 1px solid rgba(255, 255, 255, 0.3); /* Optional border */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
 `;
 
-function MiniVariantDrawer() {
+function MiniVariantDrawer({ title }) {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
 
   const menuItems = [
-    { text: 'Home', icon: <HomeIcon /> },
-    { text: 'Profile', icon: <PersonIcon /> },
-    { text: 'Attendance', icon: <EventIcon /> },
-    { text: 'Notice', icon: <NotificationsIcon /> },
-    { text: 'Menu', icon: <MenuBookIcon /> },
+    { text: 'Home', icon: <HomeIcon />, route: '/' },
+    { text: 'Profile', icon: <PersonIcon />, route: '/profile' },
+    { text: 'Attendance', icon: <EventIcon />, route: '/attendance' },
+    { text: 'Notice', icon: <NotificationsIcon />, route: '/notice' },
+    { text: 'Menu', icon: <MenuBookIcon />, route: '/menu' },
   ];
 
   return (
@@ -203,8 +204,15 @@ function MiniVariantDrawer() {
           >
             {open ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
-          <Typography variant="h6" noWrap sx={{ color: 'black' }}>
-            <img src={logo} className="h-11"/>
+          <Typography variant="h6" noWrap sx={{ flexGrow: 1, color: 'black' }}>
+            <img src={logo} className="h-11" alt="Logo" />
+          </Typography>
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{ color: 'black', fontWeight: 'bold' }}
+          >
+            {title}
           </Typography>
         </Toolbar>
       </GlassAppBar>
@@ -228,7 +236,11 @@ function MiniVariantDrawer() {
         <Toolbar />
         <List>
           {menuItems.map((item, index) => (
-            <ListItem button key={index}>
+            <ListItem
+              button
+              key={index}
+              onClick={() => navigate(item.route)} // Navigate to the route
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               {open && <ListItemText primary={item.text} />}
             </ListItem>

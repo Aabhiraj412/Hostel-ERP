@@ -1,16 +1,26 @@
-
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '@/components/Card';
 
-
 const AdminLogin = () => {
+  const navigate = useNavigate(); 
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); 
+    // Add any form validation or login logic here if necessary
+    navigate('/warden-dashboard'); 
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{
         background: 'radial-gradient(circle, rgba(0, 128, 128, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%)',
-      }}>
+      }}
+    >
       <Card>
         <h1 className="text-center text-2xl font-bold text-white mb-4">WARDEN LOGIN</h1>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-white mb-1">Username:</label>
             <input
