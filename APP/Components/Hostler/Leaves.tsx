@@ -7,13 +7,14 @@ import {
 	TouchableOpacity,
 	Modal,
 	TextInput,
-	Alert,
 	TouchableWithoutFeedback,
 	Keyboard,
-	Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import ErrorAlert from "../Components/ErrorAlert";
+import SuccessAlert from "../Components/SuccessAlert";
 
 const HLeaves = () => {
 	const { localhost, cookie } = useStore();
@@ -21,7 +22,15 @@ const HLeaves = () => {
 	const [loading, setLoading] = useState(true);
 	const [selectedLeave, setSelectedLeave] = useState(null);
 	const [applyingLeave, setApplyingLeave] = useState(false);
-  const [processing,setProcessing] = useState(false);
+	const [processing, setProcessing] = useState(false);
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [showDatePicker, setShowDatePicker] = useState<"from" | "to" | null>(
+		null
+	);
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
 	const [leaveDetails, setLeaveDetails] = useState({
 		days: "",
 		from: "",
@@ -40,7 +49,11 @@ const HLeaves = () => {
 				}
 			);
 			const data = await response.json();
-	  const sortedLeaves = data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+			const sortedLeaves = data.sort(
+				(a, b) =>
+					new Date(b.createdAt).getTime() -
+					new Date(a.createdAt).getTime()
+			);
 
 			setLeaves(sortedLeaves);
 		} catch (error) {
@@ -50,12 +63,49 @@ const HLeaves = () => {
 		}
 	};
 
+	const handleDateChange = (
+		event: React.SyntheticEvent<unknown>,
+		date?: Date
+	) => {
+		setShowDatePicker(false);
+
+		if (date) {
+			const formattedDate = date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+			setSelectedDate(date);
+
+			// Dynamically update either "from" or "to"
+			setLeaveDetails((prevDetails) => ({
+				...prevDetails,
+				from: formattedDate,
+			}));
+		}
+	};
+
 	const applyLeave = async () => {
 		const { days, from, to, reason, address, contact_no } = leaveDetails;
+		
 		if (!days || !from || !to || !reason || !address || !contact_no) {
-			Alert.alert("Error", "Please fill all the fields.");
+			setAlertMessage("Please fill all the fields.");
+			setAlert(true);
 			return;
 		}
+
+		// Convert dates to JavaScript Date objects
+		const fromDate = new Date(from);
+		const toDate = new Date(to);
+
+		// Calculate the difference in days
+		const dayDifference =
+			Math.ceil(
+				(toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
+			) + 1;
+
+		if (dayDifference !== parseInt(days)) {
+			setAlertMessage("Please Provide the Correct Number of Days.");
+			setAlert(true);
+			return;
+		}
+
 		setApplyingLeave(false);
 		setProcessing(true);
 
@@ -73,18 +123,19 @@ const HLeaves = () => {
 			);
 			if (!response.ok) throw new Error("Failed to apply for leave.");
 			const newLeave = await response.json();
-      setLeaves((prevLeaves) => [newLeave, ...prevLeaves]);
+			setLeaves((prevLeaves) => [newLeave, ...prevLeaves]);
 		} catch (error) {
-			Alert.alert("Error", error.message);
+			setAlertMessage(error.message);
+			setAlert(true);
 		} finally {
-      setLeaveDetails({
-        days: "",
-        from: "",
-        to: "",
-        reason: "",
-        address: "",
-        contact_no: "",
-      });
+			setLeaveDetails({
+				days: "",
+				from: "",
+				to: "",
+				reason: "",
+				address: "",
+				contact_no: "",
+			});
 			setProcessing(false);
 		}
 	};
@@ -150,6 +201,16 @@ const HLeaves = () => {
 				>
 					<Text style={styles.applyButtonText}>Apply for Leave</Text>
 				</TouchableOpacity>
+				<ErrorAlert
+					message={alertMessage}
+					alert={alert}
+					setAlert={setAlert}
+				/>
+				<SuccessAlert
+					message={successMessage}
+					success={success}
+					setSuccess={setSuccess}
+				/>
 
 				{/* Apply for Leave Modal */}
 				<Modal
@@ -158,41 +219,78 @@ const HLeaves = () => {
 					transparent={true}
 					onRequestClose={() => setApplyingLeave(false)}
 				>
-					<TouchableWithoutFeedback onPress={() => setApplyingLeave(false)}>
+					<TouchableWithoutFeedback
+						onPress={() => setApplyingLeave(false)}
+					>
 						<View style={styles.modalContainer}>
 							<View style={styles.modalContent}>
-								<Text style={styles.modalTitle}>Apply for Leave</Text>
+								<Text style={styles.modalTitle}>
+									Apply for Leave
+								</Text>
 								<TextInput
 									style={styles.input}
 									placeholder="No of Days"
 									keyboardType="numeric"
 									value={leaveDetails.days}
 									onChangeText={(text) =>
-										setLeaveDetails({ ...leaveDetails, days: text })
+										setLeaveDetails({
+											...leaveDetails,
+											days: text,
+										})
 									}
 								/>
-								<TextInput
-									style={styles.input}
-									placeholder="From (YYYY-MM-DD)"
-									value={leaveDetails.from}
-									onChangeText={(text) =>
-										setLeaveDetails({ ...leaveDetails, from: text })
-									}
-								/>
-								<TextInput
-									style={styles.input}
-									placeholder="To (YYYY-MM-DD)"
-									value={leaveDetails.to}
-									onChangeText={(text) =>
-										setLeaveDetails({ ...leaveDetails, to: text })
-									}
-								/>
+								<Text style={styles.label}>From</Text>
+								<TouchableOpacity
+									style={styles.datePickerButton}
+									onPress={() => setShowDatePicker("from")}
+								>
+									<Text style={styles.datePickerText}>
+										{leaveDetails.from ||
+											"Select Start Date"}
+									</Text>
+								</TouchableOpacity>
+
+								<Text style={styles.label}>To</Text>
+								<TouchableOpacity
+									style={styles.datePickerButton}
+									onPress={() => setShowDatePicker("to")}
+								>
+									<Text style={styles.datePickerText}>
+										{leaveDetails.to || "Select End Date"}
+									</Text>
+								</TouchableOpacity>
+
+								{showDatePicker && (
+									<DateTimePicker
+										value={selectedDate}
+										mode="date"
+										display="default"
+										onChange={(event, date) => {
+											setShowDatePicker(null); // Close picker
+											if (date) {
+												const formattedDate = date
+													.toISOString()
+													.split("T")[0];
+												setLeaveDetails(
+													(prevDetails) => ({
+														...prevDetails,
+														[showDatePicker]:
+															formattedDate, // Dynamically set 'from' or 'to'
+													})
+												);
+											}
+										}}
+									/>
+								)}
 								<TextInput
 									style={styles.input}
 									placeholder="Reason for Leave"
 									value={leaveDetails.reason}
 									onChangeText={(text) =>
-										setLeaveDetails({ ...leaveDetails, reason: text })
+										setLeaveDetails({
+											...leaveDetails,
+											reason: text,
+										})
 									}
 								/>
 								<TextInput
@@ -200,7 +298,10 @@ const HLeaves = () => {
 									placeholder="Leave Address"
 									value={leaveDetails.address}
 									onChangeText={(text) =>
-										setLeaveDetails({ ...leaveDetails, address: text })
+										setLeaveDetails({
+											...leaveDetails,
+											address: text,
+										})
 									}
 								/>
 								<TextInput
@@ -215,17 +316,25 @@ const HLeaves = () => {
 										})
 									}
 								/>
-								
-                <View style={styles.buttonContainer}>
-								
-                {processing?
-                  <ActivityIndicator size="large" color="#2cb5a0" />
-                :	<TouchableOpacity
-										style={styles.submitButton}
-										onPress={applyLeave}
-									>
-										<Text style={styles.submitButtonText}>Submit</Text>
-									</TouchableOpacity>}
+
+								<View style={styles.buttonContainer}>
+									{processing ? (
+										<ActivityIndicator
+											size="large"
+											color="#2cb5a0"
+										/>
+									) : (
+										<TouchableOpacity
+											style={styles.submitButton}
+											onPress={applyLeave}
+										>
+											<Text
+												style={styles.submitButtonText}
+											>
+												Submit
+											</Text>
+										</TouchableOpacity>
+									)}
 								</View>
 							</View>
 						</View>
@@ -238,23 +347,31 @@ const HLeaves = () => {
 					animationType="fade"
 					transparent={true}
 				>
-					<TouchableWithoutFeedback onPress={() => setSelectedLeave(null)}>
+					<TouchableWithoutFeedback
+						onPress={() => setSelectedLeave(null)}
+					>
 						<View style={styles.modalContainer}>
 							<View style={styles.modalContent}>
-								<Text style={styles.modalTitle}>Leave Details</Text>
+								<Text style={styles.modalTitle}>
+									Leave Details
+								</Text>
 								<Text style={styles.modalText}>
 									Reason: {selectedLeave?.reason}
 								</Text>
 								<Text style={styles.modalText}>
 									From:{" "}
-									{new Date(selectedLeave?.from).toLocaleDateString()}
+									{new Date(
+										selectedLeave?.from
+									).toLocaleDateString()}
 								</Text>
 								<Text style={styles.modalText}>
 									To:{" "}
-									{new Date(selectedLeave?.to).toLocaleDateString()}
+									{new Date(
+										selectedLeave?.to
+									).toLocaleDateString()}
 								</Text>
 								<Text style={styles.modalText}>
-									Days: {selectedLeave?.days}
+									No of Days: {selectedLeave?.days}
 								</Text>
 								<Text style={styles.modalText}>
 									Contact: {selectedLeave?.contact_no}
@@ -267,9 +384,11 @@ const HLeaves = () => {
 										styles.statusContainer,
 										{
 											backgroundColor:
-												selectedLeave?.status === "Pending"
+												selectedLeave?.status ===
+												"Pending"
 													? "#FFA726"
-													: selectedLeave?.status === "Approved"
+													: selectedLeave?.status ===
+													  "Approved"
 													? "#66BB6A"
 													: "#EF5350",
 										},
@@ -290,7 +409,6 @@ const HLeaves = () => {
 
 export default HLeaves;
 
-
 const styles = StyleSheet.create({
 	applyButton: {
 		backgroundColor: "#2cb5a0",
@@ -303,6 +421,24 @@ const styles = StyleSheet.create({
 		elevation: 5,
 		marginVertical: 10,
 	},
+	label: {
+		fontSize: 16,
+		color: "#555",
+		marginBottom: 5,
+	},
+	datePickerButton: {
+		paddingVertical: 10,
+		paddingHorizontal: 20,
+		backgroundColor: "#2cb5a0",
+		borderRadius: 8,
+		marginBottom: 16,
+		alignItems: "center",
+	},
+	datePickerText: {
+		color: "#fff",
+		fontWeight: "bold",
+		fontSize: 16,
+	},
 	applyButtonText: {
 		color: "#fff",
 		fontSize: 16,
@@ -313,11 +449,11 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		borderRadius: 8,
 		marginTop: 10,
-    textAlign: "center",
+		textAlign: "center",
 		// alignSelf: "center",
 	},
 	statusText: {
-    textAlign: "center",
+		textAlign: "center",
 		color: "#fff",
 		fontWeight: "bold",
 		fontSize: 16,
@@ -394,7 +530,7 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		width: "45%",
 	},
-  input: {
+	input: {
 		borderWidth: 1,
 		borderColor: "#ccc",
 		borderRadius: 5,
@@ -413,18 +549,18 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		textAlign: "center",
 	},
-  submitButton: {
-    flex: 1,
-    backgroundColor: "#2cb5a0",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  submitButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },  
+	submitButton: {
+		flex: 1,
+		backgroundColor: "#2cb5a0",
+		paddingVertical: 10,
+		paddingHorizontal: 20,
+		borderRadius: 8,
+		alignItems: "center",
+		marginTop: 10,
+	},
+	submitButtonText: {
+		color: "#fff",
+		fontWeight: "bold",
+		fontSize: 16,
+	},
 });

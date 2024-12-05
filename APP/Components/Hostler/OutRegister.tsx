@@ -10,10 +10,11 @@ import {
 	Modal,
 	TextInput,
 	Button,
-	Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
+import SuccessAlert from "../Components/SuccessAlert";
+import ErrorAlert from "../Components/ErrorAlert";
 
 const HOutRegister = () => {
 	const { localhost, cookie } = useStore();
@@ -25,6 +26,10 @@ const HOutRegister = () => {
 	const [purpose, setPurpose] = useState(""); // For purpose input
 	const [modalVisible, setModalVisible] = useState(false); // Modal state for opening entry
 	const [selectedEntry, setSelectedEntry] = useState(null); // To store the entry to be closed
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
 
 	const getIP = async () => {
 		try {
@@ -64,15 +69,16 @@ const HOutRegister = () => {
 
 	// Open a new entry
 	const openEntry = async () => {
-		if (localhost !== ip) {
-			Alert.alert(
-				"Error",
-				"You are not authorized to open an entry. Connect to Hostel Wi-Fi to procide further."
-			);
+		if (!purpose.trim()) {
+			setAlertMessage("Please provide a purpose.");
+			setAlert(true);
 			return;
 		}
-		if (!purpose.trim()) {
-			alert("Please provide a purpose.");
+		if (localhost !== ip) {
+			setAlertMessage(
+				"You are not authorized to open an entry. Connect to Hostel Wi-Fi to procide further."
+			);
+			setAlert(true);
 			return;
 		}
 
@@ -94,28 +100,22 @@ const HOutRegister = () => {
 				}
 			);
 
-			// Log response for debugging
-			console.log("Response status:", response.status);
-
+			const result = await response.json();
 			// Check if response is OK
 			if (!response.ok) {
-				const errorMessage = `Server responded with ${response.status}`;
-				console.error(errorMessage);
-				throw new Error(errorMessage);
+				throw new Error(
+					result.message || "Failed to open entry. Please try again."
+				);
 			}
 
-			// Parse JSON response safely
-			const result = await response.json();
-			// alert(result.message || "Entry opened successfully.");
-
-			// Reset modal and input only on success
 			setModalVisible(false);
 			setPurpose("");
 			fetchEntries(); // Refresh the list
 		} catch (error) {
 			// Log error for debugging
 			console.error("Error in openEntry:", error);
-			alert("Error: " + error.message);
+			setAlertMessage(error.message);
+			setAlert(true);
 		} finally {
 			setOpen(false); // Reset loading state
 		}
@@ -124,10 +124,10 @@ const HOutRegister = () => {
 	// Close an existing entry
 	const closeEntry = async (entryId) => {
 		if (localhost !== ip) {
-			Alert.alert(
-				"Error",
+			setAlertMessage(
 				"You are not authorized to close an entry. Connect to Hostel Wi-Fi to procide further."
 			);
+			setAlert(true);
 			return;
 		}
 		setClose(true); // Show the confirmation modal
@@ -142,12 +142,16 @@ const HOutRegister = () => {
 					},
 				}
 			);
-			if (!response.ok) throw new Error("Failed to close entry.");
 			const result = await response.json();
+			if (!response.ok)
+				throw new Error(
+					result.message || "Failed to close entry. Please try again."
+				);
 			setSelectedEntry(null); // Close the confirmation modal
 			fetchEntries(); // Refresh the list
 		} catch (error) {
-			alert("Error: " + error.message);
+			setAlertMessage(error.message);
+			setAlert(true);
 		} finally {
 			setClose(false);
 		}
@@ -215,6 +219,16 @@ const HOutRegister = () => {
 							<Text style={styles.openButtonText}>Going Out</Text>
 						</TouchableOpacity>
 
+						<ErrorAlert
+							message={alertMessage}
+							alert={alert}
+							setAlert={setAlert}
+						/>
+						<SuccessAlert
+							message={successMessage}
+							success={success}
+							setSuccess={setSuccess}
+						/>
 						{/* Modal for Open Entry */}
 						<Modal
 							visible={modalVisible}
@@ -271,57 +285,64 @@ const HOutRegister = () => {
 							transparent={true}
 							onRequestClose={() => setSelectedEntry(null)}
 						>
-							<View style={styles.modalContainer}>
-								<View style={styles.modalContent}>
-									<Text style={styles.modalTitle}>
-										Close Entry Confirmation
-									</Text>
-									<Text style={styles.text}>
-										Are you sure you want to close the entry
-										for{" "}
-										<Text style={styles.boldText}>
-											{selectedEntry?.purpose}
+							<TouchableWithoutFeedback
+								onPress={() => setSelectedEntry(null)}
+							>
+								<View style={styles.modalContainer}>
+									<View style={styles.modalContent}>
+										<Text style={styles.modalTitle}>
+											Close Entry Confirmation
 										</Text>
-										?
-									</Text>
+										<Text style={styles.text}>
+											Are you sure you want to close the
+											entry for{" "}
+											<Text style={styles.boldText}>
+												{selectedEntry?.purpose}
+											</Text>
+											?
+										</Text>
 
-									{close ? (
-										<View
-											style={[
-												styles.buttonContainer,
-												{
-													alignItems: "center",
-													justifyContent: "center",
-												},
-											]}
-										>
-											<ActivityIndicator
-												size="large"
-												color="#2cb5a0"
-											/>
-										</View>
-									) : (
-										<View style={styles.buttonContainer}>
-											<Button
-												title="Cancel"
-												color="red"
-												onPress={() =>
-													setSelectedEntry(null)
-												}
-											/>
-											<Button
-												title="Confirm"
-												color="#2cb5a0"
-												onPress={() =>
-													closeEntry(
-														selectedEntry?._id
-													)
-												}
-											/>
-										</View>
-									)}
+										{close ? (
+											<View
+												style={[
+													styles.buttonContainer,
+													{
+														alignItems: "center",
+														justifyContent:
+															"center",
+													},
+												]}
+											>
+												<ActivityIndicator
+													size="large"
+													color="#2cb5a0"
+												/>
+											</View>
+										) : (
+											<View
+												style={styles.buttonContainer}
+											>
+												<TouchableOpacity
+													style={styles.submitButton}
+													onPress={() =>
+														closeEntry(
+															selectedEntry?._id
+														)
+													}
+												>
+													<Text
+														style={
+															styles.submitButtonText
+														}
+													>
+														Confirm
+													</Text>
+												</TouchableOpacity>
+											</View>
+										)}
+									</View>
 								</View>
-							</View>
+							</TouchableWithoutFeedback>
 						</Modal>
 					</>
 				)}

@@ -43,7 +43,6 @@ const ViewAttendance = () => {
 			adjustedDate.setHours(18, 30, 0, 0); // Set time to midnight
 
 			const formattedDate = adjustedDate.toISOString().split("T")[0]; // Convert to "yyyy-mm-dd" format (date only)
-			console.log(formattedDate);
 			const response = await fetch(
 				`http://${localhost}:3000/api/warden/getHostlers`, // Make sure this endpoint is correct
 				{
