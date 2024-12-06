@@ -6,6 +6,7 @@ import PrivateGrivance from "../Schemas/PrivateGrivance.model.js";
 import PublicGrivance from "../Schemas/PublicGrivance.model.js";
 import Leave from "../Schemas/Leave.model.js";
 import OutRegister from "../Schemas/OutRegister.model.js";
+import IP from "../Schemas/IP.model.js";
 
 export const getHostlers = async (req, res) => {
 	try {
@@ -683,36 +684,44 @@ export const getAttendance = async (req, res) => {
     }
 };
 
-import fs from 'fs';
-const filePath = './ip.txt';  // Adjusted to use a consistent relative path
 
 export const changeIP = async (req, res) => {
   try {
     const warden = req.warden;
 
     if (!warden) {
-      return res.status(401).json({ message: "Unauthorised-no Warden Provided" });
+      return res.status(401).json({ message: "Unauthorized - no Warden Provided" });
     }
 
     const { localhost } = req.body;
+
     if (!localhost) {
       return res.status(400).json({ message: "IP is required" });
     }
 
-    // Read the existing IP from the file if available
-    let ip = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+    console.log(`Received localhost: ${localhost}`);
 
-    // Change the IP to the one provided
-    ip = localhost;
+    // Check if an IP record already exists
+    let ipRecord = await IP.findOne(); // Get the first matching IP record
 
-    // Persist the new IP to the file
-    fs.writeFileSync(filePath, ip);
+    if (!ipRecord) {
+      // Create a new IP entry if none exists
+      ipRecord = new IP({ ip: localhost });
 
-    console.log(`Changing IP to ${ip}`);
-    res.json({ message: "IP changed successfully" });
+      await ipRecord.save();
+      console.log(`New IP added: ${ipRecord.ip}`);
+      return res.status(200).json(ipRecord.ip);
+    }
+
+    // Update the existing IP entry
+    ipRecord.ip = localhost;
+    await ipRecord.save();
+
+    console.log(`IP changed successfully to: ${ipRecord.ip}`);
+    return res.status(200).json(ipRecord);
 
   } catch (error) {
     console.error(`Error: ${error.message}`);
-    res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 };
