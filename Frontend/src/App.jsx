@@ -7,7 +7,14 @@ import ProfilePage from './Pages/Profile/ProfilePage.jsx';
 import UploadMessMenu from './Pages/WardenDashboard/UploadMessMenu.jsx';
 import ViewMessMenu from './Pages/HostelerDashboard/ViewMessMenu.jsx';
 import HostelerDashboard from './Pages/HostelerDashboard/HostelerDashboard.jsx';
-
+import PublishNotice from './Pages/WardenDashboard/PublishNotice.jsx';
+import ViewNotice from './Pages/HostelerDashboard/ViewNotice.jsx';
+import PublicGrievances from './Pages/HostelerDashboard/PublicGrievances.jsx';
+import PrivateGrievances from './Pages/HostelerDashboard/PrivateGrievances.jsx';
+import ViewPublicGrievances from './Pages/WardenDashboard/ViewPublicGrievances.jsx';
+import ViewPrivateGrievances from './Pages/WardenDashboard/ViewPrivateGrievances.jsx';
+import OutRegister from './Pages/HostelerDashboard/OutRegister.jsx';
+import ViewOutRegister from './Pages/WardenDashboard/ViewOutRegister.jsx';
 function App() {
   return (
     <Router>
@@ -20,9 +27,20 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/upload-mess-menu" element={<UploadMessMenu />} />
         <Route path="/view-mess-menu" element={<ViewMessMenu />} />
+        <Route path="/publish-notice" element={<PublishNotice />} />
+        <Route path="/view-notice" element={<ViewNotice />} />
+        <Route path="/private-grievance" element={<PrivateGrievances />} />
+        <Route path="/public-grievance" element={<PublicGrievances />} />
+        <Route path="/view-private-grievance" element={<ViewPrivateGrievances />} />
+        <Route path="/view-public-grievance" element={<ViewPublicGrievances />} />
+        <Route path="/out-register" element={<OutRegister />} />
+        <Route path="/view-out-register" element={<ViewOutRegister />} />
       </Routes>
     </Router>
   );
 }
 
 export default App;
+
+
+
