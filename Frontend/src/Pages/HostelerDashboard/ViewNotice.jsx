@@ -15,7 +15,7 @@ const ViewNotice = () => {
 
   return (
     <>
-      <MiniVariantDrawer />
+      <MiniVariantDrawer title="Notices"/>
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5 overflow-auto">
         <div className="bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg rounded-lg p-8 max-w-lg w-full mt-20">
           <h1 className="text-2xl font-bold text-center text-teal-300 tracking-wider mb-6">

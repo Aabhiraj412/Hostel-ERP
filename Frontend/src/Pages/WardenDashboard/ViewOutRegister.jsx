@@ -53,7 +53,7 @@ const OutRegister = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6">
-      <MiniVariantDrawer />
+      <MiniVariantDrawer title="Hostel Out Register"/>
       <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">Hostel Out Register</h1>
       <div className="grid gap-6 mx-14 mt-10">
         {outingDetailsList.length === 0 ? (

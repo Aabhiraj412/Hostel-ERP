@@ -239,8 +239,7 @@ function MiniVariantDrawer({ title }) {
             <ListItem
               button
               key={index}
-              onClick={() => navigate(item.route)} // Navigate to the route
-            >
+              onClick={() => navigate(item.route)} >
               <ListItemIcon>{item.icon}</ListItemIcon>
               {open && <ListItemText primary={item.text} />}
             </ListItem>
