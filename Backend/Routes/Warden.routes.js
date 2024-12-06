@@ -18,9 +18,8 @@ import {
 } from "../Controllers/warden.controller.js";
 import wardenProtectRoute from "../Middlewares/Warden.middleware.js";
 import { getWarden } from "../Controllers/wardenAuth.controller.js";
-import { uploadNotice } from "../Controllers/notice.controller.js";
-import { getMessMenu, uploadMessMenu, getNotice } from "../Controllers/messmenu.controller.js";
-import { getNotices } from "../Controllers/hostler.controller.js";
+import { getNotice, getNotices, uploadNotice } from "../Controllers/notice.controller.js";
+import { getMessMenu, uploadMessMenu} from "../Controllers/messmenu.controller.js";
 
 const router = express.Router();
 
@@ -42,7 +41,7 @@ router.post(
 	setPrivateGrievance
 );
 
-router.post("/uploadnotice", uploadNotice);
+router.post("/uploadnotice", wardenProtectRoute ,uploadNotice);
 
 router.post("/uploadmessmenu", wardenProtectRoute, uploadMessMenu);
 
@@ -59,7 +58,7 @@ router.post("/attendanceof", wardenProtectRoute, getAttendance);
 
 router.get("/getmessmenu", getMessMenu);
 router.get("/getnotices", wardenProtectRoute, getNotices);
-router.get("/getnotice/:path",  getNotice);
+router.get("/getnotice/:id",  getNotice);
 
 router.post('/changeip', wardenProtectRoute, changeIP);
 
