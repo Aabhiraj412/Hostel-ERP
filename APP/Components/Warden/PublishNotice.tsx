@@ -29,7 +29,7 @@ const PublishNotice = () => {
 	const handleFilePick = async () => {
 		try {
 			const res = await DocumentPicker.getDocumentAsync({
-				type: "*/*",
+				type: "application/pdf",
 			});
 
 			// Ensure that the assets array is not empty
