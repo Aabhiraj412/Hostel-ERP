@@ -47,7 +47,7 @@ const PublicGrievances = () => {
 
   return (
     <>
-      <MiniVariantDrawer />
+      <MiniVariantDrawer title="Public Grievances"/>
       <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
         <div className="flex justify-between items-center">
           <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">Public Grievances</h1>

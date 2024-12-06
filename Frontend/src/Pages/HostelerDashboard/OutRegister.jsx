@@ -36,7 +36,7 @@ const OutRegister = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
-      <MiniVariantDrawer />
+      <MiniVariantDrawer title="Out Register"/>
       <div className="flex justify-between items-center">
         <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">Out Register</h1>
         <button

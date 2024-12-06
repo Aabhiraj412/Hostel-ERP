@@ -6,13 +6,13 @@ const PrivateGrievances = () => {
   const [grievances, setGrievances] = useState([]);
   const [selectedGrievance, setSelectedGrievance] = useState(null);
 
-  // Load grievances from session storage on component mount
+  
   useEffect(() => {
     const savedGrievances = JSON.parse(sessionStorage.getItem('privateGrievances')) || [];
     setGrievances(savedGrievances);
   }, []);
 
-  // Save grievances to session storage on change
+  
   useEffect(() => {
     sessionStorage.setItem('privateGrievances', JSON.stringify(grievances));
   }, [grievances]);
@@ -37,7 +37,7 @@ const PrivateGrievances = () => {
 
   return (
     <>
-      <MiniVariantDrawer />
+      <MiniVariantDrawer title="Private Grievances"/>
       <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
         <div className="flex justify-between items-center">
           <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">Private Grievances</h1>
