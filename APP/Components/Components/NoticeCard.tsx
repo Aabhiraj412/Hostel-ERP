@@ -26,9 +26,9 @@ interface NoticeCardProps {
 const NoticeCard: React.FC<NoticeCardProps> = ({ data }) => {
 	const { localhost } = useStore();
 	const onPress = () => {
-		const baseUrl = `http://${localhost}:3000/api/warden/getnotice/`; // Replace `localhost` with your server's base URL if different
+		const baseUrl = `https://${localhost}/api/warden/getnotice/`; // Replace `localhost` with your server's base URL if different
 		const url = data.pdf.split("/");
-		const fullUrl = data.pdf.startsWith("http")
+		const fullUrl = data.pdf.startsWith("https")
 			? url[1]
 			: `${baseUrl}${url[1]}`;
 		Linking.openURL(fullUrl).catch((err) =>

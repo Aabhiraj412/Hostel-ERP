@@ -43,7 +43,7 @@ const HLeaves = () => {
 	const fetchLeaves = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/Hostler/getleaves`,
+				`https://${localhost}/api/Hostler/getleaves`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -111,7 +111,7 @@ const HLeaves = () => {
 
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/applyleave`,
+				`https://${localhost}/api/hostler/applyleave`,
 				{
 					method: "POST",
 					headers: {

@@ -21,9 +21,8 @@ import {
 	// Fetch leave applications
 	const fetchLeaves = async () => {
 	  try {
-		console.log(`http://${localhost}/api/warden/getleaves`)
 		const response = await fetch(
-		  `http://${localhost}/api/warden/getleaves`,
+		  `https://${localhost}/api/warden/getleaves`,
 		  {
 			headers: { Cookie: cookie },
 		  }
@@ -42,7 +41,7 @@ import {
 	  setUpdating(true);
 	  try {
 		const response = await fetch(
-		  `http://${localhost}/api/warden/setleave/${leaveId}`,
+		  `https://${localhost}/api/warden/setleave/${leaveId}`,
 		  {
 			method: "POST",
 			headers: {

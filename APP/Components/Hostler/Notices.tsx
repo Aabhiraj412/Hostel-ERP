@@ -14,7 +14,7 @@ const HNotices = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/getnotices`,
+				`https://${localhost}/api/hostler/getnotices`,
 				{
 					headers: {
 						Cookie: cookie,
@@ -28,7 +28,6 @@ const HNotices = () => {
 				);
 			}
 			setData(data);
-			// console.log(data);
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -71,5 +70,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		padding: 20,
 	},
 });

@@ -82,7 +82,7 @@ const AddDetails = () => {
 
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/adddetails`,
+				`https://${localhost}/api/hostler/adddetails`,
 				{
 					method: "POST",
 					headers: {

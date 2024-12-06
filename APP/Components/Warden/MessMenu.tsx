@@ -37,7 +37,7 @@ const MessMenu = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/getmessmenu`,
+				`https://${localhost}/api/warden/getmessmenu`,
 				{
 					method: "GET",
 					headers: {
@@ -96,7 +96,7 @@ const MessMenu = () => {
 			});
 
 			const response = await fetch(
-				`http://${localhost}/api/warden/uploadmessmenu`,
+				`https://${localhost}/api/warden/uploadmessmenu`,
 				{
 					method: "POST",
 					headers: {
@@ -131,7 +131,7 @@ const MessMenu = () => {
 			setAlert(true);
 			return;
 		}
-
+		setLoading(true);
 		try {
 			// Request permissions to save files to the gallery
 			const { status } = await MediaLibrary.requestPermissionsAsync();
@@ -144,7 +144,7 @@ const MessMenu = () => {
 			// Download the image from the server to the app's cache directory
 			const downloadPath = `${FileSystem.cacheDirectory}mess_menu.png`;
 			const { uri } = await FileSystem.downloadAsync(
-				`http://${localhost}/api/warden/getmessmenu`,
+				`https://${localhost}/api/warden/getmessmenu`,
 				downloadPath
 			);
 
@@ -157,6 +157,9 @@ const MessMenu = () => {
 		} catch (error) {
 			setAlertMessage("Failed to save the menu to your gallery.");
 			setAlert(true);
+		}
+		finally{
+			setLoading(false);
 		}
 	};
 

@@ -6,7 +6,6 @@ import {
 	Keyboard,
 	Modal,
 	TextInput,
-	Button,
 	Text,
 	TouchableOpacity,
 	ActivityIndicator,
@@ -77,7 +76,7 @@ const HostlerDash = () => {
 		setMark(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/getip`,
+				`https://${localhost}/api/hostler/getip`,
 				{
 					method: "GET",
 					headers: {
@@ -97,7 +96,7 @@ const HostlerDash = () => {
 			if (testlocalhost === ip) {
 				// Proceed to mark attendance
 				const markResponse = await fetch(
-					`http://${localhost}/api/hostler/markattendance`,
+					`https://${localhost}/api/hostler/markattendance`,
 					{
 						method: "GET",
 						headers: {
@@ -143,7 +142,7 @@ const HostlerDash = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/setpass`,
+				`https://${localhost}/api/hostler/setpass`,
 				{
 					method: "POST",
 					headers: {

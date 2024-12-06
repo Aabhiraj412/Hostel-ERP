@@ -29,7 +29,7 @@ const PrivateGrievances = () => {
 	const fetchGrievances = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/getprivategrievance`,
+				`https://${localhost}/api/hostler/getprivategrievance`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -53,7 +53,7 @@ const PrivateGrievances = () => {
 		setAdding(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/privategrievance`,
+				`https://${localhost}/api/hostler/privategrievance`,
 				{
 					method: "POST",
 					headers: {

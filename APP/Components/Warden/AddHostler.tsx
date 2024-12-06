@@ -76,7 +76,7 @@ const AddHostler = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/addhostler`,
+				`https://${localhost}/api/warden/addhostler`,
 				{
 					method: "POST",
 					headers: {

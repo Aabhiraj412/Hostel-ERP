@@ -14,7 +14,7 @@ const Notices = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/getnotices`,
+				`https://${localhost}/api/warden/getnotices`,
 				{
 					headers: {
 						Cookie: cookie,
@@ -71,5 +71,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		padding: 20,
 	},
 });

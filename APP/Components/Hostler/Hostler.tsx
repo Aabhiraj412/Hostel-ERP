@@ -23,6 +23,7 @@ export default function Hostler() {
 	const [success, setSuccess] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
 	const [logout, setLogout] = useState(false);
+	const [loggingout, setLoggingout] = useState(false);
 
 	const hostlerData = data;
 
@@ -31,7 +32,7 @@ export default function Hostler() {
 		const fetchHostlerData = async () => {
 			try {
 				const response = await fetch(
-					`http://${localhost}/api/hostler/getdetails`,
+					`https://${localhost}/api/hostler/getdetails`,
 					{
 						method: "GET",
 						headers: {
@@ -85,9 +86,10 @@ export default function Hostler() {
 
 	// Logout handler
 	const Logout = async () => {
+		setLoggingout(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/auth/hostlerlogout`,
+				`https://${localhost}/api/auth/hostlerlogout`,
 				{
 					method: "POST",
 					headers: {
@@ -121,6 +123,8 @@ export default function Hostler() {
 				"An error occurred while logging out. Please try again."
 			);
 			setAlert(true);
+		} finally {
+			setLoggingout(false);
 		}
 	};
 
@@ -230,14 +234,21 @@ export default function Hostler() {
 							</Text>
 
 							<View style={styles.modalButtonContainer}>
-								<TouchableOpacity
-									style={styles.modalButton}
-									onPress={Logout}
-								>
-									<Text style={styles.modalButtonText}>
-										Confirm
-									</Text>
-								</TouchableOpacity>
+								{loggingout ? (
+									<ActivityIndicator
+										size="large"
+										color="#e74c3c"
+									/>
+								) : (
+									<TouchableOpacity
+										style={styles.modalButton}
+										onPress={Logout}
+									>
+										<Text style={styles.modalButtonText}>
+											Confirm
+										</Text>
+									</TouchableOpacity>
+								)}
 							</View>
 						</View>
 					</View>

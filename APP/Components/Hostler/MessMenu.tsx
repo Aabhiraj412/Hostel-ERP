@@ -35,7 +35,7 @@ const HMessMenu = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/getmessmenu`,
+				`https://${localhost}/api/warden/getmessmenu`,
 				{
 					method: "GET",
 					headers: {
@@ -77,7 +77,7 @@ const HMessMenu = () => {
 			setAlert(true);
 			return;
 		}
-
+		setLoading(true);
 		try {
 			// Request permissions to save files to the gallery
 			const { status } = await MediaLibrary.requestPermissionsAsync();
@@ -92,7 +92,7 @@ const HMessMenu = () => {
 			// Download the image from the server to the app's cache directory
 			const downloadPath = `${FileSystem.cacheDirectory}mess_menu.png`;
 			const { uri } = await FileSystem.downloadAsync(
-				`http://${localhost}/api/warden/getmessmenu`,
+				`https://${localhost}/api/warden/getmessmenu`,
 				downloadPath
 			);
 
@@ -107,6 +107,9 @@ const HMessMenu = () => {
 			setAlertMessage("Failed to save the menu to your gallery.");
 			setAlert(true);
 		}
+		finally {
+            setLoading(false);
+        }
 	};
 
 	useEffect(() => {

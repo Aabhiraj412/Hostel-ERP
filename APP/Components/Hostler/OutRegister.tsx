@@ -34,7 +34,7 @@ const HOutRegister = () => {
 	const getIP = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/getip`,
+				`https://${localhost}/api/hostler/getip`,
 				{
 					method: "GET",
 					headers: {
@@ -53,7 +53,7 @@ const HOutRegister = () => {
 	const fetchEntries = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/getentry`,
+				`https://${localhost}/api/hostler/getentry`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -89,7 +89,7 @@ const HOutRegister = () => {
 			console.log("Request body:", body);
 
 			const response = await fetch(
-				`http://${localhost}/api/hostler/openentry`,
+				`https://${localhost}/api/hostler/openentry`,
 				{
 					method: "POST",
 					headers: {
@@ -133,7 +133,7 @@ const HOutRegister = () => {
 		setClose(true); // Show the confirmation modal
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/closeentry`,
+				`https://${localhost}/api/hostler/closeentry`,
 				{
 					method: "GET",
 					headers: {

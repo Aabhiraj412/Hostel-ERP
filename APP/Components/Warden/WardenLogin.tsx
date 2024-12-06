@@ -24,7 +24,7 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 		setError(null);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/auth/wardenlogin`,
+				`https://${localhost}/api/auth/wardenlogin`,
 				{
 					method: "POST",
 					headers: {
@@ -104,8 +104,15 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 					</TouchableOpacity>
 				</View>
 
-				<Button title="Login" onPress={Login} color="#2cb5a0" />
-				{error && <Text style={styles.errorText}>Error: {error}</Text>}
+				<TouchableOpacity
+					style={styles.loginButton}
+					onPress={Login}
+					disabled={loading}
+					accessibilityLabel="Login Button"
+				>
+					<Text style={styles.buttonText}>Login</Text>
+				</TouchableOpacity>
+{error && <Text style={styles.errorText}>Error: {error}</Text>}
 			</View>
 		</View>
 	);
@@ -170,6 +177,19 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 		textAlign: "center",
 	},
+	loginButton: {
+		backgroundColor: "#2cb5a0",
+		paddingVertical: 12,
+		borderRadius: 5,
+		width: "100%",
+		alignItems: "center",
+	},
+	buttonText: {
+		color: "#fff",
+		fontSize: 20,
+		fontWeight: "bold",
+	},
+	
 });
 
 export default WardenLogin;
