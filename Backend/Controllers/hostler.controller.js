@@ -435,7 +435,7 @@ export const getIP = async (req, res) => {
             return res.status(404).json({ message: "IP not found" });
         }
 		
-		res.status(200).json({ ip });
+		res.status(200).json(ip);
 		console.log("IP fetched successfully:", ip.ip);
 	} catch (error) {
 		console.error(`Error: ${error.message}`);
