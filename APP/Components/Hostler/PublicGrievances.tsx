@@ -31,7 +31,7 @@ const PrivateGrievances = () => {
 	const fetchGrievances = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/getpublicgrievance`,
+				`https://${localhost}/api/hostler/getpublicgrievance`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -49,7 +49,7 @@ const PrivateGrievances = () => {
 		setUpvoting(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/publicgrievance/upvote/${selectedGrievance._id}`,
+				`https://${localhost}/api/hostler/publicgrievance/upvote/${selectedGrievance._id}`,
 				{
 					method: "GET",
 					headers: { Cookie: cookie },
@@ -82,7 +82,7 @@ const PrivateGrievances = () => {
 		setAdding(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/publicgrievance`,
+				`https://${localhost}/api/hostler/publicgrievance`,
 				{
 					method: "POST",
 					headers: {
