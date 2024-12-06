@@ -10,7 +10,6 @@ import {
 	getEntry,
 	getIP,
 	getLeaves,
-	getNotices,
 	getPrivateGrievances,
 	getPublicGrievances,
 	markAttendence,
@@ -20,6 +19,7 @@ import {
 	setPass,
 	upvote,
 } from "../Controllers/hostler.controller.js";
+import { getNotice, getNotices } from "../Controllers/notice.controller.js";
 import { getMessMenu } from "../Controllers/messmenu.controller.js";
 
 const router = express.Router();
@@ -31,6 +31,8 @@ router.post("/adddetails", hostlerProtectRoute, addDetails);
 
 router.get("/getnotices", getNotices);
 router.get("/getmessmenu", getMessMenu);
+router.get("/getnotice/:id",  getNotice);
+
 
 router.post("/publicgrievance", hostlerProtectRoute, publicgrivance);
 router.get("/publicgrievance/upvote/:id", hostlerProtectRoute, upvote);
