@@ -5,6 +5,7 @@ import PrivateGrivance from "../Schemas/PrivateGrivance.model.js";
 import PublicGrivance from "../Schemas/PublicGrivance.model.js";
 import Leave from "../Schemas/Leave.model.js";
 import OutRegister from "../Schemas/OutRegister.model.js";
+import IP from "../Schemas/IP.model.js";
 
 export const publicgrivance = async (req, res) => {
 	console.log("publicgrivance called");
@@ -416,9 +417,7 @@ export const markAttendence = async (req, res) => {
 		console.error(`Error: ${error.message}`);
 		res.status(500).json({ message: "Server Error" });
 	}
-};
-import fs from "fs";
-const filePath = "./ip.txt"; // Path to the file storing the IP
+};// Path to the file storing the IP
 
 export const getIP = async (req, res) => {
 	try {
@@ -430,17 +429,14 @@ export const getIP = async (req, res) => {
 				.json({ message: "Unauthorized - No Hostler Provided" });
 		}
 
-		// Read the IP from the file if it exists
-		let ip = "";
-		if (fs.existsSync(filePath)) {
-			ip = fs.readFileSync(filePath, "utf8");
-		} else {
-			return res.status(404).json({ message: "IP not found" });
-		}
+		const ip = await IP.findOne();
 
-		// Send the IP back in the response
+		if (!ip) {
+            return res.status(404).json({ message: "IP not found" });
+        }
+		
 		res.status(200).json({ ip });
-		console.log("IP fetched successfully:", ip);
+		console.log("IP fetched successfully:", ip.ip);
 	} catch (error) {
 		console.error(`Error: ${error.message}`);
 		res.status(500).json({ message: "Server Error" });
