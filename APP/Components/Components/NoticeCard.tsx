@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
 	Text,
@@ -11,11 +10,10 @@ import useStore from "../../Store/Store";
 
 // Type for the notice data
 interface Notice {
+	_id: string;
 	title: string;
 	description: string;
-	pdf: string; // URL for the PDF file
 	createdAt: string; // Date string
-	[key: string]: any;
 }
 
 // Props for NoticeCard
@@ -25,13 +23,10 @@ interface NoticeCardProps {
 
 const NoticeCard: React.FC<NoticeCardProps> = ({ data }) => {
 	const { localhost } = useStore();
+
 	const onPress = () => {
-		const baseUrl = `https://${localhost}/api/warden/getnotice/`; // Replace `localhost` with your server's base URL if different
-		const url = data.pdf.split("/");
-		const fullUrl = data.pdf.startsWith("https")
-			? url[1]
-			: `${baseUrl}${url[1]}`;
-		Linking.openURL(fullUrl).catch((err) =>
+		const url = `https://${localhost}/api/warden/getnotice/${data._id}`;
+		Linking.openURL(url).catch((err) =>
 			console.error("Failed to open URL:", err)
 		);
 	};
@@ -51,6 +46,8 @@ const NoticeCard: React.FC<NoticeCardProps> = ({ data }) => {
 		</View>
 	);
 };
+
+export default NoticeCard;
 
 const styles = StyleSheet.create({
 	card: {
@@ -102,5 +99,3 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 	},
 });
-
-export default NoticeCard;
