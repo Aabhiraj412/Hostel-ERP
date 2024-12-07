@@ -15,6 +15,13 @@ import ViewPublicGrievances from './Pages/WardenDashboard/ViewPublicGrievances.j
 import ViewPrivateGrievances from './Pages/WardenDashboard/ViewPrivateGrievances.jsx';
 import OutRegister from './Pages/HostelerDashboard/OutRegister.jsx';
 import ViewOutRegister from './Pages/WardenDashboard/ViewOutRegister.jsx';
+import ApplyLeave from './Pages/HostelerDashboard/ApplyLeave.jsx';
+import ViewLeaves from './Pages/WardenDashboard/ViewLeaves.jsx'; 
+import ViewHosteler from './Pages/WardenDashboard/ViewHosteler.jsx';
+import AddHosteler from './Pages/WardenDashboard/AddHosteler.jsx';
+import FetchAttendance from './Pages/WardenDashboard/FetchAttendance.jsx';
+import './index.css';
+
 function App() {
   return (
     <Router>
@@ -35,6 +42,11 @@ function App() {
         <Route path="/view-public-grievance" element={<ViewPublicGrievances />} />
         <Route path="/out-register" element={<OutRegister />} />
         <Route path="/view-out-register" element={<ViewOutRegister />} />
+        <Route path="/apply-leave" element={<ApplyLeave />} />
+        <Route path="/view-leave" element={<ViewLeaves />} />
+        <Route path="/view-hosteler" element={<ViewHosteler />} />
+        <Route path="/add-hosteler" element={<AddHosteler />} />
+        <Route path="/fetch-attendance" element={<FetchAttendance />} />
       </Routes>
     </Router>
   );
