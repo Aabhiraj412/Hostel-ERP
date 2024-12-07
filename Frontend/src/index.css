@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Add this CSS to your global stylesheet */
+select option {
+    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+    backdrop-filter: blur(8px); /* Glassmorphic blur effect */
+    color: white; /* White text for readability */
+    border: none; /* No borders */
+  }
+  
+  select option:hover {
+    background-color: rgba(255, 255, 255, 0.4); /* Slightly darker hover effect */
+    color: black; /* Black text on hover */
+  }
+  

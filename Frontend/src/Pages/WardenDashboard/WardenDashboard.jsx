@@ -62,7 +62,7 @@ const WardenDashboard = () => {
       <MiniVariantDrawer title="Warden Dashboard" />
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
         {/* Grid Container */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-8 sm:mt-20">
           {dashboardItems.map((item, index) => (
             <GlassCard key={index}>
               <div style={{ color: 'white', marginBottom: '10px' }}>{item.icon}</div>

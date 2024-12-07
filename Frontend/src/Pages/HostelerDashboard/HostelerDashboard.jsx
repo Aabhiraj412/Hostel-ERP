@@ -54,7 +54,7 @@ const HostelerDashboard = () => {
       <MiniVariantDrawer title="Hosteler Dashboard" />
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
         {/* Grid Container */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:mt-20 mb-10">
           {dashboardItems.map((item, index) => (
             <GlassCard key={index}>
               {/* Icon */}
