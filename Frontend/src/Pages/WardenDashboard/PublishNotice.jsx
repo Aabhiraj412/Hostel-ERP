@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 
 const PublishNotice = () => {

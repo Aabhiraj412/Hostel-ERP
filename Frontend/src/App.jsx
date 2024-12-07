@@ -15,7 +15,18 @@ import ViewPublicGrievances from './Pages/WardenDashboard/ViewPublicGrievances.j
 import ViewPrivateGrievances from './Pages/WardenDashboard/ViewPrivateGrievances.jsx';
 import OutRegister from './Pages/HostelerDashboard/OutRegister.jsx';
 import ViewOutRegister from './Pages/WardenDashboard/ViewOutRegister.jsx';
+import useStore from '../Store/Store.js';
+import { useEffect } from 'react';
 function App() {
+  const {setLocalhost,localhost} = useStore();
+
+  useEffect(() => {
+    const hostname = window.location.hostname;
+    // setLocalhost(`hostel-erp-9w6h.onrender.com`);
+    setLocalhost(`${hostname}:3000`);
+    console.log(localhost);
+  }, [localhost, setLocalhost]);
+
   return (
     <Router>
       <Routes>

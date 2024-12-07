@@ -1,4 +1,3 @@
-import React from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 import { Card, styled, Typography } from '@mui/material';
 import {
