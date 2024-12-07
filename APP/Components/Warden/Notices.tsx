@@ -1,41 +1,50 @@
-import { StyleSheet, View } from "react-native";
 import React, { useEffect, useState } from "react";
+import {
+	StyleSheet,
+	View,
+	ActivityIndicator,
+	Text,
+	ScrollView,
+} from "react-native";
 import useStore from "../../Store/Store";
-import { ActivityIndicator } from "react-native";
 import NoticeCard from "../Components/NoticeCard";
-import { ScrollView } from "react-native-gesture-handler";
 
 const Notices = () => {
 	const { localhost, cookie } = useStore();
-	const [data, setData] = useState([]);
+	const [data, setData] = useState([]); // Initialize data as an empty array
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const getNotices = async () => {
 		setLoading(true);
+		setError(null); // Reset error before fetching
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/getnotices`,
+				`https://${localhost}/api/warden/getnotices`,
 				{
 					headers: {
 						Cookie: cookie,
 					},
 				}
 			);
-			const data = await response.json();
+			const result = await response.json();
+
+			// Handle unsuccessful responses
 			if (!response.ok) {
-				throw new Error(
-					data.message || "Unable to fetch Notices"
-				);
+				throw new Error(result.message || "Unable to fetch Notices");
 			}
-			setData(data);
-			// console.log(data);
-		} catch (error) {
-			console.error(error);
+
+			// Set the notices data
+			setData(result.notices || []);
+		} catch (err: any) {
+			console.error("Fetch Error:", err);
+			setError(err.message || "Failed to load notices");
 		} finally {
 			setLoading(false);
 		}
 	};
 
+	// Fetch notices when the component mounts
 	useEffect(() => {
 		getNotices();
 	}, []);
@@ -44,6 +53,22 @@ const Notices = () => {
 		return (
 			<View style={styles.loadingContainer}>
 				<ActivityIndicator size="large" color="#2cb5a0" />
+			</View>
+		);
+	}
+
+	if (error) {
+		return (
+			<View style={styles.loadingContainer}>
+				<Text style={styles.errorText}>{error}</Text>
+			</View>
+		);
+	}
+
+	if (!data.length) {
+		return (
+			<View style={styles.loadingContainer}>
+				<Text style={styles.noDataText}>No notices found.</Text>
 			</View>
 		);
 	}
@@ -62,7 +87,7 @@ const Notices = () => {
 export default Notices;
 
 const styles = StyleSheet.create({
-  container: {
+	container: {
 		flexGrow: 1,
 		padding: 20,
 		backgroundColor: "#f5f5f5",
@@ -71,5 +96,16 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		padding: 20,
+	},
+	errorText: {
+		color: "red",
+		fontSize: 16,
+		textAlign: "center",
+	},
+	noDataText: {
+		color: "#666",
+		fontSize: 16,
+		textAlign: "center",
 	},
 });

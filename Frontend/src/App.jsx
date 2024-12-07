@@ -22,7 +22,18 @@ import AddHosteler from './Pages/WardenDashboard/AddHosteler.jsx';
 import FetchAttendance from './Pages/WardenDashboard/FetchAttendance.jsx';
 import './index.css';
 
+import useStore from '../Store/Store.js';
+import { useEffect } from 'react';
 function App() {
+  const {setLocalhost,localhost} = useStore();
+
+  useEffect(() => {
+    const hostname = window.location.hostname;
+    // setLocalhost(`hostel-erp-9w6h.onrender.com`);
+    setLocalhost(`${hostname}:3000`);
+    console.log(localhost);
+  }, [localhost, setLocalhost]);
+
   return (
     <Router>
       <Routes>

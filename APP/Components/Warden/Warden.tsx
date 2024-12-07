@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, View, TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
+import {
+	Text,
+	StyleSheet,
+	View,
+	TouchableOpacity,
+	Modal,
+	TouchableWithoutFeedback,
+} from "react-native";
 import useStore from "../../Store/Store";
 import { useNavigation } from "@react-navigation/native";
 import SuccessAlert from "../Components/SuccessAlert";
 import ErrorAlert from "../Components/ErrorAlert";
+import { ActivityIndicator } from "react-native";
 
 export default function Warden() {
 	const { data, localhost, setCookie, setUser, setData } = useStore();
@@ -13,6 +21,7 @@ export default function Warden() {
 	const [success, setSuccess] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
 	const [logout, setLogout] = useState(false);
+	const [loggingout, setLoggingout] = useState(false);
 
 	const wardenData = data;
 
@@ -29,9 +38,10 @@ export default function Warden() {
 
 	// Logout handler
 	const Logout = async () => {
+		setLoggingout(true); // Set logging out to true to show loading indicator
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/auth/wardenlogout`,
+				`https://${localhost}/api/auth/wardenlogout`,
 				{
 					method: "POST",
 					headers: {
@@ -68,6 +78,8 @@ export default function Warden() {
 				"An error occurred while logging out. Please try again."
 			);
 			setAlert(true);
+		} finally {
+			setLoggingout(false);
 		}
 	};
 
@@ -87,7 +99,10 @@ export default function Warden() {
 				<Text style={styles.text}>Post: {wardenData.post}</Text>
 				<Text style={styles.text}>Address: {wardenData.address}</Text>
 			</View>
-			<TouchableOpacity style={styles.logoutButton} onPress={()=>setLogout(true)}>
+			<TouchableOpacity
+				style={styles.logoutButton}
+				onPress={() => setLogout(true)}
+			>
 				<Text style={styles.logoutText}>Logout</Text>
 			</TouchableOpacity>
 			<ErrorAlert
@@ -101,18 +116,22 @@ export default function Warden() {
 				setSuccess={setSuccess}
 			/>
 			<Modal animationType="slide" transparent={true} visible={logout}>
-					<TouchableWithoutFeedback onPress={() => setLogout(false)}>
-						<View style={styles.modalContainer}>
-							<View style={styles.modalContent}>
-								<Text style={styles.modalTitle}>
-									Log Out
-								</Text>
+				<TouchableWithoutFeedback onPress={() => setLogout(false)}>
+					<View style={styles.modalContainer}>
+						<View style={styles.modalContent}>
+							<Text style={styles.modalTitle}>Log Out</Text>
 
-								<Text style={styles.modalText}>
-									Are you sure you want to Logout?
-								</Text>
+							<Text style={styles.modalText}>
+								Are you sure you want to Logout?
+							</Text>
 
-								<View style={styles.modalButtonContainer}>
+							<View style={styles.modalButtonContainer}>
+								{loggingout ? (
+									<ActivityIndicator
+										size="large"
+										color="#e74c3c"
+									/>
+								) : (
 									<TouchableOpacity
 										style={styles.modalButton}
 										onPress={Logout}
@@ -121,11 +140,12 @@ export default function Warden() {
 											Confirm
 										</Text>
 									</TouchableOpacity>
-								</View>
+								)}
 							</View>
 						</View>
-					</TouchableWithoutFeedback>
-				</Modal>
+					</View>
+				</TouchableWithoutFeedback>
+			</Modal>
 		</View>
 	);
 }

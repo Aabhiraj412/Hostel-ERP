@@ -1,4 +1,3 @@
-import React from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 import { styled, Card, Typography } from '@mui/material';
 import {
@@ -23,7 +22,7 @@ const GlassCard = styled(Card)`
   flex-direction: column;
   justify-content: center;   /* Center content horizontally */
   align-items: center;       /* Center content vertically */
-  text-align: center;
+  text-align: center; /* Center content horizontally */
   background: rgba(255, 255, 255, 0.2);  /* Light transparent background */
   backdrop-filter: blur(10px);    /* Blur effect for glassmorphism */
   -webkit-backdrop-filter: blur(10px);  /* Safari support for blur effect */

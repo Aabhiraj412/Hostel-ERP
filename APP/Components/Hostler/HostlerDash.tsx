@@ -6,7 +6,6 @@ import {
 	Keyboard,
 	Modal,
 	TextInput,
-	Button,
 	Text,
 	TouchableOpacity,
 	ActivityIndicator,
@@ -21,7 +20,7 @@ import SuccessAlert from "../Components/SuccessAlert";
 
 const HostlerDash = () => {
 	const navigation = useNavigation<any>();
-	const { localhost, cookie, data, setData } = useStore();
+	const { localhost, cookie, data, setData, testlocalhost } = useStore();
 	const [loading, setLoading] = useState(false);
 	const [check, setCheck] = useState(true);
 	const [modalVisible, setModalVisible] = useState(false);
@@ -77,7 +76,7 @@ const HostlerDash = () => {
 		setMark(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/getip`,
+				`https://${localhost}/api/hostler/getip`,
 				{
 					method: "GET",
 					headers: {
@@ -94,10 +93,10 @@ const HostlerDash = () => {
 			const { ip } = await response.json();
 
 			// Check if the IP address matches 'localhost'
-			if (ip === localhost) {
+			if (testlocalhost === ip) {
 				// Proceed to mark attendance
 				const markResponse = await fetch(
-					`http://${localhost}:3000/api/hostler/markattendance`,
+					`https://${localhost}/api/hostler/markattendance`,
 					{
 						method: "GET",
 						headers: {
@@ -143,7 +142,7 @@ const HostlerDash = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/hostler/setpass`,
+				`https://${localhost}/api/hostler/setpass`,
 				{
 					method: "POST",
 					headers: {

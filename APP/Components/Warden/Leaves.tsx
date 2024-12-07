@@ -22,7 +22,7 @@ import {
 	const fetchLeaves = async () => {
 	  try {
 		const response = await fetch(
-		  `http://${localhost}:3000/api/warden/getleaves`,
+		  `https://${localhost}/api/warden/getleaves`,
 		  {
 			headers: { Cookie: cookie },
 		  }
@@ -41,7 +41,7 @@ import {
 	  setUpdating(true);
 	  try {
 		const response = await fetch(
-		  `http://${localhost}:3000/api/warden/setleave/${leaveId}`,
+		  `https://${localhost}/api/warden/setleave/${leaveId}`,
 		  {
 			method: "POST",
 			headers: {

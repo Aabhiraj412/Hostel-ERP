@@ -1,5 +1,28 @@
 {
-	"name": "Hostel ERP",
-	"slug": "Hostel ERP",
-	"plugins": ["expo-secure-store"]
+	"expo": {
+		"name": "Hostel ERP",
+		"slug": "hostel-erp",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./Assets/logo.png",
+		"splash": {
+			"image": "./Assets/logo.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#2cb5a0"
+		},
+		"plugins": ["expo-secure-store"],
+		"platforms": ["ios", "android"],
+		"ios": {
+			"bundleIdentifier": "com.abhiraj.hostel.erp"
+		},
+		"android": {
+			"package": "com.abhiraj.hostel.erp",
+			"permissions": ["INTERNET"]
+		},
+		"extra": {
+			"eas": {
+				"projectId": "8639fb1a-c960-4b95-a75f-fbb60ed22bf4"
+			}
+		}
+	}
 }
