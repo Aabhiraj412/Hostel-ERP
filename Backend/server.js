@@ -20,17 +20,20 @@ app.get("/", (req, res) => {
 app.use(express.json({ limit: "50mb" })); // For JSON payloads
 app.use(express.urlencoded({ extended: true, limit: "50mb" })); // For URL-encoded payloads
 
-// app.use(express.json());
 app.use(cookieParser());
+
+// Configure CORS to allow all origins
 app.use(
 	cors({
-		origin: "http://localhost:5173", // Your frontend's origin
-		credentials: true, // Allow cookies to be sent
+		origin: "*", // Allow all origins
+		credentials: true, // Allow cookies (Optional, requires specific origins)
 	})
 );
 
+// Remove Access-Control-Allow-Origin header middleware for specific origin
+// Allow all origins in response headers
 app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "http://localhost:5173"); // Your frontend's origin
+	res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
 	res.header(
 		"Access-Control-Allow-Headers",
 		"Origin, X-Requested-With, Content-Type, Accept"
@@ -40,11 +43,12 @@ app.use((req, res, next) => {
 	next();
 });
 
+// Routers
 app.use("/api/auth", authRouter);
 app.use("/api/warden", wardenRouter);
 app.use("/api/hostler", hostlerRouter);
 
-app.listen(PORT, (req, res) => {
+app.listen(PORT, () => {
 	console.log(`listening at port http://localhost:${PORT}`);
 	console.log(`env: ${process.env.NODE_ENV}`);
 	ConnectDB();
