@@ -191,7 +191,7 @@ const ViewPrivateGrievances = () => {
 						>
 							<div className="flex justify-between items-center mb-2">
 								<span className="text-sm">
-									{grievance.date}
+									{new Date(grievance.date).toLocaleDateString()}
 								</span>
 							</div>
 							<h2 className="text-xl font-bold">
