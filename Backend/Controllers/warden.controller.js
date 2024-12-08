@@ -362,7 +362,7 @@ export const addHostler = async (req, res) => {
 				from: process.env.Email,
 				to: email,
 				subject: "Registration in Hostel",
-				text: ` Hello ${name},
+				text: `Hello ${name},
 
 You have successfully registered in the Hostel Management System.
 Your details are as follows:

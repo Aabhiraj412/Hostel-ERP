@@ -10,10 +10,7 @@ const OutRegister = () => {
 	const [selectedStudent, setSelectedStudent] = useState(null);
 	const { localhost } = useStore();
 	const [loading, setLoading] = useState(true);
-	// const slideAnim = useRef(new Animated.Value(0)).current;
-
-	// Map outing data into the outingDetailsList with student lookup
-	// Mapping outing data into the outingDetailsList with student lookup
+	
 	useEffect(() => {
 		const fetchEntries = async () => {
 			setLoading(true);

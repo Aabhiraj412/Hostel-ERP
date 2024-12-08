@@ -1,6 +1,7 @@
 import express from "express";
 import {
 	addDetails,
+	forgetPass,
 	getHostler,
 } from "../Controllers/hostlerAuth.controller.js";
 import hostlerProtectRoute from "../Middlewares/Hostler.middleware.js";
@@ -52,5 +53,7 @@ router.get("/closeentry", hostlerProtectRoute, closeEntry);
 router.get("/getentry", hostlerProtectRoute, getEntry);
 
 router.get("/getip", hostlerProtectRoute, getIP);
+
+router.post("/forgetpass", forgetPass);
 
 export default router;
