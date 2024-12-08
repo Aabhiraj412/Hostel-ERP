@@ -3,14 +3,14 @@ import MiniVariantDrawer from "../../components/MiniVariantDrawer";
 import Select from "react-select";
 import SearchBar from "../../components/SearchBar";
 import HostelerCard from "../../components/HostelerCard";
-import Card from "@/components/Card"; // Import the Card component
+import Card from "@/components/Card"; 
 
 const ViewHosteler = () => {
   const [selectedHostel, setSelectedHostel] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedHosteler, setSelectedHosteler] = useState(null); // State to hold the selected hosteler for modal
+  const [selectedHosteler, setSelectedHosteler] = useState(null); 
 
-  // Sample hosteler data
+  
   const hostelers = [
     {
       id: 1,
@@ -39,7 +39,7 @@ const ViewHosteler = () => {
       course: "B.Tech",
       branch: "CSE",
     },
-    // other hostelers...
+   
   ];
 
   const hostelOptions = [

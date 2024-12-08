@@ -3,7 +3,6 @@ import MiniVariantDrawer from "../../components/MiniVariantDrawer";
 import { FaCheck, FaTimes } from "react-icons/fa";
 
 const ViewPublicGrievances = () => {
-  // Sample grievances data fetched from the hosteler page
   const initialGrievances = [
     {
       id: 1,

@@ -62,7 +62,7 @@ const OutRegister = () => {
           outingDetailsList.map((details) => (
             <div
               key={details.id}
-              onClick={() => handleCardClick(details.studentDetails)} // Pass student details to popup
+              onClick={() => handleCardClick(details.studentDetails)} 
               className="cursor-pointer"
             >
               <OutingDetailsCard outingDetails={details} />

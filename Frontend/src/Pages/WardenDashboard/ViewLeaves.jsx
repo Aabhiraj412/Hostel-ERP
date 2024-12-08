@@ -3,7 +3,7 @@ import { Card, styled } from "@mui/material";
 import MiniVariantDrawer from "../../components/MiniVariantDrawer";
 import { FaCheck, FaTimes } from "react-icons/fa";
 
-// Glassmorphic style for the card
+
 const GlassCard = styled(Card)`
   width: 350px;
   margin: 15px;
@@ -21,7 +21,7 @@ const GlassCard = styled(Card)`
 `;
 
 const FetchAttendance = () => {
-  // Data for students (used for the card layout)
+  
   const studentData = [
     {
       id: 1,
@@ -35,7 +35,7 @@ const FetchAttendance = () => {
       toDate: "2024-12-03",
       purpose: "Personal reasons",
       noOfDays: "3",
-      status: "Rejected", // Status can be: Pending, Approved, Rejected
+      status: "Rejected", 
     },
     {
       id: 2,
@@ -67,25 +67,25 @@ const FetchAttendance = () => {
     },
   ];
 
-  // Function to determine the status color
+  
   const getStatusColor = (status) => {
     switch (status) {
       case "Approved":
-        return "text-green-400"; // Green for approved
+        return "text-green-400"; 
       case "Rejected":
-        return "text-red-400"; // Red for rejected
+        return "text-red-400"; 
       case "Pending":
       default:
-        return "text-yellow-400"; // Yellow for pending
+        return "text-yellow-400"; 
     }
   };
 
-  // Handle Accept button click
+  
   const handleAccept = (id) => {
     alert(`Student ID: ${id} attendance marked as accepted.`);
   };
 
-  // Handle Reject button click
+ 
   const handleReject = (id) => {
     alert(`Student ID: ${id} attendance marked as rejected.`);
   };

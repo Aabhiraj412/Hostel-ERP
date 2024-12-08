@@ -3,12 +3,12 @@ import MiniVariantDrawer from "../../components/MiniVariantDrawer";
 import { useNavigate } from "react-router-dom";
 
 const PublishNotice = () => {
-  const [pdfFile, setPdfFile] = useState(null); // State to store uploaded PDF
-  const [title, setTitle] = useState(""); // State for notice title
-  const [description, setDescription] = useState(""); // State for notice description
-  const [showSuccess, setShowSuccess] = useState(false); // State for success pop-card
+  const [pdfFile, setPdfFile] = useState(null); 
+  const [title, setTitle] = useState(""); 
+  const [description, setDescription] = useState(""); 
+  const [showSuccess, setShowSuccess] = useState(false); 
   const fileInputRef = useRef(null);
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate(); 
 
   const handleUpload = (event) => {
     const file = event.target.files[0];
@@ -29,20 +29,20 @@ const PublishNotice = () => {
       return;
     }
 
-    // Simulate notice submission
+   
     console.log("Notice Submitted:", {
       title,
       description,
       pdfFileName: pdfFile.name,
     });
-    setShowSuccess(true); // Show success pop-card
+    setShowSuccess(true); 
     setTitle("");
     setDescription("");
     setPdfFile(null);
   };
 
   const handleViewNotice = () => {
-    navigate("/view-notice"); // Redirect to View Notice page
+    navigate("/view-notice"); 
   };
 
   return (
@@ -54,7 +54,7 @@ const PublishNotice = () => {
             Publish Notice
           </h1>
 
-          {/* Title and Description with Glassmorphic Effect */}
+          
           <div className="bg-black/30 backdrop-blur-md p-5 rounded-lg mb-6 border border-white/20">
             {/* Title Input */}
             <input

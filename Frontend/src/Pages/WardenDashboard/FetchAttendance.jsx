@@ -3,25 +3,25 @@ import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import Card from '@/components/Card'; // Assuming you have the Card component
+import Card from '@/components/Card'; 
 
 const FetchAttendance = () => {
   const [selectedHostel, setSelectedHostel] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [students, setStudents] = useState([]);
 
-  // Sample hosteler data
+ 
   const hostelOptions = [
     { value: "Aryabhatt", label: "Aryabhatt" },
     { value: "Sarojini", label: "Sarojini" },
     { value: "RN Tagore", label: "RN Tagore" },
   ];
 
-  // Function to simulate fetching student data based on selected hostel and date
+  
   const fetchAttendance = () => {
     if (!selectedHostel || !selectedDate) return;
 
-    // Sample data fetch based on selected hostel and date
+   
     const fetchedStudents = [
       {
         name: "Anamika Tiwari",
