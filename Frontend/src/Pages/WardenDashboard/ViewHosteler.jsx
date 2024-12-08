@@ -1,60 +1,80 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import MiniVariantDrawer from "../../components/MiniVariantDrawer";
 import Select from "react-select";
 import SearchBar from "../../components/SearchBar";
 import HostelerCard from "../../components/HostelerCard";
-import Card from "@/components/Card"; // Import the Card component
+import Card from "@/components/Card";
+import useStore from "../../../Store/Store";
+import ActivityIndicator from "../../components/ActivityIndicator";
 
 const ViewHosteler = () => {
-  const [selectedHostel, setSelectedHostel] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedHosteler, setSelectedHosteler] = useState(null); // State to hold the selected hosteler for modal
+  const { localhost } = useStore();
+  const [selectedHostel, setSelectedHostel] = useState(null); // Selected hostel
+  const [hostlers, setHostlers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(""); // Search query state
+  const [selectedHosteler, setSelectedHosteler] = useState(null); // For Popup
 
-  // Sample hosteler data
-  const hostelers = [
-    {
-      id: 1,
-      name: "Anamika Tiwari",
-      rollNumber: "2200461540015",
-      hostel: "Sarojini",
-      roomNumber: "301",
-      aadharNo: "XXXX",
-      gender: "Female",
-      fathersName: "Mr. JS Tiwari",
-      mothersName: "Mrs. Rekha Tiwari",
-      phone: "7317448853",
-      email: "anamika@gmail.com",
-      address: "Kanpur",
-      year: "3rd",
-      college: "MPEC",
-      bloodGroup: "B+",
-      dob: "2000-03-14",
-      localGuardian: "Mr. JS Tiwari",
-      localGuardianPhone: "1234567890",
-      localGuardianAddress: "Local Address",
-      fathersPhone: "9876543210",
-      mothersPhone: "9876543210",
-      fathersEmail: "father@xyz.com",
-      mothersEmail: "mother@xyz.com",
-      course: "B.Tech",
-      branch: "CSE",
-    },
-    // other hostelers...
-  ];
+  const fetchHostlers = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`http://${localhost}/api/warden/gethostlers`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        throw new Error(
+          errorResponse.message || "Failed to fetch hostelers. Please try again."
+        );
+      }
+      const data = await response.json();
+      setHostlers(data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    fetchHostlers();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center">
+        <ActivityIndicator size="large" color="#2cb5a0" />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="text-center">
+        <p className="text-red-600">Error: {error}</p>
+      </div>
+    );
+  }
+
+  // Dropdown options for hostel selection, including "All Hostels"
   const hostelOptions = [
-    { value: "Aryabhatt", label: "Aryabhatt" },
-    { value: "Sarojini", label: "Sarojini" },
-    { value: "RN Tagore", label: "RN Tagore" },
+    { label: "All Hostels", value: null },
+    ...Array.from(new Set(hostlers.map((hostler) => hostler.hostel))).map((hostel) => ({
+      label: hostel,
+      value: hostel,
+    })),
   ];
 
-  // Filtered list based on dropdown and search input
-  const filteredHostelers = hostelers.filter(
-    (hosteler) =>
-      (selectedHostel === null || hosteler.hostel === selectedHostel.value) &&
-      (hosteler.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        hosteler.rollNumber.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  // Filter hostelers by selected hostel and search query
+  const filteredHostlers = hostlers.filter((hostler) => {
+    const matchesHostel = !selectedHostel || hostler.hostel === selectedHostel.value;
+    const matchesQuery =
+      hostler.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      hostler.room_no?.toString().includes(searchQuery);
+    return matchesHostel && matchesQuery;
+  });
 
   // Close the modal when clicking the overlay
   const handleOverlayClick = (e) => {
@@ -66,9 +86,7 @@ const ViewHosteler = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6">
       <MiniVariantDrawer title="Hostelers Details" />
-      <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">
-        Hostelers Details
-      </h1>
+      <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">Hostelers Details</h1>
       <div className="mx-14 mt-10">
         {/* Dropdown */}
         <div className="mb-6">
@@ -114,17 +132,17 @@ const ViewHosteler = () => {
 
         {/* Hosteler Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-          {filteredHostelers.length === 0 ? (
+          {filteredHostlers.length === 0 ? (
             <p className="text-white col-span-full text-center text-lg font-bold">
               No hostelers found.
             </p>
           ) : (
-            filteredHostelers.map((hosteler) => (
+            filteredHostlers.map((hostler) => (
               <Card
-                key={hosteler.id}
-                onClick={() => setSelectedHosteler(hosteler)}
+                key={hostler.id}
+                onClick={() => setSelectedHosteler(hostler)}
               >
-                <HostelerCard hosteler={hosteler} />
+                <HostelerCard hosteler={hostler} />
               </Card>
             ))
           )}
@@ -138,32 +156,12 @@ const ViewHosteler = () => {
           onClick={handleOverlayClick}
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 mt-20 mb-8"
         >
-          <Card >
+          <Card>
             <h2 className="text-xl font-bold text-teal-300 mb-4">Student Details</h2>
             <p className="text-white"><strong>Name:</strong> {selectedHosteler.name}</p>
-            <p className="text-white"><strong>Roll No:</strong> {selectedHosteler.rollNumber}</p>
-            <p className="text-white"><strong>Phone:</strong> {selectedHosteler.phone}</p>
-            <p className="text-white"><strong>Hostel Name:</strong> {selectedHosteler.hostel}</p>
-            <p className="text-white"><strong>Room Number:</strong> {selectedHosteler.roomNumber}</p>
-            <p className="text-white"><strong>Aadhar No:</strong> {selectedHosteler.aadharNo}</p>
-            <p className="text-white"><strong>Gender:</strong> {selectedHosteler.gender}</p>
-            <p className="text-white"><strong>Father's Name:</strong> {selectedHosteler.fathersName}</p>
-            <p className="text-white"><strong>Mother's Name:</strong> {selectedHosteler.mothersName}</p>
-            <p className="text-white"><strong>Email:</strong> {selectedHosteler.email}</p>
-            <p className="text-white"><strong>Address:</strong> {selectedHosteler.address}</p>
-            <p className="text-white"><strong>Year:</strong> {selectedHosteler.year}</p>
-            <p className="text-white"><strong>College:</strong> {selectedHosteler.college}</p>
-            <p className="text-white"><strong>Blood Group:</strong> {selectedHosteler.bloodGroup}</p>
-            <p className="text-white"><strong>DOB:</strong> {selectedHosteler.dob}</p>
-            <p className="text-white"><strong>Local Guardian:</strong> {selectedHosteler.localGuardian}</p>
-            <p className="text-white"><strong>Local Guardian Phone:</strong> {selectedHosteler.localGuardianPhone}</p>
-            <p className="text-white"><strong>Local Guardian Address:</strong> {selectedHosteler.localGuardianAddress}</p>
-            <p className="text-white"><strong>Father's Phone:</strong> {selectedHosteler.fathersPhone}</p>
-            <p className="text-white"><strong>Mother's Phone:</strong> {selectedHosteler.mothersPhone}</p>
-            <p className="text-white"><strong>Father's Email:</strong> {selectedHosteler.fathersEmail}</p>
-            <p className="text-white"><strong>Mother's Email:</strong> {selectedHosteler.mothersEmail}</p>
-            <p className="text-white"><strong>Course:</strong> {selectedHosteler.course}</p>
-            <p className="text-white"><strong>Branch:</strong> {selectedHosteler.branch}</p>
+            <p className="text-white"><strong>Room No:</strong> {selectedHosteler.room_no}</p>
+            <p className="text-white"><strong>Phone:</strong> {selectedHosteler.phone_no}</p>
+            {/* Other details here */}
           </Card>
         </div>
       )}
