@@ -1,10 +1,10 @@
-import React, { useRef } from 'react';
+// import { useRef } from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 import menu from '@/assets/Notice.png';
 
 const ViewNotice = () => {
   const defaultMenuImage = menu; 
-  const fileInputRef = useRef(null);
+  // const fileInputRef = useRef(null);
 
   const handleDownload = () => {
     const link = document.createElement('a');

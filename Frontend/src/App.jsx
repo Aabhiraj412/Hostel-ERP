@@ -25,14 +25,16 @@ import './index.css';
 import useStore from '../Store/Store.js';
 import { useEffect } from 'react';
 function App() {
-  const {setLocalhost,localhost} = useStore();
+  const {setLocalhost,localhost,setTestLocalhost,testlocalhost} = useStore();
 
   useEffect(() => {
     const hostname = window.location.hostname;
     // setLocalhost(`hostel-erp-9w6h.onrender.com`);
     setLocalhost(`${hostname}:3000`);
+    setTestLocalhost(hostname);
     console.log(localhost);
-  }, [localhost, setLocalhost]);
+    console.log("TestLocalHost: ",testlocalhost);
+  }, [localhost, setLocalhost, setTestLocalhost, testlocalhost]);
 
   return (
     <Router>
