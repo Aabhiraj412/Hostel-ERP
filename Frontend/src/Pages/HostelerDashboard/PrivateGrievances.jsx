@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
-<<<<<<< HEAD
 import ActivityIndicator from '../../components/ActivityIndicator';
 import useStore from '../../../Store/Store';
 
@@ -48,15 +47,6 @@ const PrivateGrievances = () => {
     fetchdata()
   },[])
 
-=======
-
-const PrivateGrievances = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [grievances, setGrievances] = useState([]);
-  const [selectedGrievance, setSelectedGrievance] = useState(null);
-
-  
->>>>>>> Abhiraj
   useEffect(() => {
     const savedGrievances = JSON.parse(sessionStorage.getItem('privateGrievances')) || [];
     setGrievances(savedGrievances);
@@ -85,7 +75,6 @@ const PrivateGrievances = () => {
     toggleDrawer();
   };
 
-<<<<<<< HEAD
 if(loading){
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
@@ -96,8 +85,6 @@ if(loading){
   )
 }
 
-=======
->>>>>>> Abhiraj
   return (
     <>
       <MiniVariantDrawer title="Private Grievances"/>
