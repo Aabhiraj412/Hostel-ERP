@@ -45,7 +45,11 @@ const App: React.FC = () => {
 
 	useEffect(() => {
 		// Set to your remote server URL
+<<<<<<< HEAD
 		// setLocalhost("hostel-erp-9w6h.onrender.com");
+=======
+		setLocalhost("hostel-erp-9w6h.onrender.com");
+>>>>>>> Abhiraj
 
 		// Fetch the device's IPv4 address
 		NetworkInfo.getIPV4Address().then((ipv4) => {
@@ -61,7 +65,11 @@ const App: React.FC = () => {
 		if (hostUri) {
 			const fallbackLocalhost = hostUri.split(":")[0];
 			setTestLocalhost(fallbackLocalhost);
+<<<<<<< HEAD
 			setLocalhost(`${fallbackLocalhost}:3000`);
+=======
+			// setLocalhost(`${fallbackLocalhost}:3000`);
+>>>>>>> Abhiraj
 		}
 	}, [setLocalhost, setTestLocalhost]);
 

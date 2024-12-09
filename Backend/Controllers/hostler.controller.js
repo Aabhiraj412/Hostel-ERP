@@ -395,8 +395,9 @@ export const markAttendence = async (req, res) => {
 				.json({ message: "Attendance already marked" });
 
 		// Mark attendance
-		hostler.present_on.push(`${attendanceDate}T18:30:00.000Z`); // Store the full ISO string with time
-		console.log("Updated Attendance Dates: ", hostler.present_on);
+		hostler.present_on.push(`${date.toLocaleDateString(
+			"en-CA"
+		)}T18:30:00.000Z`); // Store the full ISO string with time
 
 		await hostler.save();
 

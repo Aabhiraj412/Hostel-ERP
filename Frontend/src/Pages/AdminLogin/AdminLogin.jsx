@@ -62,8 +62,11 @@ const AdminLogin = () => {
 	return (
 		<div
 			className="min-h-screen flex items-center justify-center"
+<<<<<<< HEAD
 
 			
+=======
+>>>>>>> Abhiraj
 			style={{
 				background:
 					"radial-gradient(circle, rgba(0, 128, 128, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%)",
