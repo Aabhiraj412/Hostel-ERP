@@ -38,7 +38,7 @@ const FetchAttendance = () => {
 		setErrorMessage("");
 
 		const localFormattedDate = `${date.toLocaleDateString(
-			"en-CA"
+			"en-CA",{ timeZone: "Asia/Kolkata" }
 		)}T18:30:00.000Z`;
 		setFormatedDate(localFormattedDate);
 

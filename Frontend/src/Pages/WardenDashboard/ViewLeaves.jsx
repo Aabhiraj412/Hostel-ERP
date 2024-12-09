@@ -30,6 +30,8 @@ const FetchAttendance = () => {
 	const [selectedLeave, setSelectedLeave] = useState(null);
 	const [studentDetails, setStudentDetails] = useState([]); // State for student details
 	const [updating, setUpdating] = useState(false);
+	const [error, setError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	// Fetch leave applications
 	const fetchLeaves = async () => {
@@ -42,11 +44,14 @@ const FetchAttendance = () => {
 				}
 			);
 
-			const data = await response.json();
-
 			if (!response.ok) {
-				throw new Error(data.message || "Unable to fetch entries");
+				const errorData = await response.json();
+				throw new Error(
+					errorData.message || "Unable to fetch entries."
+				);
 			}
+
+			const data = await response.json();
 
 			const students = await Promise.all(
 				data.map(async (entry) => {
@@ -61,9 +66,10 @@ const FetchAttendance = () => {
 
 						const studentData = await response.json();
 						if (!response.ok) {
+							const studentErrorData = await studentData.json();
 							throw new Error(
-								studentData.message ||
-									"Unable to fetch student details"
+								studentErrorData.message ||
+									"Unable to fetch student details."
 							);
 						}
 
@@ -99,8 +105,10 @@ const FetchAttendance = () => {
 				...prevDetails,
 				...validStudents,
 			]);
-		} catch (error) {
-			console.error("Error fetching entries:", error);
+		} catch (fetchError) {
+			console.error("Error fetching leaves:", fetchError);
+			setErrorMessage(fetchError.message || "Something went wrong.");
+			setError(true);
 		} finally {
 			setLoading(false);
 		}
@@ -110,7 +118,7 @@ const FetchAttendance = () => {
 	useEffect(() => {
 		fetchLeaves();
 		// console.log(studentDetails);
-	}, []);
+	}, [updating]);
 
 	// Function to determine the status color
 	const getStatusColor = (status) => {
@@ -158,8 +166,10 @@ const FetchAttendance = () => {
 			// 	)
 			// );
 			setSelectedLeave(null); // Close modal after updating
-		} catch (error) {
-			console.error("Error updating leave status:", error);
+		} catch (e) {
+			console.error("Error updating leave status:", e);
+			setErrorMessage(e);
+			setError(true);
 		} finally {
 			fetchLeaves();
 			setUpdating(false);
@@ -199,8 +209,10 @@ const FetchAttendance = () => {
 			// 	)
 			// );
 			setSelectedLeave(null); // Close modal after updating
-		} catch (error) {
-			console.error("Error updating leave status:", error);
+		} catch (e) {
+			console.error("Error updating leave status:", e);
+			setErrorMessage(e);
+			setError(true);
 		} finally {
 			setUpdating(false);
 		}
@@ -211,6 +223,17 @@ const FetchAttendance = () => {
 			<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5 pt-20">
 				<div className="flex flex-wrap justify-center gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3">
 					<ActivityIndicator />
+				</div>
+			</div>
+		);
+	}
+	if (error) {
+		return (
+			<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5 pt-20">
+				<div className="flex flex-wrap justify-center gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3">
+					<p className="text-red-500 text-center font-bold text-xl">
+						{errorMessage}
+					</p>
 				</div>
 			</div>
 		);

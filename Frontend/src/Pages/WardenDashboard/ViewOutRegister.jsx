@@ -10,7 +10,9 @@ const OutRegister = () => {
 	const [selectedStudent, setSelectedStudent] = useState(null);
 	const { localhost } = useStore();
 	const [loading, setLoading] = useState(true);
-	
+	const [error, setError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+
 	useEffect(() => {
 		const fetchEntries = async () => {
 			setLoading(true);
@@ -97,6 +99,8 @@ const OutRegister = () => {
 				setOutingDetailsList(outingDetailsList);
 			} catch (error) {
 				console.error("Error fetching entries:", error);
+				setErrorMessage(error.message);
+				setError(true);
 			} finally {
 				setLoading(false);
 			}
@@ -131,7 +135,11 @@ const OutRegister = () => {
 			</h1>
 
 			<div className="grid gap-6 mx-14 mt-10">
-				{outingDetailsList.length === 0 ? (
+				{error ? (
+					<p className="text-red-500 text-center font-bold text-xl">
+						{errorMessage}
+					</p>
+				) : outingDetailsList.length === 0 ? (
 					<p className="text-white text-center font-bold text-xl">
 						No outing details available.
 					</p>
