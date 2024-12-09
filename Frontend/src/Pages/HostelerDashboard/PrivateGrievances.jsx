@@ -1,12 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
+import ActivityIndicator from '../../components/ActivityIndicator';
+import useStore from '../../../Store/Store';
 
 const PrivateGrievances = () => {
+  const {localhost} = useStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [grievances, setGrievances] = useState([]);
   const [selectedGrievance, setSelectedGrievance] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error,setError] = useState("");
 
+  const fetchdata = async () =>{
+    setLoading(true)
+    try{
+      const response = await fetch(`http://${localhost}/api/hostler/getprivategrievance`,
+        {
+          method: "GET",
+          header: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include"
+        }
+      )
+      
+      const data = await response.json();
+
+      if(!response.ok){
+        throw new Error( data.message || "Unable to Fetch data from API")
+      }
+
+      setGrievances(data)
+      console.log(grievances)
+    }
+    catch(error){
+      setError(error)
+      console.log(error)
+    }
+    finally{
+      setLoading(false)
+    }
+  }
   
+
+  useEffect(()=>{
+    fetchdata()
+  },[])
+
   useEffect(() => {
     const savedGrievances = JSON.parse(sessionStorage.getItem('privateGrievances')) || [];
     setGrievances(savedGrievances);
@@ -34,6 +74,16 @@ const PrivateGrievances = () => {
     setGrievances([newGrievance, ...grievances]);
     toggleDrawer();
   };
+
+if(loading){
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
+        <div className="flex justify-center h-screen items-center">
+          <ActivityIndicator size='large' color="#0d9488"/>
+      </div>
+      </div>
+  )
+}
 
   return (
     <>
