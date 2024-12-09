@@ -8,10 +8,12 @@ import {
 	applyLeave,
 	closeEntry,
 	getEntry,
+	getIP,
 	getLeaves,
 	getNotices,
 	getPrivateGrievances,
 	getPublicGrievances,
+	markAttendence,
 	openEntry,
 	privateGrievance,
 	publicgrivance,
@@ -35,6 +37,8 @@ router.get("/publicgrievance/upvote/:id", hostlerProtectRoute, upvote);
 
 router.post("/privategrievance", hostlerProtectRoute, privateGrievance);
 
+router.get("/markattendance", hostlerProtectRoute, markAttendence);
+
 router.get("/getpublicgrievance", getPublicGrievances);
 router.get("/getprivategrievance", hostlerProtectRoute, getPrivateGrievances);
 
@@ -44,5 +48,7 @@ router.get("/getleaves", hostlerProtectRoute, getLeaves);
 router.post("/openentry", hostlerProtectRoute, openEntry);
 router.get("/closeentry", hostlerProtectRoute, closeEntry);
 router.get("/getentry", hostlerProtectRoute, getEntry);
+
+router.get("/getip", hostlerProtectRoute, getIP);
 
 export default router;
