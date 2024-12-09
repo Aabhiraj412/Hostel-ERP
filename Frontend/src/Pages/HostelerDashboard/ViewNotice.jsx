@@ -1,6 +1,6 @@
 import React from "react";
 import MiniVariantDrawer from "../../components/MiniVariantDrawer";
-import notice from "@/assets/GMAIL-AKTUZonals.pdf";
+import notice from "@/assets/noctice_for_hostel.pdf";
 
 const notices = [
   {

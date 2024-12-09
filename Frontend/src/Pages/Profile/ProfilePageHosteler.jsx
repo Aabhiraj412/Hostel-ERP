@@ -16,7 +16,7 @@ const GlassCard = styled(Card)`
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
   border-radius: 15px;
   color: white;
 `;
@@ -39,7 +39,7 @@ const ProfilePageHosteler = () => {
           variant="h5"
           style={{
             textAlign: "center",
-            marginBottom: "20px",
+            marginBottom: "16px",
             fontWeight: "bold",
             textTransform: "uppercase",
           }}
@@ -48,7 +48,7 @@ const ProfilePageHosteler = () => {
         </Typography>
 
         {/* Hosteler Information Section */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginLeft:"15px" }}>
           {[ 
             { label: "Name", value: "Abhay Gupta" },
             { label: "Roll No.", value: "2200461540002" },
@@ -68,7 +68,7 @@ const ProfilePageHosteler = () => {
               key={index}
               variant="body1"
               style={{
-                fontSize: "16px",
+                fontSize: "17px",
                 fontWeight: "500",
                 lineHeight: "1.5",
               }}
@@ -84,7 +84,7 @@ const ProfilePageHosteler = () => {
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "15px" }}>
           <Button label="Logout" onClick={handleLogout} />
           <Button label="Set Password" onClick={handleSetPassword} />
         </div>
