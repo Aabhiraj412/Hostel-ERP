@@ -217,7 +217,7 @@ const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 										Reset Password
 									</Text>
 								</TouchableOpacity>
-							)}{" "}
+							)}
 							{forerror && (
 								<Text style={styles.errorText}>{forerror}</Text>
 							)}
