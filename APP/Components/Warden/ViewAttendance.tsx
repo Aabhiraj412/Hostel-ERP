@@ -44,7 +44,7 @@ const ViewAttendance = () => {
 
 			const formattedDate = adjustedDate.toISOString().split("T")[0]; // Convert to "yyyy-mm-dd" format (date only)
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/getHostlers`, // Make sure this endpoint is correct
+				`https://${localhost}/api/warden/getHostlers`, // Make sure this endpoint is correct
 				{
 					method: "GET",
 					headers: {

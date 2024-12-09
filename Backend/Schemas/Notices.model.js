@@ -1,25 +1,29 @@
 import mongoose from "mongoose";
 
+const NoticeSchema = new mongoose.Schema(
+	{
+		title: {
+			type: String,
+			required: true,
+		},
+		description: {
+			type: String,
+			required: true,
+		},
+		pdf: {
+			type: Buffer,
+			required: true,
+		},
+		contentType: {
+			type: String,
+			required: true,
+		},
+	},
+	{
+		timestamps: true,
+	}
+);
 
-const NoticeSchema = new mongoose.Schema({
-    
-        title: {
-            type: String,
-            required: true
-        },
-        description: {
-            type: String,
-            required: true
-        },
-        pdf: {
-            type: String,
-            required: true
-        }
-    },
-    {
-        timestamps: true
-});
-
-const Notice = mongoose.model('Notice', NoticeSchema);
+const Notice = mongoose.model("Notice", NoticeSchema);
 
 export default Notice;

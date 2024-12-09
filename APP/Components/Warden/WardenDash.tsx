@@ -15,15 +15,17 @@ import useStore from "../../Store/Store";
 import ErrorAlert from "../Components/ErrorAlert";
 import SuccessAlert from "../Components/SuccessAlert";
 import { Modal } from "react-native";
+import { ActivityIndicator } from "react-native";
 
 const WardenDash = () => {
 	const navigation = useNavigation<any>();
-	const { localhost, cookie } = useStore();
+	const { localhost, cookie, testlocalhost } = useStore();
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 	const [success, setSuccess] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
 	const [ip, setIP] = useState(false);
+	const [changeIp, setChangeIp] = useState(false);
 
 	// Navigation handlers
 	const navigateTo = (route) => () => {
@@ -32,10 +34,10 @@ const WardenDash = () => {
 
 	const changeIP = async () => {
 		// Show a confirmation dialog
-		setIP(false);
+		setChangeIp(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}:3000/api/warden/changeip`,
+				`https://${localhost}/api/warden/changeip`,
 				{
 					method: "POST",
 					headers: {
@@ -43,7 +45,7 @@ const WardenDash = () => {
 						Cookie: cookie,
 					},
 					body: JSON.stringify({
-						localhost: localhost, // Send the localhost IP to the backend
+						localhost: testlocalhost, // Send the localhost IP to the backend
 					}),
 				}
 			);
@@ -69,6 +71,10 @@ const WardenDash = () => {
 			// Show an error alert if the update fails
 			setAlertMessage("Failed to update the Attendance IP.");
 		}
+		finally {
+			setIP(false);
+            setChangeIp(false);
+        }
 	};
 
 	return (
@@ -254,16 +260,20 @@ const WardenDash = () => {
 									Attendance IP?
 								</Text>
 
+
 								<View style={styles.modalButtonContainer}>
-									<TouchableOpacity
-										style={styles.modalButton}
-										onPress={changeIP}
-									>
-										<Text style={styles.modalButtonText}>
-											Confirm
-										</Text>
-									</TouchableOpacity>
-								</View>
+							{changeIp?
+							<ActivityIndicator size="large" color="#2cb5a0"/>
+							:
+								<TouchableOpacity
+								style={styles.modalButton}
+								onPress={changeIP}
+							>
+								<Text style={styles.modalButtonText}>
+									Confirm
+								</Text>
+							</TouchableOpacity>
+						}</View>
 							</View>
 						</View>
 					</TouchableWithoutFeedback>

@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
-import MiniVariantDrawer from "../../components/MiniVariantDrawer";
 import { useNavigate } from "react-router-dom";
+import { useState, useRef } from 'react';
+import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 
 const PublishNotice = () => {
   const [pdfFile, setPdfFile] = useState(null); 
