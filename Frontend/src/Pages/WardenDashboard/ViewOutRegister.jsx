@@ -10,6 +10,7 @@ const OutRegister = () => {
 	const [selectedStudent, setSelectedStudent] = useState(null);
 	const { localhost } = useStore();
 	const [loading, setLoading] = useState(true);
+	const routing = {title:"View Out Register",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 	// const slideAnim = useRef(new Animated.Value(0)).current;
 
 	// Map outing data into the outingDetailsList with student lookup
@@ -127,7 +128,7 @@ const OutRegister = () => {
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6">
-			<MiniVariantDrawer title="Hostel Out Register" />
+			<MiniVariantDrawer router={routing} />
 			<h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">
 				Hostel Out Register
 			</h1>

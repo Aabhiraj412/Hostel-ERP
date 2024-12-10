@@ -68,6 +68,7 @@ const AddHosteler = () => {
   const [selectedHostel, setSelectedHostel] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedGender, setSelectedGender] = useState(null);
+  const routing = {title:"Add New Hosteler",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   const hostelOptions = [
     { value: 'AryaBhatt Hostel', label: 'AryaBhatt Hostel' },
@@ -89,7 +90,7 @@ const AddHosteler = () => {
 
   return (
     <>
-      <MiniVariantDrawer />
+      <MiniVariantDrawer router={routing} />
       <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
         <GlassCard
           sx={{

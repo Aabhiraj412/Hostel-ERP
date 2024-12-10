@@ -20,6 +20,7 @@ const ViewPrivateGrievances = () => {
       date: "2024-12-04",
     },
   ];
+  const routing = {title:"View Private Grievances",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   const [grievances, setGrievances] = useState(initialGrievances);
 
@@ -49,7 +50,7 @@ const ViewPrivateGrievances = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6">
-      <MiniVariantDrawer title="Hostel Private Grievances" />
+      <MiniVariantDrawer router={routing} />
       <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">
         Private Grievances
       </h1>

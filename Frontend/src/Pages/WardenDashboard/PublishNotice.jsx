@@ -9,6 +9,7 @@ const PublishNotice = () => {
   const [showSuccess, setShowSuccess] = useState(false); 
   const fileInputRef = useRef(null);
   const navigate = useNavigate(); 
+  const routing = {title:"Publish Notice",Home: '/warden-dashboard', Profile: '/profile-warden', Attendance:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   const handleUpload = (event) => {
     const file = event.target.files[0];
@@ -47,7 +48,7 @@ const PublishNotice = () => {
 
   return (
     <>
-      <MiniVariantDrawer title="Publish Notice" />
+      <MiniVariantDrawer router={routing} />
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5">
         <div className="bg-white/20 backdrop-blur-md border border-white/30 shadow-lg rounded-lg p-8 max-w-lg w-full">
           <h1 className="text-2xl font-bold text-center text-teal-300 tracking-wider mb-6">

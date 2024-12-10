@@ -29,10 +29,11 @@ const ProfilePageHosteler = () => {
   const handleSetPassword = () => {
     alert("Redirecting to set password page!");
   };
+  const routing = {title:"Add details",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-6">
-      <MiniVariantDrawer title="Hosteler Profile" />
+      <MiniVariantDrawer router={routing} />
 
       <GlassCard>
         <Typography

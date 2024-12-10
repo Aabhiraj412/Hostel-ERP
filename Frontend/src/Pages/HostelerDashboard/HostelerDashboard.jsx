@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 import { Card, styled, Typography } from '@mui/material';
 import {
@@ -9,57 +10,80 @@ import {
   Lock,
   RestaurantMenu,
   Campaign,
+  PersonAdd,
 } from '@mui/icons-material';
+import AttendanceModal from '../../components/AttendanceModel';
+
+import { useNavigate } from 'react-router-dom';
 
 const GlassCard = styled(Card)`
-  width: 200px;
-  height: 200px;
+  width: 160px;
+  height: 160px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.2); /* Light transparent background */
-  backdrop-filter: blur(10px); /* Blur effect for glassmorphism */
-  -webkit-backdrop-filter: blur(10px); /* Safari support for blur effect */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Optional border for frosted look */
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Soft shadow to make it pop */
-  border-radius: 15px; /* Rounded corners for a smooth effect */
-  position: relative; /* Ensures the card is positioned above everything */
-  z-index: 10; /* Make sure it's above other elements */
-  transform: translateY(0); /* Default position */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for effects */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  position: relative;
+  z-index: 10;
+  transform: translateY(0);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
 
   &:hover {
-    transform: translateY(-10px); /* Slight upward shift for "pop-up" effect */
-    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+    transform: translateY(-10px);
+    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.2);
   }
 `;
 
 const HostelerDashboard = () => {
-  // Array of icons and labels
+  const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
+  const routing = {title:"Hosteler Dashboard",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
+
   const dashboardItems = [
-    { icon: <AccountCircle fontSize="large" />, label: 'Profile' },
+    { icon: <AccountCircle fontSize="large" />, label: 'Profile', route: '/profile-hosteler' },
     { icon: <TaskAlt fontSize="large" />, label: 'Mark Attendance' },
-    { icon: <CalendarToday fontSize="large" />, label: 'Leaves' },
-    { icon: <Assignment fontSize="large" />, label: 'Out Register' },
-    { icon: <HelpOutline fontSize="large" />, label: 'Public Grievances' },
-    { icon: <Lock fontSize="large" />, label: 'Private Grievances' },
-    { icon: <RestaurantMenu fontSize="large" />, label: 'Mess Menu' },
-    { icon: <Campaign fontSize="large" />, label: 'Notices' },
+    { icon: <CalendarToday fontSize="large" />, label: 'Leaves', route: '/apply-leave' },
+    { icon: <Assignment fontSize="large" />, label: 'Out Register', route: '/out-register' },
+    { icon: <HelpOutline fontSize="large" />, label: 'Public Grievances', route: '/public-grievance' },
+    { icon: <Lock fontSize="large" />, label: 'Private Grievances', route: '/private-grievance' },
+    { icon: <RestaurantMenu fontSize="large" />, label: 'Mess Menu', route: '/view-mess-menu' },
+    { icon: <Campaign fontSize="large" />, label: 'Notices', route: '/view-notice' },
+    { icon: <PersonAdd fontSize="large" />, label: 'Add Details', route: '/add-details' }, 
   ];
+
+  
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const handleMarkAttendance = () => {
+    console.log('Attendance marked');
+    handleCloseModal();
+  };
 
   return (
     <>
-      <MiniVariantDrawer title="Hosteler Dashboard" />
+      <MiniVariantDrawer router={routing} />
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
         {/* Grid Container */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:mt-20 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:mt-20 mb-10">
           {dashboardItems.map((item, index) => (
-            <GlassCard key={index}>
-              {/* Icon */}
+            <GlassCard
+              key={index}
+              onClick={
+                item.label === 'Mark Attendance'
+                  ? handleOpenModal
+                  : () => navigate(item.route)
+              }
+            >
               <div style={{ color: 'white', marginBottom: '10px' }}>{item.icon}</div>
-              {/* Label */}
               <Typography variant="body1" style={{ color: 'white', fontWeight: 'bold' }}>
                 {item.label}
               </Typography>
@@ -67,6 +91,12 @@ const HostelerDashboard = () => {
           ))}
         </div>
       </div>
+
+      <AttendanceModal
+        open={openModal}
+        onClose={handleCloseModal}
+        onMarkAttendance={handleMarkAttendance}
+      />
     </>
   );
 };

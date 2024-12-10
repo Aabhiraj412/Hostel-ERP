@@ -4,6 +4,7 @@ import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 const UploadMessMenu = () => {
   const [menuImage, setMenuImage] = useState(null);
   const fileInputRef = useRef(null);
+  const routing = {title:"Upload Mess Menu",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   const handleUpload = (event) => {
     const file = event.target.files[0];
@@ -27,7 +28,7 @@ const UploadMessMenu = () => {
 
   return (
     <>
-      <MiniVariantDrawer title="Upload Mess Menu"/>
+      <MiniVariantDrawer router={routing} />
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5">
         <div className="bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg rounded-lg p-8 max-w-lg w-full">
           <h1 className="text-2xl font-bold text-center text-teal-300 tracking-wider mb-6">

@@ -27,10 +27,11 @@ const ViewNotice = () => {
     link.download = "notice.pdf"; 
     link.click();
   };
+  const routing = {title:"Notices/Circulars",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   return (
     <>
-      <MiniVariantDrawer title="Notices" />
+      <MiniVariantDrawer router={routing} />
       <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-teal-700 to-black p-5 overflow-auto">
         <div className="bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg rounded-lg p-8 max-w-4xl  mt-20 mx-14">
           <h1 className="text-2xl font-bold text-center text-teal-300 tracking-wider mb-6">

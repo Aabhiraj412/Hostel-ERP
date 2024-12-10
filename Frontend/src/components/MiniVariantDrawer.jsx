@@ -62,7 +62,7 @@
 //               duration: theme.transitions.duration.leavingScreen,
 //             }),
 //           marginLeft: open ? drawerWidth : miniDrawerWidth,
-//           width: `calc(100% - ${open ? drawerWidth : miniDrawerWidth}px)`,
+//           width: calc(100% - ${open ? drawerWidth : miniDrawerWidth}px),
 //         }}
 //       >
 //         <Toolbar>
@@ -86,7 +86,7 @@
 //         sx={{
 //           width: open ? drawerWidth : miniDrawerWidth,
 //           flexShrink: 0,
-//           [`& .MuiDrawer-paper`]: {
+//           [& .MuiDrawer-paper]: {
 //             width: open ? drawerWidth : miniDrawerWidth,
 //             boxSizing: 'border-box',
 //             transition: (theme) =>
@@ -116,7 +116,7 @@
 // export default MiniVariantDrawer;
 
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import logo from "@/assets/whiteBlack.svg";
 import {
   AppBar,
@@ -146,11 +146,11 @@ const drawerWidth = 240;
 const miniDrawerWidth = 60;
 
 const GlassAppBar = styled(AppBar)`
-  background: rgba(255, 255, 255, 0.2); 
-  backdrop-filter: blur(10px);          
-  -webkit-backdrop-filter: blur(10px);  
-  border: 1px solid rgba(255, 255, 255, 0.3); 
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 `;
 
 const GlassDrawer = styled(Drawer)`
@@ -163,7 +163,7 @@ const GlassDrawer = styled(Drawer)`
   }
 `;
 
-function MiniVariantDrawer({ title }) {
+function MiniVariantDrawer(router) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -171,30 +171,33 @@ function MiniVariantDrawer({ title }) {
     setOpen(!open);
   };
 
+
+  console.log(router);
   const menuItems = [
-    { text: 'Home', icon: <HomeIcon />, route: '/' },
-    { text: 'Profile', icon: <PersonIcon />, route: '/profile' },
-    { text: 'Attendance', icon: <EventIcon />, route: '/attendance' },
-    { text: 'Notice', icon: <NotificationsIcon />, route: '/notice' },
-    { text: 'Menu', icon: <MenuBookIcon />, route: '/menu' },
+    { text: 'Home', icon: <HomeIcon />, route: router.router.Home },
+    { text: 'Profile', icon: <PersonIcon />, route: router.router.Profile },
+    { text: 'Attendance', icon: <EventIcon />, route: router.router.Attendence },
+    { text: 'Notice', icon: <NotificationsIcon />, route: router.router.Notice },
+    { text: 'Menu', icon: <MenuBookIcon />, route: router.router.Menu },
   ];
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <GlassAppBar
-        position="fixed"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          transition: (theme) =>
-            theme.transitions.create(['width', 'margin'], {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
-            }),
-          marginLeft: open ? drawerWidth : miniDrawerWidth,
-          width: `calc(100% - ${open ? drawerWidth : miniDrawerWidth}px)`,
-        }}
-      >
+  position="fixed"
+  sx={{
+    zIndex: (theme) => theme.zIndex.drawer + 1,
+    transition: (theme) =>
+      theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    marginLeft: open ? drawerWidth : miniDrawerWidth,
+    width: `calc(100% - ${open ? drawerWidth : miniDrawerWidth}px)`,
+  }}
+>
+
         <Toolbar>
           <IconButton
             aria-label="open drawer"
@@ -212,7 +215,7 @@ function MiniVariantDrawer({ title }) {
             noWrap
             sx={{ color: 'black', fontWeight: 'bold' }}
           >
-            {title}
+            {router.router.title}
           </Typography>
         </Toolbar>
       </GlassAppBar>
@@ -222,7 +225,7 @@ function MiniVariantDrawer({ title }) {
         sx={{
           width: open ? drawerWidth : miniDrawerWidth,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
+          '& .MuiDrawer-paper': {
             width: open ? drawerWidth : miniDrawerWidth,
             boxSizing: 'border-box',
             transition: (theme) =>
@@ -239,7 +242,8 @@ function MiniVariantDrawer({ title }) {
             <ListItem
               button
               key={index}
-              onClick={() => navigate(item.route)} >
+              onClick={() => navigate(item.route)}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               {open && <ListItemText primary={item.text} />}
             </ListItem>

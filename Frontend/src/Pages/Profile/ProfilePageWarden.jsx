@@ -25,6 +25,7 @@ const ProfilePageWarden = () => {
   const handleLogout = () => {
     alert("Logged out!");
   };
+  const routing = {title:"Warden dashboard",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   const handleSetPassword = () => {
     alert("Redirecting to set password page!");
@@ -32,7 +33,7 @@ const ProfilePageWarden = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-6">
-      <MiniVariantDrawer title="Warden Profile" />
+      <MiniVariantDrawer router={routing} />
 
       <GlassCard>
         <Typography

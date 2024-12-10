@@ -66,6 +66,7 @@ const FetchAttendance = () => {
       status: "Pending",
     },
   ];
+  const routing = {title:"View Leave Applications",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   
   const getStatusColor = (status) => {
@@ -92,7 +93,7 @@ const FetchAttendance = () => {
 
   return (
     <>
-      <MiniVariantDrawer title="Leave Applications" />
+      <MiniVariantDrawer router={routing} />
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5 pt-20">
         <div className="flex flex-wrap justify-center gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3">
         {studentData.map((student) => (

@@ -24,13 +24,13 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" })); // For URL-encod
 app.use(cookieParser());
 app.use(
 	cors({
-		origin: "http://localhost:5173", // Your frontend's origin
+		origin: "*", // Your frontend's origin
 		credentials: true, // Allow cookies to be sent
 	})
 );
 
 app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "http://localhost:5173"); // Your frontend's origin
+	res.header("Access-Control-Allow-Origin", "*"); // Your frontend's origin
 	res.header(
 		"Access-Control-Allow-Headers",
 		"Origin, X-Requested-With, Content-Type, Accept"

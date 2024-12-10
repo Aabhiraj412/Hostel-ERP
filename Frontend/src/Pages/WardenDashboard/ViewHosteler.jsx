@@ -9,7 +9,7 @@ const ViewHosteler = () => {
   const [selectedHostel, setSelectedHostel] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedHosteler, setSelectedHosteler] = useState(null); 
-
+  const routing = {title:"View Hostelers",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
   
   const hostelers = [
     {
@@ -65,7 +65,7 @@ const ViewHosteler = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6">
-      <MiniVariantDrawer title="Hostelers Details" />
+      <MiniVariantDrawer router={routing} />
       <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">
         Hostelers Details
       </h1>

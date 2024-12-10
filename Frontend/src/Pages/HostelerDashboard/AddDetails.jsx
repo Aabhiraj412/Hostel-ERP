@@ -65,6 +65,7 @@ const dropdownStyles = {
 
 
 const AddDetails = () => {
+  const routing = {title:"Add details",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
   const [selectedHostel, setSelectedHostel] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedGender, setSelectedGender] = useState(null);
@@ -89,7 +90,7 @@ const AddDetails = () => {
 
   return (
     <>
-      <MiniVariantDrawer />
+      <MiniVariantDrawer router={routing} />
       <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
         <GlassCard
           sx={{

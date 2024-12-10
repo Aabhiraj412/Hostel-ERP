@@ -6,6 +6,7 @@ const PublicGrievances = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [grievances, setGrievances] = useState([]);
   const [selectedGrievance, setSelectedGrievance] = useState(null);
+  const routing = {title:"Public Grievances",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   
   useEffect(() => {
@@ -47,7 +48,7 @@ const PublicGrievances = () => {
 
   return (
     <>
-      <MiniVariantDrawer title="Public Grievances"/>
+      <MiniVariantDrawer router={routing} />
       <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
         <div className="flex justify-between items-center">
           <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">Public Grievances</h1>

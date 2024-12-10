@@ -6,6 +6,7 @@ const OutRegister = () => {
   const [outingDetailsList, setOutingDetailsList] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [purpose, setPurpose] = useState("");
+  const routing = {title:"Out Register",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   useEffect(() => {
     const savedOutingDetails = JSON.parse(localStorage.getItem('outingDetails')) || [];
@@ -36,7 +37,7 @@ const OutRegister = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
-      <MiniVariantDrawer title="Out Register"/>
+      <MiniVariantDrawer router={routing} />
       <div className="flex justify-between items-center">
         <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">Out Register</h1>
         <button

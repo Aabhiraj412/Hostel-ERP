@@ -8,6 +8,7 @@ const ViewMessMenu = () => {
 	const { localhost } = useStore();
 	const [imageUri, setImageUri] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const routing = {title:"Mess Menu",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
 	useEffect(() => {
 		const fetchMessMenu = async () => {
@@ -57,7 +58,7 @@ const ViewMessMenu = () => {
 
 	return (
 		<>
-			<MiniVariantDrawer title="Mess Menu" />
+			<MiniVariantDrawer router={routing} />
 			<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5">
 				<div className="bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg rounded-lg p-8 max-w-lg w-full">
 					<h1 className="text-2xl font-bold text-center text-teal-300 tracking-wider mb-6">
