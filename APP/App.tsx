@@ -61,6 +61,7 @@ const App: React.FC = () => {
 		if (hostUri) {
 			const fallbackLocalhost = hostUri.split(":")[0];
 			setTestLocalhost(fallbackLocalhost);
+			// setLocalhost(`${fallbackLocalhost}:3000`);
 		}
 	}, [setLocalhost, setTestLocalhost]);
 

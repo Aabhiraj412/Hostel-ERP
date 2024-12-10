@@ -17,7 +17,7 @@ import {
 	updateRoom,
 } from "../Controllers/warden.controller.js";
 import wardenProtectRoute from "../Middlewares/Warden.middleware.js";
-import { getWarden } from "../Controllers/wardenAuth.controller.js";
+import { forgetPass, getWarden, resetPass } from "../Controllers/wardenAuth.controller.js";
 import { getNotice, getNotices, uploadNotice } from "../Controllers/notice.controller.js";
 import { getMessMenu, uploadMessMenu} from "../Controllers/messmenu.controller.js";
 
@@ -61,5 +61,7 @@ router.get("/getnotices", wardenProtectRoute, getNotices);
 router.get("/getnotice/:id",  getNotice);
 
 router.post('/changeip', wardenProtectRoute, changeIP);
+router.post('/forgetpass', forgetPass);
+router.post('/resetpass', wardenProtectRoute, resetPass);
 
 export default router;
