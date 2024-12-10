@@ -1,4 +1,5 @@
 import useStore from "../../Store/Store";
+import PropTypes from 'prop-types';
 
 const OutingDetailsCard = ({ outingDetails, ip, fetchEntries }) => {
   const { localhost, testlocalhost } = useStore();
@@ -56,6 +57,16 @@ const OutingDetailsCard = ({ outingDetails, ip, fetchEntries }) => {
       )}
     </div>
   );
+};
+OutingDetailsCard.propTypes = {
+  outingDetails: PropTypes.shape({
+    purpose: PropTypes.string.isRequired,
+    out_time: PropTypes.string.isRequired,
+    in_time: PropTypes.string,
+    _id: PropTypes.string.isRequired,
+  }).isRequired,
+  ip: PropTypes.string.isRequired,
+  fetchEntries: PropTypes.func.isRequired,
 };
 
 export default OutingDetailsCard;
