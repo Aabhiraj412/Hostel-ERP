@@ -62,6 +62,7 @@ function App() {
         <Route path="/add-hosteler" element={<AddHosteler />} />
         <Route path="/fetch-attendance" element={<FetchAttendance />} />
         <Route path="/add-details" element={<AddDetails />} />
+     
       </Routes>
     </Router>
   );

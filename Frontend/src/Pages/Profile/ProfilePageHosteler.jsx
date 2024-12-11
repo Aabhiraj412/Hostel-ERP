@@ -1,8 +1,20 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import useStore from "../../../Store/Store";
 import MiniVariantDrawer from "../../components/MiniVariantDrawer";
-import { Card, styled, Typography } from "@mui/material";
-import Button from "../../components/Button"; 
-
+import {
+	Card,
+	Typography,
+	Button,
+	DialogActions,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogContentText,
+	TextField,
+} from "@mui/material";
+import ActivityIndicator from "../../components/ActivityIndicator";
+import styled from "@emotion/styled";
+import { useNavigate } from "react-router-dom";
 
 const GlassCard = styled(Card)`
   width: 90%;
@@ -21,77 +33,259 @@ const GlassCard = styled(Card)`
   color: white;
 `;
 
+const CustomDialog = styled(Dialog)`
+	.MuiDialog-paper {
+		background: rgba(255, 255, 255, 0.2);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+		border-radius: 15px;
+	}
+`;
+
+
+
+const LogoutButton = styled(Button)`
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	font-weight: bold;
+`;
+
+const SetPasswordButton = styled(Button)`
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+	font-weight: bold;
+`;
+
 const ProfilePageHosteler = () => {
-  const handleLogout = () => {
-    alert("Logged out!");
-  };
+	const { data, localhost, cookie, setData, setUser, setCookie } = useStore();
+	const navigate = useNavigate();
+	const [loading, setLoading] = useState(true);
+	const [loggingOut, setLoggingOut] = useState(false);
+	const [open, setOpen] = useState(false);
+    const [dialog, setDialog] = useState(false);
+    const routing = {title:"Hosteler Profile", Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
-  const handleSetPassword = () => {
-    alert("Redirecting to set password page!");
-  };
-  const routing = {title:"Add details",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
+	const fetchHostlerData = async () => {
+		try {
+			console.log(cookie);
+			const response = await fetch(
+				`http://${localhost}/api/hostler/getdetails`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+				}
+			);
+			
+			console.log(response);
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-6">
-      <MiniVariantDrawer router={routing} />
+			const result = await response.json();
 
-      <GlassCard>
-        <Typography
-          variant="h5"
-          style={{
-            textAlign: "center",
-            marginBottom: "16px",
-            fontWeight: "bold",
-            textTransform: "uppercase",
-          }}
-        >
-          Profile SECTION
-        </Typography>
+			console.log(result);
+			if (!response.ok) {
+				throw new Error(
+					result.message || "Failed to fetch hostler data."
+				);
+			}
 
-        {/* Hosteler Information Section */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginLeft:"15px" }}>
-          {[ 
-            { label: "Name", value: "Abhay Gupta" },
-            { label: "Roll No.", value: "2200461540002" },
-            { label: "Aadhar No.", value: "84563289297" },
-            { label: "Gender", value: "Male" },
-            { label: "Father's Name", value: "Vipin Gupta" },
-            { label: "Mother's Name", value: "Manju Gupta" },
-            { label: "Phone No.", value: "9369274691" },
-            { label: "Email", value: "ag4081315@gmail.com" },
-            { label: "Address", value: "Hardoi" },
-            { label: "Year", value: "3rd" },
-            { label: "College", value: "MPEC" },
-            { label: "Hostel", value: "Aryabhatt" },
-            { label: "Room No.", value: "316" },
-          ].map((item, index) => (
-            <Typography
-              key={index}
-              variant="body1"
-              style={{
-                fontSize: "17px",
-                fontWeight: "500",
-                lineHeight: "1.5",
-              }}
-            >
-              <span style={{ color: "#80d4ff", fontWeight: "bold" }}>
-                {item.label}:
-              </span>{" "}
-              <span style={{ color: "#222222", fontWeight: "bold" }}>
-                {item.value}
-              </span>
-            </Typography>
-          ))}
-        </div>
+			setData(result);
+		} catch (error) {
+			console.error("Error fetching hostler data:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
+	
+	useEffect(() => {
+		fetchHostlerData();
+	}, [localhost, cookie, setData]);
 
-        {/* Action Buttons */}
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "15px" }}>
-          <Button label="Logout" onClick={handleLogout} />
-          <Button label="Set Password" onClick={handleSetPassword} />
-        </div>
-      </GlassCard>
-    </div>
-  );
+	const handleLogout = async () => {
+		setLoggingOut(true);
+		try {
+			const response = await fetch(
+				`http://${localhost}/api/auth/hostlerlogout`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+				}
+			);
+			
+			const result = await response.json();
+			if (!response.ok) {
+				throw new Error(result.message || "Failed to log out.");
+			}
+
+			setCookie(null);
+			setData(null);
+			setUser(null);
+			navigate("/");
+		} catch (error) {
+			console.error("Logout error:", error.message);
+		} finally {
+			setLoggingOut(false);
+		}
+	};
+
+	if (loading) {
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-teal-700 to-black">
+				<ActivityIndicator size="large" color="#2cb5a0" />
+			</div>
+		);
+	}
+
+	if (!data) {
+		return (
+			<>
+				<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
+                    <MiniVariantDrawer router={routing} />
+					<GlassCard>
+						<p className="text-center text-red-600">
+							No data available for the Hostler.
+						</p>
+					</GlassCard>
+				</div>
+			</>
+		);
+	}
+
+	const handleOpenDialog = () => setOpen(true);
+	const handleCloseDialog = () => setOpen(false);
+    const handleDialog1 = () => setDialog(true);
+    const handleDialog2 = () => setDialog(false);
+
+	const confirmLogout = () => {
+		handleLogout();
+		handleCloseDialog();
+	};
+
+	return (
+		<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
+			<MiniVariantDrawer router={routing} />
+			<GlassCard>
+				<Typography
+					variant="h4"
+					style={{
+						textAlign: "center",
+						marginBottom: "20px",
+						fontWeight: "bold",
+					}}
+				>
+					Hostler Details
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Name:</strong> {data.name}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Roll No:</strong> {data.roll_no}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Aadhar No:</strong> {data.aadhar}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Gender:</strong> {data.gender}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Father&apos;s Name:</strong> {data.fathers_name}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Mother&apos;s Name:</strong> {data.mothers_name}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Phone No:</strong> {data.phone_no}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Email:</strong> {data.email}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Address:</strong> {data.address}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Year:</strong> {data.year}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>College:</strong> {data.college}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Hostel:</strong> {data.hostel}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Room No:</strong> {data.room_no}
+				</Typography>
+
+				<SetPasswordButton
+					variant="contained"
+					color="primary"
+					onClick={handleDialog1}
+				>
+					Set Password
+				</SetPasswordButton>
+
+				<LogoutButton
+					variant="contained"
+					color="error"
+					onClick={handleOpenDialog}
+					disabled={loggingOut}
+				>
+					{loggingOut ? "Logging out..." : "Logout"}
+				</LogoutButton>
+			</GlassCard>
+
+			<CustomDialog open={dialog} onClose={handleDialog2}>
+				<DialogTitle>Set your password</DialogTitle>
+				<DialogContent>
+					<TextField
+						autoFocus
+						margin="dense"
+						label="Password"
+						type="password"
+						fullWidth
+						variant="outlined"
+						placeholder="Input password"
+					/>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleDialog2} color="primary">
+						Cancel
+					</Button>
+					<Button color="error">
+						Set Password
+					</Button>
+				</DialogActions>
+			</CustomDialog>
+
+			<CustomDialog open={open} onClose={handleCloseDialog}>
+				<DialogTitle>Confirm Logout</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						Are you sure you want to log out?
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleCloseDialog} color="primary">
+						Cancel
+					</Button>
+					<Button
+						onClick={confirmLogout}
+						color="error"
+						disabled={loggingOut}
+					>
+						{loggingOut ? "Logging out..." : "Logout"}
+					</Button>
+				</DialogActions>
+			</CustomDialog>
+		</div>
+	);
 };
 
 export default ProfilePageHosteler;
