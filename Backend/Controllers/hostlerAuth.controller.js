@@ -1,7 +1,8 @@
 import bcrypt from "bcryptjs";
+import nodemailer from "nodemailer";
+
 import Hostler from "../Schemas/Hostlers.model.js";
 import { generateHostlerToken } from "../Utils/GenerateToken.utils.js";
-
 
 export const hostlerlogin = async (req, res) => {
 	try {
@@ -119,6 +120,82 @@ export const getHostler = async (req, res) => {
 		const hostler = req.hostler;
 		res.status(200).json(hostler);
 		console.log("Hostler details fetched successfully");
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+		res.status(500).json({ message: "Server Error" });
+	}
+};
+
+export const forgetPass = async (req, res) => {
+	try {
+		const { user } = req.body;
+
+		if (!user) {
+			return res.status(400).json({ message: "All fields are required" });
+		}
+
+		const hostler = await Hostler.findOne({
+			$or: [
+				{ roll_no: user },
+				{ phone_no: user },
+				{ email: user },
+				{ aadhar: user },
+			],
+		});
+
+		if (!hostler) {
+			return res.status(400).json({ message: "Invalid Credentials" });
+		}
+
+		const temp_pass = Math.floor(
+			100000 + Math.random() * 900000
+		).toString();
+
+		const salt = await bcrypt.genSalt(10);
+		const temp_password = await bcrypt.hash(temp_pass, salt);
+		hostler.temp_pass = temp_password;
+		hostler.password = " ";
+
+		const transporter = nodemailer.createTransport({
+			service: "gmail",
+			auth: {
+				user: process.env.Email,
+				pass: process.env.Pass,
+			},
+		});
+		const mailOptions = {
+			from: process.env.Email,
+			to: hostler.email,
+			subject: "Password Reset",
+			text: `Hello ${hostler.name},
+
+It is to notify you that on your request a Temperary Password is Generated for you which is : ${temp_pass}.
+
+It is advised to change your password after logging in.
+
+Thank You
+Hostel ERP`,
+		};
+
+		try {
+			const emailResponse = await new Promise((resolve, reject) => {
+				transporter.sendMail(mailOptions, (error, info) => {
+					if (error) reject(error);
+					else resolve(info.response);
+				});
+			});
+			console.log("Email sent:", emailResponse);
+		} catch (emailError) {
+			console.error("Failed to send email:", emailError.message);
+			return res.status(500).json({ error: "Failed to send email." });
+		}
+
+		await hostler.save();
+		res.status(200).json({
+			message: "Temporary password sent to your email",
+		});
+
+		console.log("Temporary password sent successfully");
 	} catch (error) {
 		console.error(`Error: ${error.message}`);
 		res.status(500).json({ message: "Server Error" });

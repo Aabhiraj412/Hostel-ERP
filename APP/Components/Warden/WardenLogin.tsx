@@ -7,9 +7,12 @@ import {
 	TextInput,
 	View,
 	TouchableOpacity,
+	Modal,
 } from "react-native";
 import useStore from "../../Store/Store";
 import { FontAwesome } from "@expo/vector-icons";
+import SuccessAlert from "../Components/SuccessAlert";
+import { TouchableWithoutFeedback } from "react-native";
 
 const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 	const { setCookie, setUser, setData, localhost } = useStore();
@@ -17,7 +20,51 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [forerror, setForerror] = useState("");
+	const [forgetting, setForgetting] = useState(false);
 	const [passwordVisible, setPasswordVisible] = useState(false);
+	const [forget, setForget] = useState(false);
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
+
+	const ForgetPass = () => {
+		if (!userId) return setForerror("Please enter your UserID");
+
+		setForgetting(true);
+
+		fetch(`https://${localhost}/api/warden/forgetpass`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				user: userId,
+			}),
+		})
+			.then((response) => {
+				if (!response.ok) {
+					const errorResponse = response.json();
+					throw new Error(
+						errorResponse.message ||
+							"Failed to send password reset email."
+					);
+				}
+				setForget(false);
+				setSuccessMessage(
+					"Your Temperory Password has been sent to your email."
+				);
+				setSuccess(true);
+			})
+
+			.catch((error) => {
+				setForerror(error.message);
+			})
+
+			.finally(() => {
+				setForgetting(false);
+			});
+	};
+
 
 	const Login = async () => {
 		setLoading(true);
@@ -68,7 +115,7 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 			</View>
 		);
 	}
-	
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
@@ -112,8 +159,71 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 				>
 					<Text style={styles.buttonText}>Login</Text>
 				</TouchableOpacity>
-{error && <Text style={styles.errorText}>Error: {error}</Text>}
+				<TouchableOpacity
+					style={styles.loginButton}
+					onPress={() => {
+						setForget(true);
+					}}
+					disabled={loading}
+					accessibilityLabel="Login Button"
+				>
+					<Text style={styles.buttonText}>Forget Password</Text>
+				</TouchableOpacity>
+
+				{error && <Text style={styles.errorText}>{error}</Text>}
 			</View>
+			<Modal
+				visible={forget}
+				animationType="slide"
+				transparent={true}
+				onRequestClose={() => setForget(false)}
+			>
+				<TouchableWithoutFeedback onPress={() => setForget(false)}>
+					<View style={styles.modalContainer}>
+						<View style={styles.modalContent}>
+							<Text style={styles.modalTitle}>
+								Forget Password
+							</Text>
+							<Text style={styles.modalText}>
+								Please enter your UserID to receive a password
+								reset link.
+							</Text>
+							<TextInput
+								placeholder="UserID"
+								style={styles.input}
+								onChangeText={(e) => setUserId(e)}
+								value={userId}
+								accessibilityLabel="Enter your User ID"
+							/>
+							{forgetting ? (
+								<ActivityIndicator
+									size="large"
+									color="#2cb5a0"
+								/>
+							) : (
+								<TouchableOpacity
+									style={styles.loginButton}
+									onPress={ForgetPass}
+									disabled={loading}
+									accessibilityLabel="Reset Password Button"
+								>
+									<Text style={styles.buttonText}>
+										Reset Password
+									</Text>
+								</TouchableOpacity>
+							)}
+							{forerror && (
+								<Text style={styles.errorText}>{forerror}</Text>
+							)}
+						</View>
+					</View>
+				</TouchableWithoutFeedback>
+			</Modal>
+			<SuccessAlert
+				message={successMessage}
+				success={success}
+				setSuccess={setSuccess}
+			/>
 		</View>
 	);
 };
@@ -124,6 +234,35 @@ const styles = StyleSheet.create({
 		backgroundColor: "#f5f5f5",
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	modalContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	modalContent: {
+		backgroundColor: "#ffffff",
+		padding: 20,
+		borderRadius: 10,
+		width: "80%",
+	},
+	modalTitle: {
+		fontSize: 18,
+		fontWeight: "bold",
+		marginBottom: 15,
+		textAlign: "center",
+		color: "#2cb5a0",
+	},
+	modalText: {
+		fontSize: 16,
+		color: "#555",
+		marginBottom: 10,
+	},
+	buttonContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginTop: 10,
 	},
 	loadingContainer: {
 		flex: 1,
@@ -183,13 +322,13 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		width: "100%",
 		alignItems: "center",
+		marginBottom: 10,
 	},
 	buttonText: {
 		color: "#fff",
 		fontSize: 20,
 		fontWeight: "bold",
 	},
-	
 });
 
 export default WardenLogin;

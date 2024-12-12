@@ -152,7 +152,7 @@ const HostlerDetails = () => {
 					<Text style={styles.text}>
 						No of days Present: {hostler.present_on.length}
 					</Text>
-					<Text style={styles.text}>
+					{/* <Text style={styles.text}>
 						No of days Absent: {hostler.absent_on.length}
 					</Text>
 					<Text style={styles.text}>
@@ -163,7 +163,7 @@ const HostlerDetails = () => {
 								hostler.absent_on.length)
 						).toFixed(2)}
 						%
-					</Text>
+					</Text> */}
 					<Text style={styles.text}>Address: {hostler.address}</Text>
 					<Text style={styles.text}>
 						DOB: {hostler.date_of_birth}

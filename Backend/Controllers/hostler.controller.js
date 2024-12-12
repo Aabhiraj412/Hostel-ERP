@@ -17,7 +17,6 @@ export const publicgrivance = async (req, res) => {
 				.status(401)
 				.json({ message: "Unauthorised-no Hostler Provided" });
 
-		
 		const { title, description } = req.body;
 
 		if (!title || !description) {
@@ -273,7 +272,9 @@ export const openEntry = async (req, res) => {
 		const { purpose } = req.body;
 
 		if (hostler.outregister.length > 0) {
-			const check = await OutRegister.findById(hostler.outregister.at(-1));
+			const check = await OutRegister.findById(
+				hostler.outregister.at(-1)
+			);
 			const entry = await OutRegister.findById(check);
 			if (!entry.in_time)
 				return res
@@ -370,13 +371,13 @@ export const markAttendence = async (req, res) => {
 
 		// Get today's date
 		const date = new Date();
-		const day = date.getDate(); // Get the day of the month
-		const month = date.getMonth() + 1; // Months are 0-indexed, so we add 1
-		const year = date.getFullYear();
+		// const day = date.getDate(); // Get the day of the month
+		// const month = date.getMonth() + 1; // Months are 0-indexed, so we add 1
+		// const year = date.getFullYear();
 		// Format the date as yyyy-mm-dd
-		const attendanceDate = `${year}-${month < 10 ? "0" + month : month}-${
-			day < 10 ? "0" + day : day
-		}`;
+		const attendanceDate = date.toLocaleDateString("en-CA", {
+			timeZone: "Asia/Kolkata",
+		});
 
 		console.log("Attendance Date: ", attendanceDate);
 
@@ -395,8 +396,11 @@ export const markAttendence = async (req, res) => {
 				.json({ message: "Attendance already marked" });
 
 		// Mark attendance
-		hostler.present_on.push(`${attendanceDate}T18:30:00.000Z`); // Store the full ISO string with time
-		console.log("Updated Attendance Dates: ", hostler.present_on);
+		hostler.present_on.push(
+			`${date.toLocaleDateString("en-CA", {
+				timeZone: "Asia/Kolkata",
+			})}T18:30:00.000Z`
+		); // Store the full ISO string with time
 
 		await hostler.save();
 
@@ -406,7 +410,7 @@ export const markAttendence = async (req, res) => {
 		console.error(`Error: ${error.message}`);
 		res.status(500).json({ message: "Server Error" });
 	}
-};// Path to the file storing the IP
+}; // Path to the file storing the IP
 
 export const getIP = async (req, res) => {
 	try {
@@ -421,9 +425,9 @@ export const getIP = async (req, res) => {
 		const ip = await IP.findOne();
 
 		if (!ip) {
-            return res.status(404).json({ message: "IP not found" });
-        }
-		
+			return res.status(404).json({ message: "IP not found" });
+		}
+
 		res.status(200).json(ip);
 		console.log("IP fetched successfully:", ip.ip);
 	} catch (error) {

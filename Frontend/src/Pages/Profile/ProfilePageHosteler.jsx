@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import useStore from "../../../Store/Store";
+import { useEffect, useState } from "react";
+import useStore from "../../../Store/Store";
 import MiniVariantDrawer from "../../components/MiniVariantDrawer";
 import {
 	Card,
@@ -10,27 +12,25 @@ import {
 	DialogTitle,
 	DialogContent,
 	DialogContentText,
-	TextField,
 } from "@mui/material";
 import ActivityIndicator from "../../components/ActivityIndicator";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 
 const GlassCard = styled(Card)`
-  width: 90%;
-  max-width: 600px;
-  padding: 20px;
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  background: rgba(255, 255, 255, 0.2); /* Transparent glass effect */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-  border-radius: 15px;
-  color: white;
+	width: 90%;
+	height: 80%;
+	margin-top: 30px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	background: rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	border-radius: 15px;
 `;
 
 const CustomDialog = styled(Dialog)`
@@ -44,8 +44,6 @@ const CustomDialog = styled(Dialog)`
 	}
 `;
 
-
-
 const LogoutButton = styled(Button)`
 	position: absolute;
 	bottom: 20px;
@@ -53,21 +51,13 @@ const LogoutButton = styled(Button)`
 	font-weight: bold;
 `;
 
-const SetPasswordButton = styled(Button)`
-	position: absolute;
-	bottom: 20px;
-	left: 20px;
-	font-weight: bold;
-`;
-
 const ProfilePageHosteler = () => {
+  const routing = {title:"Profile Page",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 	const { data, localhost, cookie, setData, setUser, setCookie } = useStore();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 	const [loggingOut, setLoggingOut] = useState(false);
 	const [open, setOpen] = useState(false);
-    const [dialog, setDialog] = useState(false);
-    const routing = {title:"Hosteler Profile", Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
 	const fetchHostlerData = async () => {
 		try {
@@ -82,7 +72,7 @@ const ProfilePageHosteler = () => {
 					credentials: "include",
 				}
 			);
-			
+
 			console.log(response);
 
 			const result = await response.json();
@@ -101,7 +91,6 @@ const ProfilePageHosteler = () => {
 			setLoading(false);
 		}
 	};
-	
 	useEffect(() => {
 		fetchHostlerData();
 	}, [localhost, cookie, setData]);
@@ -119,7 +108,7 @@ const ProfilePageHosteler = () => {
 					credentials: "include",
 				}
 			);
-			
+
 			const result = await response.json();
 			if (!response.ok) {
 				throw new Error(result.message || "Failed to log out.");
@@ -148,11 +137,13 @@ const ProfilePageHosteler = () => {
 		return (
 			<>
 				<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
-                    <MiniVariantDrawer router={routing} />
+					<MiniVariantDrawer title="Hostler Profile" />
 					<GlassCard>
+						{/* <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-teal-700 to-black"> */}
 						<p className="text-center text-red-600">
 							No data available for the Hostler.
 						</p>
+						{/* </div> */}
 					</GlassCard>
 				</div>
 			</>
@@ -161,8 +152,6 @@ const ProfilePageHosteler = () => {
 
 	const handleOpenDialog = () => setOpen(true);
 	const handleCloseDialog = () => setOpen(false);
-    const handleDialog1 = () => setDialog(true);
-    const handleDialog2 = () => setDialog(false);
 
 	const confirmLogout = () => {
 		handleLogout();
@@ -187,10 +176,10 @@ const ProfilePageHosteler = () => {
 					<strong>Name:</strong> {data.name}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
-					<strong>Roll No:</strong> {data.roll_no}
+					<strong>Roll No.:</strong> {data.roll_no}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
-					<strong>Aadhar No:</strong> {data.aadhar}
+					<strong>Aadhar No.:</strong> {data.aadhar}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Gender:</strong> {data.gender}
@@ -202,7 +191,7 @@ const ProfilePageHosteler = () => {
 					<strong>Mother&apos;s Name:</strong> {data.mothers_name}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
-					<strong>Phone No:</strong> {data.phone_no}
+					<strong>Phone No.:</strong> {data.phone_no}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Email:</strong> {data.email}
@@ -220,16 +209,8 @@ const ProfilePageHosteler = () => {
 					<strong>Hostel:</strong> {data.hostel}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
-					<strong>Room No:</strong> {data.room_no}
+					<strong>Room No.:</strong> {data.room_no}
 				</Typography>
-
-				<SetPasswordButton
-					variant="contained"
-					color="primary"
-					onClick={handleDialog1}
-				>
-					Set Password
-				</SetPasswordButton>
 
 				<LogoutButton
 					variant="contained"
@@ -240,29 +221,6 @@ const ProfilePageHosteler = () => {
 					{loggingOut ? "Logging out..." : "Logout"}
 				</LogoutButton>
 			</GlassCard>
-
-			<CustomDialog open={dialog} onClose={handleDialog2}>
-				<DialogTitle>Set your password</DialogTitle>
-				<DialogContent>
-					<TextField
-						autoFocus
-						margin="dense"
-						label="Password"
-						type="password"
-						fullWidth
-						variant="outlined"
-						placeholder="Input password"
-					/>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleDialog2} color="primary">
-						Cancel
-					</Button>
-					<Button color="error">
-						Set Password
-					</Button>
-				</DialogActions>
-			</CustomDialog>
 
 			<CustomDialog open={open} onClose={handleCloseDialog}>
 				<DialogTitle>Confirm Logout</DialogTitle>
