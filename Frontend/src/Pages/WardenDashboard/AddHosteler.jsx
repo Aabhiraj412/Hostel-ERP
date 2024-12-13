@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 import { Card, Box, styled, Typography, TextField } from '@mui/material';
 import Select from 'react-select';
+import { Opacity } from '@mui/icons-material';
 
 const GlassCard = styled(Card)`
   width: 90%;
@@ -52,12 +53,13 @@ const dropdownStyles = {
   option: (base, state) => ({
     ...base,
     backgroundColor: state.isFocused
-    ? 'rgba(255, 255, 255, 0.8)' 
-    : 'rgba(255, 255, 255, 0.6)', 
-  color: 'black', 
+    ? 'rgba(0,0,0)' 
+    : 'rgba(0,0,0)', 
+  color: 'white', 
   cursor: 'pointer',
+  borderRadius: '4px',
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     },
   }),
 };

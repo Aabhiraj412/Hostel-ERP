@@ -52,12 +52,13 @@ const dropdownStyles = {
   option: (base, state) => ({
     ...base,
     backgroundColor: state.isFocused
-    ? 'rgba(255, 255, 255, 0.8)' 
-    : 'rgba(255, 255, 255, 0.6)', 
-  color: 'black', 
+    ? 'rgba(0,0,0)' 
+    : 'rgba(0,0,0)', 
+  color: 'white', 
   cursor: 'pointer',
+  borderRadius: '4px',
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     },
   }),
 };
@@ -71,9 +72,9 @@ const AddDetails = () => {
   const [selectedGender, setSelectedGender] = useState(null);
 
   const hostelOptions = [
-    { value: 'AryaBhatt Hostel', label: 'AryaBhatt Hostel' },
-    { value: 'Saojini Hostel', label: 'Saojini Hostel' },
-    { value: 'RN Tagore Hostel', label: 'RN Tagore Hostel' },
+    { value: 'AryaBhatt', label: 'AryaBhatt' },
+    { value: 'Saojini Naidu', label: 'Saojini Naidu' },
+    { value: 'RN Tagore', label: 'RN Tagore' },
   ];
 
   const yearOptions = [

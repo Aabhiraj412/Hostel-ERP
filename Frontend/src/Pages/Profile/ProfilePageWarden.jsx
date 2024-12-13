@@ -160,7 +160,7 @@ const ProfilePageWarden = () => {
 	const [loggingOut, setLoggingOut] = useState(false);
 	const [open, setOpen] = useState(false);
     const [dialog, setDialog] = useState(false);
-    const routing = {title:"Hosteler Dash", Home: '/hosteler-dashboard', Profile: '/profile', Notice: '/view-notice', Menu: '/view-mess-menu' }
+    const routing = {title:"Warden Profile", Home: '/warden-dashboard', Profile: '/profile-warden', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
 	const fetchHostlerData = async () => {
 		try {
@@ -274,7 +274,7 @@ const ProfilePageWarden = () => {
 						fontWeight: "bold",
 					}}
 				>
-					Hostler Details
+					Warden Profile
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Name:</strong> {data.name}
@@ -306,13 +306,13 @@ const ProfilePageWarden = () => {
 				</Typography>
 				
 
-				<SetPasswordButton
+				{/* <SetPasswordButton
 					variant="contained"
 					color="primary"
 					onClick={handleDialog1}
 				>
 					Set Password
-				</SetPasswordButton>
+				</SetPasswordButton> */}
 
 				<LogoutButton
 					variant="contained"
@@ -324,7 +324,7 @@ const ProfilePageWarden = () => {
 				</LogoutButton>
 			</GlassCard>
 
-			<CustomDialog open={dialog} onClose={handleDialog2}>
+			{/* <CustomDialog open={dialog} onClose={handleDialog2}>
 				<DialogTitle>Set your password</DialogTitle>
 				<DialogContent>
 					<TextField
@@ -345,7 +345,7 @@ const ProfilePageWarden = () => {
 						Set Password
 					</Button>
 				</DialogActions>
-			</CustomDialog>
+			</CustomDialog> */}
 
 			<CustomDialog open={open} onClose={handleCloseDialog}>
 				<DialogTitle>Confirm Logout</DialogTitle>

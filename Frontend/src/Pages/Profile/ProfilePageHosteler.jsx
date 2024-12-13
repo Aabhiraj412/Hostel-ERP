@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import useStore from "../../../Store/Store";
-import { useEffect, useState } from "react";
-import useStore from "../../../Store/Store";
 import MiniVariantDrawer from "../../components/MiniVariantDrawer";
 import {
 	Card,
@@ -52,7 +50,7 @@ const LogoutButton = styled(Button)`
 `;
 
 const ProfilePageHosteler = () => {
-  const routing = {title:"Profile Page",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
+  const routing = {title:"Hosteler Profile",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 	const { data, localhost, cookie, setData, setUser, setCookie } = useStore();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
