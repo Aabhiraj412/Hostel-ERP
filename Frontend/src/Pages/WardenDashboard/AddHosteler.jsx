@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 import { Card, Box, styled, Typography, TextField } from '@mui/material';
 import Select from 'react-select';
@@ -71,21 +71,21 @@ const AddHosteler = () => {
   const routing = {title:"Add New Hosteler",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   const hostelOptions = [
-    { value: 'AryaBhatt Hostel', label: 'AryaBhatt Hostel' },
-    { value: 'Saojini Hostel', label: 'Saojini Hostel' },
-    { value: 'RN Tagore Hostel', label: 'RN Tagore Hostel' },
+    { value: 'AryaBhatt', label: 'AryaBhatt' },
+    { value: 'Saojini Naidu', label: 'Saojini Naidu' },
+    { value: 'RN Tagore', label: 'RN Tagore' },
   ];
 
   const yearOptions = [
-    { value: '1', label: '1' },
-    { value: '2', label: '2' },
-    { value: '3', label: '3' },
-    { value: '4', label: '4' },
+    { value: '1st', label: '1st' },
+    { value: '2nd', label: '2nd' },
+    { value: '3rd', label: '3rd' },
+    { value: '4th', label: '4th' },
   ];
 
   const genderOptions = [
-    { value: 'Female', label: 'Female' },
-    { value: 'Male', label: 'Male' },
+    { value: 'female', label: 'Female' },
+    { value: 'male', label: 'Male' },
   ];
 
   return (
@@ -170,17 +170,7 @@ const AddHosteler = () => {
             </div>
 
             <StyledTextField fullWidth label="Room No." variant="outlined" size="small" />
-            <StyledTextField fullWidth label="DOB" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Blood Group" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Local Guardian" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Local Guardian Phone" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Local Guardian Address" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Father's Phone No." variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Mother's Phone No." variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Father's Email" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Mother's Email" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Course" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Branch" variant="outlined" size="small" />
+            <StyledTextField fullWidth label="Password" variant="outlined" size="small" />
           </Box>
 
           <button

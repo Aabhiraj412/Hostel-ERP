@@ -1,188 +1,282 @@
-import React, { useState } from 'react';
-import MiniVariantDrawer from '../../components/MiniVariantDrawer';
-import { Card, Box, styled, Typography, TextField } from '@mui/material';
-import Select from 'react-select';
+import { useState } from "react";
+import MiniVariantDrawer from "../../components/MiniVariantDrawer";
+import { Card, Box, styled, Typography, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import useStore from "../../../Store/Store";
+import ActivityIndicator from "../../components/ActivityIndicator";
 
 const GlassCard = styled(Card)`
-  width: 90%;
-  max-width: 1000px;
-  padding: 30px;
-  margin: 90px auto 10px auto;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+	width: 90%;
+	max-width: 1000px;
+	padding: 30px;
+	margin: 90px auto 10px auto;
+	background: rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+	border-radius: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 `;
 
 const StyledTextField = styled(TextField)`
-  .MuiOutlinedInput-root {
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 10px;
-  }
+	.MuiOutlinedInput-root {
+		background: rgba(255, 255, 255, 0.5);
+		border-radius: 10px;
+	}
 `;
 
-const dropdownStyles = {
-  control: (base) => ({
-    ...base,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-    borderRadius: '10px', 
-    border: '1px solid rgba(255, 255, 255, 0.3)', 
-    color: 'black',
-    padding: '2px', 
-    boxShadow: 'none',
-    '&:hover': {
-      border: '1px solid rgba(0, 0, 0, 0.5)', 
-    },
-  }),
-  singleValue: (base) => ({
-    ...base,
-    color: 'black', 
-  }),
-  menu: (base) => ({
-    ...base,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)', 
-    border: '1px solid rgba(255, 255, 255, 0.3)',
-    borderRadius: '10px',
-  }),
-  option: (base, state) => ({
-    ...base,
-    backgroundColor: state.isFocused
-    ? 'rgba(255, 255, 255, 0.8)' 
-    : 'rgba(255, 255, 255, 0.6)', 
-  color: 'black', 
-  cursor: 'pointer',
-  '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    },
-  }),
-};
-
-
-
 const AddDetails = () => {
-  const routing = {title:"Add details",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
-  const [selectedHostel, setSelectedHostel] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
-  const [selectedGender, setSelectedGender] = useState(null);
+	const routing = {
+		title: "Add details",
+		Home: "/hosteler-dashboard",
+		Profile: "/profile-hosteler",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
-  const hostelOptions = [
-    { value: 'AryaBhatt Hostel', label: 'AryaBhatt Hostel' },
-    { value: 'Saojini Hostel', label: 'Saojini Hostel' },
-    { value: 'RN Tagore Hostel', label: 'RN Tagore Hostel' },
-  ];
+	const [dob, setDob] = useState();
+	const [bloodGroup, setBloodGroup] = useState();
+	const [localGuardian, setLocalGuardian] = useState();
+	const [localGuardianPhone, setLocalGuardianPhone] = useState();
+	const [localGuardianAddress, setLocalGuardianAddress] = useState();
+	const [fatherPhone, setFatherPhone] = useState();
+	const [motherPhone, setMotherPhone] = useState();
+	const [fatherEmail, setFatherEmail] = useState();
+	const [motherEmail, setMotherEmail] = useState();
+	const [course, setCourse] = useState();
+	const [branch, setBranch] = useState();
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+	const navigate = useNavigate();
+	const { localhost } = useStore();
 
-  const yearOptions = [
-    { value: '1', label: '1' },
-    { value: '2', label: '2' },
-    { value: '3', label: '3' },
-    { value: '4', label: '4' },
-  ];
+	const handleSubmit = async () => {
+		if (
+			!dob ||
+			!bloodGroup ||
+			!localGuardian ||
+			!localGuardianPhone ||
+			!localGuardianAddress ||
+			!fatherPhone ||
+			!motherPhone ||
+			!fatherEmail ||
+			!motherEmail ||
+			!course ||
+			!branch
+		) {
+			setErrorMessage("Please fill all fields");
+			setError(true);
+			return;
+		}
 
-  const genderOptions = [
-    { value: 'Female', label: 'Female' },
-    { value: 'Male', label: 'Male' },
-  ];
+		setLoading(true);
+		setError(false);
 
-  return (
-    <>
-      <MiniVariantDrawer router={routing} />
-      <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
-        <GlassCard
-          sx={{
-            margin: 'auto',
-            marginTop: { xs: '60px', md: '60px' },
-            marginLeft: { xs: '60px', md: '240px' },
-            marginBottom: '20px',
-            width: '90%',
-            maxWidth: '1000px',
-            padding: '30px',
-          }}
-        >
-          <Typography
-            variant="h5"
-            gutterBottom
-            align="center"
-            sx={{ fontWeight: 'bold', color: 'white', marginBottom: '20px' }}
-          >
-            Add Your Details
-          </Typography>
+		try {
+			const response = await fetch(
+				`http://${localhost}/api/hostler/adddetails`, // Consider using environment variables here
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+					body: JSON.stringify({
+						date_of_birth: dob,
+						blood_group: bloodGroup,
+						local_guardian: localGuardian,
+						local_guardian_phone: localGuardianPhone,
+						local_guardian_address: localGuardianAddress,
+						fathers_no: fatherPhone,
+						mothers_no: motherPhone,
+						fathers_email: fatherEmail,
+						mothers_email: motherEmail,
+						course,
+						branch,
+					}),
+				}
+			);
 
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-              gap: 3,
-              width: '100%',
-            }}
-          >
-            <StyledTextField fullWidth label="Name" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Roll No." variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Aadhar No." variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Father's Name" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Mother's Name" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Phone No." variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Email" variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Address" variant="outlined" size="small" />
+			const result = await response.json();
 
-            {/* Dropdown for Gender */}
-            <div>
-              {/* <label className="text-white font-bold block mb-2">Select Gender:</label> */}
-              <Select
-                options={genderOptions}
-                value={selectedGender}
-                onChange={setSelectedGender}
-                placeholder="Select Gender"
-                styles={dropdownStyles}
-              />
-            </div>
+			if (!response.ok) {
+				throw new Error(result.message || "Failed to add details");
+			}
+			navigate("/profile-hosteler");
+		} catch (error) {
+			setErrorMessage(error.message || "An unknown error occurred");
+			setError(true);
+			console.log("Error adding details:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-            
+	return (
+		<>
+			<MiniVariantDrawer router={routing} />
+			<div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
+				<GlassCard
+					sx={{
+						margin: "auto",
+						marginTop: { xs: "60px", md: "60px" },
+						marginLeft: { xs: "60px", md: "240px" },
+						marginBottom: "20px",
+						width: "90%",
+						maxWidth: "1000px",
+						padding: "30px",
+					}}
+				>
+					<Typography
+						variant="h5"
+						gutterBottom
+						align="center"
+						sx={{
+							fontWeight: "bold",
+							color: "white",
+							marginBottom: "20px",
+						}}
+					>
+						Add Your Details
+					</Typography>
+					<Box
+						sx={{
+							display: "grid",
+							// gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+							gap: 3,
+							width: "100%",
+						}}
+						className="mt-0 m-10"
+					>
+						<Typography className="text-white">
+							Date of Birth
+						</Typography>
+						<StyledTextField
+							fullWidth
+							type="date"
+							variant="outlined"
+							size="small"
+							value={dob}
+							onChange={(e) => setDob(e.target.value)}
+						/>
+					</Box>
 
-            {/* Dropdown for Year */}
-            <div>
-              {/* <label className="text-white font-bold block mb-2">Select Year:</label> */}
-              <Select
-                options={yearOptions}
-                value={selectedYear}
-                onChange={setSelectedYear}
-                placeholder="Select Year"
-                styles={dropdownStyles}
-              />
-            </div>
-
-            <StyledTextField fullWidth label="College" variant="outlined" size="small" />
-
-            {/* Dropdown for Hostel */}
-            <div>
-              {/* <label className="text-white font-bold block mb-2">Select Hostel:</label> */}
-              <Select
-                options={hostelOptions}
-                value={selectedHostel}
-                onChange={setSelectedHostel}
-                placeholder="Select Hostel"
-                styles={dropdownStyles}
-              />
-            </div>
-
-            <StyledTextField fullWidth label="Room No." variant="outlined" size="small" />
-            <StyledTextField fullWidth label="Password" variant="outlined" size="small" />
-          </Box>
-
-          <button
-            className="mt-8 bg-black text-white font-medium px-6 py-3 rounded-lg shadow-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-slate-600 hover:text-black transition-all duration-300"
-          >
-            SUBMIT
-          </button>
-        </GlassCard>
-      </div>
-    </>
-  );
+					<Box
+						sx={{
+							display: "grid",
+							gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+							gap: 3,
+							width: "100%",
+						}}
+					>
+						<StyledTextField
+							fullWidth
+							label="Blood Group"
+							variant="outlined"
+							size="small"
+							value={bloodGroup}
+							onChange={(e) => setBloodGroup(e.target.value)}
+						/>
+						<StyledTextField
+							fullWidth
+							label="Local Guardian"
+							variant="outlined"
+							size="small"
+							value={localGuardian}
+							onChange={(e) => setLocalGuardian(e.target.value)}
+						/>
+						<StyledTextField
+							fullWidth
+							label="Local Guardian Phone"
+							variant="outlined"
+							size="small"
+							value={localGuardianPhone}
+							onChange={(e) =>
+								setLocalGuardianPhone(e.target.value)
+							}
+						/>
+						<StyledTextField
+							fullWidth
+							label="Local Guardian Address"
+							variant="outlined"
+							size="small"
+							value={localGuardianAddress}
+							onChange={(e) =>
+								setLocalGuardianAddress(e.target.value)
+							}
+						/>
+						<StyledTextField
+							fullWidth
+							label="Father's Phone No."
+							variant="outlined"
+							size="small"
+							value={fatherPhone}
+							onChange={(e) => setFatherPhone(e.target.value)}
+						/>
+						<StyledTextField
+							fullWidth
+							label="Mother's Phone No."
+							variant="outlined"
+							size="small"
+							value={motherPhone}
+							onChange={(e) => setMotherPhone(e.target.value)}
+						/>
+						<StyledTextField
+							fullWidth
+							label="Father's Email"
+							variant="outlined"
+							size="small"
+							value={fatherEmail}
+							onChange={(e) => setFatherEmail(e.target.value)}
+						/>
+						<StyledTextField
+							fullWidth
+							label="Mother's Email"
+							variant="outlined"
+							size="small"
+							value={motherEmail}
+							onChange={(e) => setMotherEmail(e.target.value)}
+						/>
+						<StyledTextField
+							fullWidth
+							label="Course"
+							variant="outlined"
+							size="small"
+							value={course}
+							onChange={(e) => setCourse(e.target.value)}
+						/>
+						<StyledTextField
+							fullWidth
+							label="Branch"
+							variant="outlined"
+							size="small"
+							value={branch}
+							onChange={(e) => setBranch(e.target.value)}
+						/>
+					</Box>
+					{loading ? (
+						<ActivityIndicator size="large" />
+					) : (
+						<button
+							className="mt-8 bg-black text-white font-medium px-6 py-3 rounded-lg shadow-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-slate-600 hover:text-black transition-all duration-300"
+							onClick={handleSubmit}
+						>
+							SUBMIT
+						</button>
+					)}
+					{error && (
+						<text className="text-red-600 text-center">
+							{errorMessage}
+						</text>
+					)}
+				</GlassCard>
+			</div>
+		</>
+	);
 };
 
 export default AddDetails;
-
