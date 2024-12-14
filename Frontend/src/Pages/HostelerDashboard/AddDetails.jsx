@@ -37,7 +37,9 @@ const AddDetails = () => {
 		Menu: "/view-mess-menu",
 	};
 
-	const [dob, setDob] = useState();
+  const date = new Date().toISOString();
+  console.log(date.split("T")[0])
+  const [dob, setDob] = useState(date.split("T")[0]);
 	const [bloodGroup, setBloodGroup] = useState();
 	const [localGuardian, setLocalGuardian] = useState();
 	const [localGuardianPhone, setLocalGuardianPhone] = useState();
