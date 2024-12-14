@@ -28,68 +28,95 @@ const StyledTextField = styled(TextField)`
 	}
 `;
 
-const dropdownStyles = {
-  control: (base) => ({
-    ...base,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-    borderRadius: '10px', 
-    border: '1px solid rgba(255, 255, 255, 0.3)', 
-    color: 'black',
-    padding: '2px', 
-    boxShadow: 'none',
-    '&:hover': {
-      border: '1px solid rgba(0, 0, 0, 0.5)', 
-    },
-  }),
-  singleValue: (base) => ({
-    ...base,
-    color: 'black', 
-  }),
-  menu: (base) => ({
-    ...base,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)', 
-    border: '1px solid rgba(255, 255, 255, 0.3)',
-    borderRadius: '10px',
-  }),
-  option: (base, state) => ({
-    ...base,
-    backgroundColor: state.isFocused
-    ? 'rgba(0,0,0)' 
-    : 'rgba(0,0,0)', 
-  color: 'white', 
-  cursor: 'pointer',
-  borderRadius: '4px',
-  '&:hover': {
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    },
-  }),
-};
-
-
-
 const AddDetails = () => {
-  const routing = {title:"Add details",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
-  const [selectedHostel, setSelectedHostel] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
-  const [selectedGender, setSelectedGender] = useState(null);
+	const routing = {
+		title: "Add details",
+		Home: "/hosteler-dashboard",
+		Profile: "/profile-hosteler",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
-  const hostelOptions = [
-    { value: 'AryaBhatt', label: 'AryaBhatt' },
-    { value: 'Saojini Naidu', label: 'Saojini Naidu' },
-    { value: 'RN Tagore', label: 'RN Tagore' },
-  ];
+  const date = new Date().toISOString();
+  console.log(date.split("T")[0])
+  const [dob, setDob] = useState(date.split("T")[0]);
+	const [bloodGroup, setBloodGroup] = useState();
+	const [localGuardian, setLocalGuardian] = useState();
+	const [localGuardianPhone, setLocalGuardianPhone] = useState();
+	const [localGuardianAddress, setLocalGuardianAddress] = useState();
+	const [fatherPhone, setFatherPhone] = useState();
+	const [motherPhone, setMotherPhone] = useState();
+	const [fatherEmail, setFatherEmail] = useState();
+	const [motherEmail, setMotherEmail] = useState();
+	const [course, setCourse] = useState();
+	const [branch, setBranch] = useState();
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+	const navigate = useNavigate();
+	const { localhost } = useStore();
 
-  const yearOptions = [
-    { value: '1', label: '1' },
-    { value: '2', label: '2' },
-    { value: '3', label: '3' },
-    { value: '4', label: '4' },
-  ];
+	const handleSubmit = async () => {
+		if (
+			!dob ||
+			!bloodGroup ||
+			!localGuardian ||
+			!localGuardianPhone ||
+			!localGuardianAddress ||
+			!fatherPhone ||
+			!motherPhone ||
+			!fatherEmail ||
+			!motherEmail ||
+			!course ||
+			!branch
+		) {
+			setErrorMessage("Please fill all fields");
+			setError(true);
+			return;
+		}
 
-  const genderOptions = [
-    { value: 'Female', label: 'Female' },
-    { value: 'Male', label: 'Male' },
-  ];
+		setLoading(true);
+		setError(false);
+
+		try {
+			const response = await fetch(
+				`http://${localhost}/api/hostler/adddetails`, // Consider using environment variables here
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+					body: JSON.stringify({
+						date_of_birth: dob,
+						blood_group: bloodGroup,
+						local_guardian: localGuardian,
+						local_guardian_phone: localGuardianPhone,
+						local_guardian_address: localGuardianAddress,
+						fathers_no: fatherPhone,
+						mothers_no: motherPhone,
+						fathers_email: fatherEmail,
+						mothers_email: motherEmail,
+						course,
+						branch,
+					}),
+				}
+			);
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.message || "Failed to add details");
+			}
+			navigate("/profile-hosteler");
+		} catch (error) {
+			setErrorMessage(error.message || "An unknown error occurred");
+			setError(true);
+			console.log("Error adding details:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	return (
 		<>
