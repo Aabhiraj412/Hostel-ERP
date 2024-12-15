@@ -2,7 +2,7 @@ import useStore from "../../Store/Store";
 import PropTypes from 'prop-types';
 
 const OutingDetailsCard = ({ outingDetails, ip, fetchEntries }) => {
-  const { localhost, testlocalhost } = useStore();
+  const { localhost, testlocalhost, user } = useStore();
   const { purpose, out_time, in_time, _id } = outingDetails;
 
   const closeEntry = async () => {
@@ -47,7 +47,7 @@ const OutingDetailsCard = ({ outingDetails, ip, fetchEntries }) => {
       <p className="text-gray-300">
         In Time: {in_time ? new Date(in_time).toLocaleString() : "Not Returned"}
       </p>
-      {!in_time && (
+      {!in_time && user!=="Warden" (
         <button
           className="mt-4 w-full bg-teal-400 text-white font-bold py-2 px-4 rounded-md"
           onClick={closeEntry}

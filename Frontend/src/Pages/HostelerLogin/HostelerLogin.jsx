@@ -56,7 +56,6 @@ const HostelerLogin = () => {
 
 			setData(data);
 
-			console.log(data);
 			navigate("/hosteler-dashboard");
 		} catch (error) {
 			setError(error.message); // Handle errors

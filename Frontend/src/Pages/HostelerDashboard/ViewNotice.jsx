@@ -1,86 +1,117 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import MiniVariantDrawer from "../../components/MiniVariantDrawer";
-import notice from "@/assets/noctice_for_hostel.pdf";
+import useStore from "../../../Store/Store";
+import ActivityIndicator from "../../components/ActivityIndicator";
 
 const ViewNotice = () => {
-  const handleDownload = (file, filename) => {
-    const link = document.createElement("a");
-    link.href = file;
-    link.download = filename; // Dynamically set file name
-    link.click();
-  };
+	const { localhost, user } = useStore();
+	const [loading, setLoading] = useState(false);
+	const [notices, setNotices] = useState([]);
 
-  const routing = {
-    title: "Notices/Circulars",
-    Home: "/hosteler-dashboard",
-    Profile: "/profile-hosteler",
-    Notice: "/view-notice",
-    Menu: "/view-mess-menu",
-  };
+	const fetchNotice = async () => {
+		setLoading(true);
 
-  return (
-    <>
-      <MiniVariantDrawer router={routing} />
-      <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-teal-700 to-black p-5 overflow-auto">
-        <div className="bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg rounded-lg p-8 max-w-4xl mt-20 mx-20">
-          <h1 className="text-2xl font-bold text-center text-teal-300 tracking-wider mb-6">
-            NOTICES
-          </h1>
+		try {
+			const response = await fetch(
+				`http://${localhost}/api/hostler/getnotices`,
+				{
+					method: "GET",
+					credentials: "include",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			const data = await response.json();
 
-          {/* Notice 1 */}
-          <div className="mb-6 flex flex-col bg-black/30 backdrop-blur-md p-5 rounded-lg border border-white/20">
-            <h2 className="text-xl font-semibold text-teal-300 mb-2">
-              Annual Fest 2024
-            </h2>
-            <p className="text-white mb-2">
-              Join us for the grand annual fest celebration from Jan 20-22, 2024.
-              Check the schedule and events in the attached notice.
-            </p>
-            <p
-              onClick={() => handleDownload(notice, "AnnualFest2024.pdf")}
-              className="text-teal-500 underline cursor-pointer hover:text-teal-400"
-            >
-              Click here to download
-            </p>
-          </div>
+			if (!response.ok) {
+				throw new Error(data.message || "Failed to fetch notice.");
+			}
 
-          {/* Notice 2 */}
-          <div className="mb-6 flex flex-col bg-black/30 backdrop-blur-md p-5 rounded-lg border border-white/20">
-            <h2 className="text-xl font-semibold text-teal-300 mb-2">
-              Exam Schedule
-            </h2>
-            <p className="text-white mb-2">
-              The mid-semester exam schedule has been released. Refer to the
-              attached PDF for details about subjects and timings.
-            </p>
-            <p
-              onClick={() => handleDownload(notice, "ExamSchedule.pdf")}
-              className="text-teal-500 underline cursor-pointer hover:text-teal-400"
-            >
-              Click here to download
-            </p>
-          </div>
+			setNotices(data.notices);
+			console.log(data.notices);
+		} catch (e) {
+			alert(e);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-          {/* Notice 3 */}
-          <div className="mb-6 flex flex-col bg-black/30 backdrop-blur-md p-5 rounded-lg border border-white/20">
-            <h2 className="text-xl font-semibold text-teal-300 mb-2">
-              Holiday Announcement
-            </h2>
-            <p className="text-white mb-2">
-              The university will remain closed on Dec 25th for Christmas. Refer
-              to the attached notice for additional details.
-            </p>
-            <p
-              onClick={() => handleDownload(notice, "HolidayAnnouncement.pdf")}
-              className="text-teal-500 underline cursor-pointer hover:text-teal-400"
-            >
-              Click here to download
-            </p>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+	useEffect(() => {
+		fetchNotice();
+	}, [localhost]);
+
+	const handleDownload = async (notice) => {
+		try {
+			const response = await fetch(
+				`http://${localhost}/api/warden/getnotice/${notice._id}`
+			);
+			if (!response.ok) {
+				throw new Error("Failed to fetch the notice");
+			}
+
+			const blob = await response.blob();
+			const url = window.URL.createObjectURL(blob);
+
+			const link = document.createElement("a");
+			link.href = url;
+			link.download = `${notice.title || "notice"}.pdf`;
+			document.body.appendChild(link);
+
+			link.click();
+
+			document.body.removeChild(link);
+			window.URL.revokeObjectURL(url);
+
+			console.log("Downloaded successfully");
+		} catch (e) {
+			console.error(e);
+			alert("Failed to download notice.");
+		}
+	};
+
+	const routing = {
+		title: "Notices/Circulars",
+		Home: user === "Hostler" ? "/hosteler-dashboard" : "/warden-dashboard",
+		Profile: user === "Hostler" ? "/profile-hosteler" : "/profile-warden",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
+
+	return (
+		<>
+			<MiniVariantDrawer router={routing} />
+			<div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-teal-700 to-black p-5 overflow-auto">
+				<div className="w-full bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg rounded-lg p-8 max-w-4xl mt-20 mx-20">
+					<h1 className="text-2xl font-bold text-center text-teal-300 tracking-wider mb-6">
+						NOTICES
+					</h1>
+
+					{loading && <ActivityIndicator />}
+
+					{notices.map((notice) => (
+						<div
+							key={notice.id}
+							className="w-full mb-6 flex flex-col bg-black/30 backdrop-blur-md p-5 rounded-lg border border-white/20"
+						>
+							<h2 className="text-xl font-semibold text-teal-300 mb-2">
+								{notice.title}
+							</h2>
+							<p className="text-white mb-2">
+								{notice.description}
+							</p>
+							<p
+								onClick={() => handleDownload(notice)}
+								className="text-teal-500 underline cursor-pointer hover:text-teal-400"
+							>
+								Click here to download
+							</p>
+						</div>
+					))}
+				</div>
+			</div>
+		</>
+	);
 };
 
 export default ViewNotice;

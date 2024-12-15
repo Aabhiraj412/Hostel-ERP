@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Constants from "expo-constants";
+import * as Network from "expo-network";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NetworkInfo } from "react-native-network-info"; // Import the library
@@ -48,21 +48,35 @@ const App: React.FC = () => {
 		setLocalhost("hostel-erp-9w6h.onrender.com");
 
 		// Fetch the device's IPv4 address
-		NetworkInfo.getIPV4Address().then((ipv4) => {
-			if (ipv4) {
-				setTestLocalhost(ipv4);
-			} else {
-				console.warn("Unable to fetch IPv4 address.");
-			}
-		});
+		// NetworkInfo.getIPV4Address().then((ipv4) => {
+		// 	if (ipv4) {
+		// 		setTestLocalhost(ipv4);
+		// 		console.log("IPv4 address: ", ipv4);
+		// 	} else {
+		// 		console.warn("Unable to fetch IPv4 address.");
+		// 	}
+		// });
 
-		// Fallback: If unable to fetch IPv4, fallback to Constants (if available)
-		const hostUri = Constants.manifest2?.extra?.expoClient?.hostUri;
-		if (hostUri) {
-			const fallbackLocalhost = hostUri.split(":")[0];
-			setTestLocalhost(fallbackLocalhost);
-			// setLocalhost(`${fallbackLocalhost}:3000`);
-		}
+		const fetchIP = async ()=>{
+			try{
+				const ip = await Network.getIpAddressAsync();
+				// console.log("IP Address: ", ip);
+				setTestLocalhost(ip);
+			}
+			catch(err){
+				console.log("Error: ", err);
+			}
+		};
+
+		fetchIP();
+		// // Fallback: If unable to fetch IPv4, fallback to Constants (if available)
+		// const hostUri = Constants.manifest2?.extra?.expoClient?.hostUri;
+		// if (hostUri) {
+		// 	const fallbackLocalhost = hostUri.split(":")[0];
+		// 	setTestLocalhost(fallbackLocalhost);
+		// 	console.log("Fallback IPv4 address: ", fallbackLocalhost);
+		// 	// setLocalhost(`${fallbackLocalhost}:3000`);
+		// }
 	}, [setLocalhost, setTestLocalhost]);
 
 	// Navigation stack

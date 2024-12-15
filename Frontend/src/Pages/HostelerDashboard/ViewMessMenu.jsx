@@ -4,11 +4,16 @@ import useStore from "../../../Store/Store";
 import ActivityIndicator from "../../components/ActivityIndicator";
 
 const ViewMessMenu = () => {
-
-	const { localhost } = useStore();
+	const { localhost, user } = useStore();
 	const [imageUri, setImageUri] = useState(null);
 	const [loading, setLoading] = useState(false);
-	const routing = {title:"Mess Menu",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
+	const routing = {
+		title: "Mess Menu",
+		Home: user === "Hostler" ? "/hosteler-dashboard" : "/warden-dashboard",
+		Profile: user === "Hostler" ? "/profile-hosteler" : "/profile-warden",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
 	useEffect(() => {
 		const fetchMessMenu = async () => {
@@ -31,7 +36,8 @@ const ViewMessMenu = () => {
 				// Convert Blob to Base64
 				const base64String = await new Promise((resolve, reject) => {
 					const reader = new FileReader();
-					reader.onloadend = () => resolve(reader.result.split(",")[1]);
+					reader.onloadend = () =>
+						resolve(reader.result.split(",")[1]);
 					reader.onerror = reject;
 					reader.readAsDataURL(blob);
 				});
@@ -72,19 +78,22 @@ const ViewMessMenu = () => {
 					</button>
 					<div>
 						<p className="text-white mb-2">Current Menu:</p>
-            <div className="flex justify-center align-middle">
-
-						{loading && <ActivityIndicator />}
-						{imageUri ? (
-              <img
-              src={imageUri}
-              alt="Mess Menu"
-              className="w-full h-auto rounded-lg shadow-md"
-							/>
-						) : !loading && (
-              <text className="text-red-600">Unable to Fetch</text>
-						)}
-            </div>
+						<div className="flex justify-center align-middle">
+							{loading && <ActivityIndicator />}
+							{imageUri ? (
+								<img
+									src={imageUri}
+									alt="Mess Menu"
+									className="w-full h-auto rounded-lg shadow-md"
+								/>
+							) : (
+								!loading && (
+									<text className="text-red-600">
+										Unable to Fetch
+									</text>
+								)
+							)}
+						</div>
 						{/* <img
 							src={imageUri}
 							alt="Mess Menu"

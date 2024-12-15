@@ -190,6 +190,7 @@ const routing = {title:"Public Grievances",Home: '/hosteler-dashboard', Profile:
 							<h2 className="text-2xl font-bold text-teal-600">
 								{selectedGrievance.title}
 							</h2>
+							<h2>{selectedGrievance.upvotes.length} Upvotes</h2>
 							<textarea
 								readOnly
 								value={selectedGrievance.description}

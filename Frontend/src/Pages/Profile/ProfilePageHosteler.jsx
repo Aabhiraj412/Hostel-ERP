@@ -10,6 +10,7 @@ import {
 	DialogTitle,
 	DialogContent,
 	DialogContentText,
+	TextField,
 } from "@mui/material";
 import ActivityIndicator from "../../components/ActivityIndicator";
 import styled from "@emotion/styled";
@@ -51,17 +52,88 @@ const LogoutButton = styled(Button)`
 	font-weight: bold;
 `;
 
+const SetPasswordButton = styled(Button)`
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+	font-weight: bold;
+`;
+
 const ProfilePageHosteler = () => {
-  const routing = {title:"Hosteler Profile",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
-	const { data, localhost, cookie, setData, setUser, setCookie } = useStore();
+	const routing = {
+		title: "Hosteler Profile",
+		Home: "/hosteler-dashboard",
+		Profile: "/profile-hosteler",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
+	const { data, localhost, setData, setUser } = useStore();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 	const [loggingOut, setLoggingOut] = useState(false);
 	const [open, setOpen] = useState(false);
+	const [dialog, setDialog] = useState(false);
+	const [password, setPassword] = useState();
+	const [conpass, setConpass] = useState();
+	const [diaload, setDiaload] = useState(false);
+
+	const setpass = async () => {
+		if (!password || !conpass) {
+			alert("Please enter both fields.");
+			return;
+		}
+
+		if (password !== conpass) {
+			alert("Passwords do not match.");
+			return;
+		}
+
+		if (password.length < 6) {
+			alert("Password must be atleast 6 characters long.");
+			return;
+		}
+
+		// setError(null); // Clear error if any
+		setDiaload(true); // Set logging out to true to show loading indicator
+
+		try {
+			const response = await fetch(
+				`http://${localhost}/api/hostler/setpass`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+					body: JSON.stringify({
+						password: password,
+						confirm_password: conpass,
+					}),
+				}
+			);
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.message || "Password change failed.");
+			}
+
+			alert("Password changed successfully.");
+			// setmes(true);
+			setDialog(false);
+		} catch (error) {
+			alert(error);
+			console.log(error);
+		} finally {
+			setDiaload(false);
+		}
+	}
+
+	const handleDialog1 = () => setDialog(true);
+	const handleDialog2 = () => setDialog(false);
 
 	const fetchHostlerData = async () => {
 		try {
-			console.log(cookie);
 			const response = await fetch(
 				`http://${localhost}/api/hostler/getdetails`,
 				{
@@ -73,11 +145,9 @@ const ProfilePageHosteler = () => {
 				}
 			);
 
-			console.log(response);
-
 			const result = await response.json();
 
-			console.log(result);
+			// console.log(result);
 			if (!response.ok) {
 				throw new Error(
 					result.message || "Failed to fetch hostler data."
@@ -93,7 +163,7 @@ const ProfilePageHosteler = () => {
 	};
 	useEffect(() => {
 		fetchHostlerData();
-	}, [localhost, cookie, setData]);
+	}, [localhost, setData]);
 
 	const handleLogout = async () => {
 		setLoggingOut(true);
@@ -114,7 +184,6 @@ const ProfilePageHosteler = () => {
 				throw new Error(result.message || "Failed to log out.");
 			}
 
-			setCookie(null);
 			setData(null);
 			setUser(null);
 			navigate("/");
@@ -197,20 +266,28 @@ const ProfilePageHosteler = () => {
 					<strong>Email:</strong> {data.email}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
-					<strong>Address:</strong> {data.address}
-				</Typography>
-				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Year:</strong> {data.year}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>College:</strong> {data.college}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Room No.:</strong> {data.room_no}
+				</Typography>
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Hostel:</strong> {data.hostel}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
-					<strong>Room No.:</strong> {data.room_no}
+					<strong>Address:</strong> {data.address}
 				</Typography>
+
+				<SetPasswordButton
+					variant="contained"
+					color="primary"
+					onClick={handleDialog1}
+				>
+					Set Password
+				</SetPasswordButton>
 
 				<LogoutButton
 					variant="contained"
@@ -221,6 +298,48 @@ const ProfilePageHosteler = () => {
 					{loggingOut ? "Logging out..." : "Logout"}
 				</LogoutButton>
 			</GlassCard>
+
+			<CustomDialog open={dialog} onClose={handleDialog2}>
+				<DialogTitle>Set your password</DialogTitle>
+				<DialogContent>
+					<TextField
+						autoFocus
+						margin="dense"
+						label="Password"
+						type="password"
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+						fullWidth
+						variant="outlined"
+						placeholder="Input password"
+					/>
+					<TextField
+						autoFocus
+						margin="dense"
+						label=" Confirm Password"
+						type="password"
+						value={conpass}
+						onChange={(e) => setConpass(e.target.value)}
+						fullWidth
+						variant="outlined"
+						placeholder="Confirm Password"
+					/>
+				</DialogContent>
+				{diaload ? (
+					<DialogActions>
+						<ActivityIndicator size="small" color="primary"/>
+					</DialogActions>
+				) : (
+					<DialogActions>
+						<Button onClick={handleDialog2} color="primary">
+							Cancel
+						</Button>
+						<Button color="primary" onClick={setpass}>
+							Set Password
+						</Button>
+					</DialogActions>
+				)}
+			</CustomDialog>
 
 			<CustomDialog open={open} onClose={handleCloseDialog}>
 				<DialogTitle>Confirm Logout</DialogTitle>

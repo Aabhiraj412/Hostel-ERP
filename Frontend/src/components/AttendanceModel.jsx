@@ -1,9 +1,9 @@
-import React from 'react';
 import { Modal, Box, Typography, Button } from '@mui/material';
+import PropTypes from 'prop-types';
 
-const AttendanceModal = ({ open, onClose, onConfirm }) => {
+const AttendanceModal = ({ open, onClose, onMarkAttendance }) => {
   const handleConfirm = () => {
-    onConfirm();
+    onMarkAttendance();
     onClose(); // Automatically close the modal after marking attendance
   };
 
@@ -51,6 +51,11 @@ const AttendanceModal = ({ open, onClose, onConfirm }) => {
       </Box>
     </Modal>
   );
+};
+AttendanceModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onMarkAttendance: PropTypes.func.isRequired,
 };
 
 export default AttendanceModal;

@@ -1,8 +1,7 @@
 // import React from "react";
 // import MiniVariantDrawer from "../../components/MiniVariantDrawer";
 // import { Card, styled, Typography } from "@mui/material";
-// import Button from "../../components/Button"; 
-
+// import Button from "../../components/Button";
 
 // const GlassCard = styled(Card)`
 //   width: 90%;
@@ -110,20 +109,20 @@ import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 
 const GlassCard = styled(Card)`
-  width: 90%;
-  max-width: 600px;
-  padding: 20px;
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  background: rgba(255, 255, 255, 0.2); /* Transparent glass effect */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-  border-radius: 15px;
-  color: white;
+	width: 90%;
+	max-width: 600px;
+	padding: 20px;
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	background: rgba(255, 255, 255, 0.2); /* Transparent glass effect */
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+	border-radius: 15px;
+	color: white;
 `;
 
 const CustomDialog = styled(Dialog)`
@@ -136,8 +135,6 @@ const CustomDialog = styled(Dialog)`
 		border-radius: 15px;
 	}
 `;
-
-
 
 const LogoutButton = styled(Button)`
 	position: absolute;
@@ -154,19 +151,79 @@ const SetPasswordButton = styled(Button)`
 `;
 
 const ProfilePageWarden = () => {
-	const { data, localhost, cookie, setData, setUser, setCookie } = useStore();
+	const { data, localhost, setData, setUser } = useStore();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 	const [loggingOut, setLoggingOut] = useState(false);
 	const [open, setOpen] = useState(false);
-    const [dialog, setDialog] = useState(false);
-    const routing = {title:"Warden Profile", Home: '/warden-dashboard', Profile: '/profile-warden', Notice: '/view-notice', Menu: '/view-mess-menu' }
+	const [password, setPassword] = useState();
+	const [conpass, setConpass] = useState();
+	const [dialog, setDialog] = useState(false);
+	const [diaload, setDiaload] = useState(false);
+	const routing = {
+		title: "Warden Profile",
+		Home: "/warden-dashboard",
+		Profile: "/profile-warden",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
-	const fetchHostlerData = async () => {
+	const setpass = async () => {
+		if (!password || !conpass) {
+			alert("Please enter both fields.");
+			return;
+		}
+
+		if (password !== conpass) {
+			alert("Passwords do not match.");
+			return;
+		}
+
+		if (password.length < 6) {
+			alert("Password must be atleast 6 characters long.");
+			return;
+		}
+
+		// setError(null); // Clear error if any
+		setDiaload(true); // Set logging out to true to show loading indicator
+
 		try {
-			console.log(cookie);
 			const response = await fetch(
-				`http://${localhost}/api/hostler/getdetails`,
+				`http://${localhost}/api/warden/resetpass`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+					body: JSON.stringify({
+						password: password,
+						confirm_password: conpass,
+					}),
+				}
+			);
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.message || "Password change failed.");
+			}
+
+			alert("Password changed successfully.");
+			// setmes(true);
+			setDialog(false);
+		} catch (error) {
+			alert(error);
+			console.log(error);
+		} finally {
+			setDiaload(false);
+		}
+	};
+
+	const fetchWardenData = async () => {
+		try {
+			const response = await fetch(
+				`http://${localhost}/api/Warden/getdetails`,
 				{
 					method: "GET",
 					headers: {
@@ -175,35 +232,33 @@ const ProfilePageWarden = () => {
 					credentials: "include",
 				}
 			);
-			
-			console.log(response);
 
+			
 			const result = await response.json();
 
-			console.log(result);
 			if (!response.ok) {
 				throw new Error(
-					result.message || "Failed to fetch hostler data."
+					result.message || "Failed to fetch Warden data."
 				);
 			}
 
 			setData(result);
 		} catch (error) {
-			console.error("Error fetching hostler data:", error);
+			console.error("Error fetching Warden data:", error);
 		} finally {
 			setLoading(false);
 		}
 	};
-	
+
 	useEffect(() => {
-		fetchHostlerData();
-	}, [localhost, cookie, setData]);
+		fetchWardenData();
+	}, [localhost, setData]);
 
 	const handleLogout = async () => {
 		setLoggingOut(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/auth/hostlerlogout`,
+				`http://${localhost}/api/auth/wardenlogout`,
 				{
 					method: "POST",
 					headers: {
@@ -212,13 +267,12 @@ const ProfilePageWarden = () => {
 					credentials: "include",
 				}
 			);
-			
+
 			const result = await response.json();
 			if (!response.ok) {
 				throw new Error(result.message || "Failed to log out.");
 			}
 
-			setCookie(null);
 			setData(null);
 			setUser(null);
 			navigate("/");
@@ -241,10 +295,10 @@ const ProfilePageWarden = () => {
 		return (
 			<>
 				<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
-                    <MiniVariantDrawer router={routing} />
+					<MiniVariantDrawer router={routing} />
 					<GlassCard>
 						<p className="text-center text-red-600">
-							No data available for the Hostler.
+							No data available for the Warden.
 						</p>
 					</GlassCard>
 				</div>
@@ -254,14 +308,13 @@ const ProfilePageWarden = () => {
 
 	const handleOpenDialog = () => setOpen(true);
 	const handleCloseDialog = () => setOpen(false);
-    const handleDialog1 = () => setDialog(true);
-    const handleDialog2 = () => setDialog(false);
+	const handleDialog1 = () => setDialog(true);
+	const handleDialog2 = () => setDialog(false);
 
 	const confirmLogout = () => {
 		handleLogout();
 		handleCloseDialog();
 	};
-
 	return (
 		<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black">
 			<MiniVariantDrawer router={routing} />
@@ -279,16 +332,17 @@ const ProfilePageWarden = () => {
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Name:</strong> {data.name}
 				</Typography>
-				
+
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Aadhar No:</strong> {data.aadhar}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
-					<strong>Gender:</strong> {data.gender}
+					<strong>Gender:</strong>{" "}
+					{data.gender === "male" ? "Male" : "Female"}
 				</Typography>
-				
+
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
-					<strong>Phone No:</strong> {data.phone_no}
+					<strong>Phone No:</strong> {data.phone}
 				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Email:</strong> {data.email}
@@ -296,23 +350,21 @@ const ProfilePageWarden = () => {
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Address:</strong> {data.address}
 				</Typography>
-				
-				
+
+				<Typography variant="body1" style={{ marginBottom: "10px" }}>
+					<strong>Post:</strong> {data.post}
+				</Typography>
 				<Typography variant="body1" style={{ marginBottom: "10px" }}>
 					<strong>Hostel:</strong> {data.hostel}
 				</Typography>
-        <Typography variant="body1" style={{ marginBottom: "10px" }}>
-					<strong>Post:</strong> {data.hostel}
-				</Typography>
-				
 
-				{/* <SetPasswordButton
+				<SetPasswordButton
 					variant="contained"
 					color="primary"
 					onClick={handleDialog1}
 				>
-					Set Password
-				</SetPasswordButton> */}
+					Reset Password
+				</SetPasswordButton>
 
 				<LogoutButton
 					variant="contained"
@@ -324,28 +376,47 @@ const ProfilePageWarden = () => {
 				</LogoutButton>
 			</GlassCard>
 
-			{/* <CustomDialog open={dialog} onClose={handleDialog2}>
-				<DialogTitle>Set your password</DialogTitle>
+			<CustomDialog open={dialog} onClose={handleDialog2}>
+				<DialogTitle>Reset your password</DialogTitle>
 				<DialogContent>
 					<TextField
 						autoFocus
 						margin="dense"
 						label="Password"
 						type="password"
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
 						fullWidth
 						variant="outlined"
 						placeholder="Input password"
 					/>
+					<TextField
+						autoFocus
+						margin="dense"
+						label=" Confirm Password"
+						type="password"
+						value={conpass}
+						onChange={(e) => setConpass(e.target.value)}
+						fullWidth
+						variant="outlined"
+						placeholder="Confirm Password"
+					/>
 				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleDialog2} color="primary">
-						Cancel
-					</Button>
-					<Button color="error">
-						Set Password
-					</Button>
-				</DialogActions>
-			</CustomDialog> */}
+				{diaload ? (
+					<DialogActions>
+						<ActivityIndicator size="small" color="primary"/>
+					</DialogActions>
+				) : (
+					<DialogActions>
+						<Button onClick={handleDialog2} color="primary">
+							Cancel
+						</Button>
+						<Button color="primary" onClick={setpass}>
+							Set Password
+						</Button>
+					</DialogActions>
+				)}
+			</CustomDialog>
 
 			<CustomDialog open={open} onClose={handleCloseDialog}>
 				<DialogTitle>Confirm Logout</DialogTitle>
