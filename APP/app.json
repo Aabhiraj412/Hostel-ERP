@@ -17,7 +17,11 @@
 		},
 		"android": {
 			"package": "com.abhiraj.hostel.erp",
-			"permissions": ["ACCESS_NETWORK_STATE", "INTERNET"]
+			"permissions": [
+				"ACCESS_NETWORK_STATE",
+				"ACCESS_WIFI_STATE",
+				"INTERNET"
+			]
 		},
 		"extra": {
 			"eas": {
