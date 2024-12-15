@@ -71,6 +71,7 @@ const InputField = styled("input")`
 	}
 `;
 const ApplyLeave = () => {
+	const routing = {title:"Apply for Leave",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 	const { localhost } = useStore();
   const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
@@ -159,10 +160,7 @@ const ApplyLeave = () => {
 
 	return (
 		<>
-			<MiniVariantDrawer
-				title="Apply for leave"
-				routes="/hosteler-dashboard"
-			/>
+			<MiniVariantDrawer router={routing} />
 			<div
 				className="min-h-screen flex items-center justify-center"
 				style={{

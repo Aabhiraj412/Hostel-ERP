@@ -6,7 +6,7 @@ import useStore from "../../../Store/Store";
 import { format } from "date-fns";
 import ActivityIndicator from "../../components/ActivityIndicator";
 
-// Glassmorphic style for the card
+
 const GlassCard = styled(Card)`
 	width: 350px;
 	margin: 15px;
@@ -32,6 +32,7 @@ const FetchAttendance = () => {
 	const [updating, setUpdating] = useState(false);
 	const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+  const routing = {title:"View Leaves",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
 	// Fetch leave applications
 	const fetchLeaves = async () => {
@@ -240,7 +241,7 @@ const FetchAttendance = () => {
 	}
 	return (
 		<>
-			<MiniVariantDrawer title="Leave Applications" />
+			<MiniVariantDrawer router={routing} />
 			<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5 pt-20">
 				<div className="flex flex-wrap justify-center gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3">
 					{studentDetails.map((student) => (

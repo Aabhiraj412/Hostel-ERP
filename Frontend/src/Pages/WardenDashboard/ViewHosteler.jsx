@@ -14,7 +14,8 @@ const ViewHosteler = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
-  const [selectedHosteler, setSelectedHosteler] = useState(null); // For Popup
+  const [selectedHosteler, setSelectedHosteler] = useState(null); // For 
+  const routing = {title:"Hostelers Details",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
   const fetchHostlers = async () => {
     setLoading(true);
@@ -85,7 +86,7 @@ const ViewHosteler = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6">
-      <MiniVariantDrawer title="Hostelers Details" />
+      <MiniVariantDrawer router={routing} />
       <h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">Hostelers Details</h1>
       <div className="mx-14 mt-10">
         {/* Dropdown */}

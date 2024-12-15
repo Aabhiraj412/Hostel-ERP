@@ -15,6 +15,7 @@ const FetchAttendance = () => {
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [formattedDate, setFormatedDate] = useState("");
+  const routing = {title:"View Attendance",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
 
 	const hostelOptions = [
 		{ label: "All Hostels", value: null },
@@ -79,7 +80,7 @@ const FetchAttendance = () => {
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
-			<MiniVariantDrawer title="Attendance" />
+			<MiniVariantDrawer router={routing} />
 
 			<div className="mx-14 mt-20">
 				{/* Date Picker */}

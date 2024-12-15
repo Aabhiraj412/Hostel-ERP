@@ -1,46 +1,25 @@
-import { Card, Typography, styled } from '@mui/material';
 import React from 'react';
+import { styled, Card, Typography } from '@mui/material';
 
-const GlassCard = styled(Card)`
-  width: 200px;
-  height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.2);
+const StyledCard = styled(Card)`
+  width: 300px;
+  padding: 20px;
+  text-align: center;
+  background: rgba(76, 175, 80, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.4);
+  box-shadow: 0 4px 30px rgba(76, 175, 80, 0.5);
   border-radius: 15px;
-  position: relative;
-  z-index: 10;
-  transform: translateY(0);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-
-  &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.2);
-  }
+  color: white;
 `;
 
-const SuccessText = styled(Typography)`
-  color: green; /* Green for success message */
-  font-size: 18px;
-  font-weight: bold;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Subtle shadow */
-  margin-bottom: 10px;
-`;
-
-const SuccessCard = () => {
-  return (
-    <GlassCard>
-      <SuccessText>Success</SuccessText>
-      <Typography>Your operation was successful!</Typography>
-    </GlassCard>
-  );
-};
+const SuccessCard = () => (
+  <StyledCard>
+    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+      IP Address Changed Successfully!
+    </Typography>
+  </StyledCard>
+);
 
 export default SuccessCard;

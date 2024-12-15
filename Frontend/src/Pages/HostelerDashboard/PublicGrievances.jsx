@@ -4,6 +4,7 @@ import ActivityIndicator from "../../components/ActivityIndicator";
 import useStore from "../../../Store/Store";
 
 const PublicGrievances = () => {
+const routing = {title:"Public Grievances",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
 	const { localhost } = useStore();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [grievances, setGrievances] = useState([]);
@@ -119,7 +120,7 @@ const PublicGrievances = () => {
 
 	return (
 		<>
-			<MiniVariantDrawer title="Public Grievances" />
+			<MiniVariantDrawer router={routing} />
 			<div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
 				<div className="flex justify-between items-center">
 					<h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">
@@ -189,6 +190,7 @@ const PublicGrievances = () => {
 							<h2 className="text-2xl font-bold text-teal-600">
 								{selectedGrievance.title}
 							</h2>
+							<h2>{selectedGrievance.upvotes.length} Upvotes</h2>
 							<textarea
 								readOnly
 								value={selectedGrievance.description}

@@ -4,10 +4,16 @@ import useStore from "../../../Store/Store";
 import ActivityIndicator from "../../components/ActivityIndicator";
 
 const ViewMessMenu = () => {
-
-	const { localhost } = useStore();
+	const { localhost, user } = useStore();
 	const [imageUri, setImageUri] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const routing = {
+		title: "Mess Menu",
+		Home: user === "Hostler" ? "/hosteler-dashboard" : "/warden-dashboard",
+		Profile: user === "Hostler" ? "/profile-hosteler" : "/profile-warden",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
 	useEffect(() => {
 		const fetchMessMenu = async () => {
@@ -30,7 +36,8 @@ const ViewMessMenu = () => {
 				// Convert Blob to Base64
 				const base64String = await new Promise((resolve, reject) => {
 					const reader = new FileReader();
-					reader.onloadend = () => resolve(reader.result.split(",")[1]);
+					reader.onloadend = () =>
+						resolve(reader.result.split(",")[1]);
 					reader.onerror = reject;
 					reader.readAsDataURL(blob);
 				});
@@ -57,7 +64,7 @@ const ViewMessMenu = () => {
 
 	return (
 		<>
-			<MiniVariantDrawer title="Mess Menu" />
+			<MiniVariantDrawer router={routing} />
 			<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5">
 				<div className="bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg rounded-lg p-8 max-w-lg w-full">
 					<h1 className="text-2xl font-bold text-center text-teal-300 tracking-wider mb-6">
@@ -71,19 +78,22 @@ const ViewMessMenu = () => {
 					</button>
 					<div>
 						<p className="text-white mb-2">Current Menu:</p>
-            <div className="flex justify-center align-middle">
-
-						{loading && <ActivityIndicator />}
-						{imageUri ? (
-              <img
-              src={imageUri}
-              alt="Mess Menu"
-              className="w-full h-auto rounded-lg shadow-md"
-							/>
-						) : !loading && (
-              <text className="text-red-600">Unable to Fetch</text>
-						)}
-            </div>
+						<div className="flex justify-center align-middle">
+							{loading && <ActivityIndicator />}
+							{imageUri ? (
+								<img
+									src={imageUri}
+									alt="Mess Menu"
+									className="w-full h-auto rounded-lg shadow-md"
+								/>
+							) : (
+								!loading && (
+									<text className="text-red-600">
+										Unable to Fetch
+									</text>
+								)
+							)}
+						</div>
 						{/* <img
 							src={imageUri}
 							alt="Mess Menu"

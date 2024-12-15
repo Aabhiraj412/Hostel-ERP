@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import MiniVariantDrawer from "../../components/MiniVariantDrawer";
-import OutingDetailsCard from "../../components/OutingDetailsCard";
+import WardenOutingCard from "../../components/WardenOutingCard";
 import Card from "@/components/Card.jsx";
 import useStore from "../../../Store/Store";
 import ActivityIndicator from "../../components/ActivityIndicator";
@@ -12,6 +12,14 @@ const OutRegister = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const routing = {
+		title: "View Out Register",
+		Home: "/warden-dashboard",
+		Profile: "/profile-warden",
+		Attendence: "/fetch-attendance",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
 	useEffect(() => {
 		const fetchEntries = async () => {
@@ -30,6 +38,7 @@ const OutRegister = () => {
 
 				const data = await response.json();
 
+				// console.log(data);
 				if (!response.ok) {
 					throw new Error(data.message || "Unable to fetch entries");
 				}
@@ -47,21 +56,14 @@ const OutRegister = () => {
 									},
 								}
 							);
-
 							const studentDetails =
 								await studentDetailsResponse.json();
 
 							return {
-								id: entry._id,
+								_id: entry._id,
 								purpose: entry.purpose,
-								outTime: new Date(
-									entry.out_time
-								).toLocaleTimeString(),
-								inTime: entry.in_time
-									? new Date(
-											entry.in_time
-									  ).toLocaleTimeString()
-									: "Not Returned Yet",
+								out_time: entry.out_time,
+								in_time: entry.in_time,
 								studentDetails: {
 									name: studentDetails.name || "Unknown",
 									rollNo: studentDetails.roll_no || "N/A",
@@ -76,14 +78,10 @@ const OutRegister = () => {
 								error
 							);
 							return {
-								id: entry._id,
+								_id: entry._id,
 								purpose: entry.purpose,
-								outTime: new Date(
-									entry.out_time
-								).toLocaleTimeString(),
-								inTime: new Date(
-									entry.in_time
-								).toLocaleTimeString(),
+								out_time: entry.out_time,
+								in_time: entry.in_time,
 								studentDetails: {
 									name: "Unknown",
 									rollNo: "N/A",
@@ -96,6 +94,7 @@ const OutRegister = () => {
 					})
 				);
 
+				console.log("outing Details", outingDetailsList);
 				setOutingDetailsList(outingDetailsList);
 			} catch (error) {
 				console.error("Error fetching entries:", error);
@@ -129,7 +128,7 @@ const OutRegister = () => {
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6">
-			<MiniVariantDrawer title="Hostel Out Register" />
+			<MiniVariantDrawer router={routing} />
 			<h1 className="mt-20 text-4xl font-bold text-teal-300 mx-14">
 				Hostel Out Register
 			</h1>
@@ -152,7 +151,7 @@ const OutRegister = () => {
 							}
 							className="cursor-pointer"
 						>
-							<OutingDetailsCard
+							<WardenOutingCard
 								outingDetails={{
 									...details,
 									inTime: (

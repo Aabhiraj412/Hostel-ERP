@@ -4,8 +4,6 @@ import { persist } from "zustand/middleware";
 const useStore = create(
   persist(
     (set) => ({
-      cookie: '',
-      setCookie: (c) => set({ cookie: c }),
       user: '',
       setUser: (name) => set({ user: name }),
       data: null,

@@ -163,7 +163,7 @@ const GlassDrawer = styled(Drawer)`
   }
 `;
 
-function MiniVariantDrawer({ title }) {
+function MiniVariantDrawer(router) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -172,15 +172,15 @@ function MiniVariantDrawer({ title }) {
   };
 
   const menuItems = [
-    { text: 'Home', icon: <HomeIcon />, route: '/' },
-    { text: 'Profile', icon: <PersonIcon />, route: '/profile' },
-    { text: 'Attendance', icon: <EventIcon />, route: '/attendance' },
-    { text: 'Notice', icon: <NotificationsIcon />, route: '/notice' },
-    { text: 'Menu', icon: <MenuBookIcon />, route: '/menu' },
+    { text: 'Home', icon: <HomeIcon sx={{fontSize:40}} />, route: router.router.Home },
+    { text: 'Profile', icon: <PersonIcon sx={{fontSize:40}}  />, route: router.router.Profile },
+    { text: 'Attendance', icon: <EventIcon sx={{fontSize:40}} />, route: router.router.Attendance },
+    { text: 'Notice', icon: <NotificationsIcon sx={{fontSize:40}} />, route: router.router.Notice },
+    { text: 'Menu', icon: <MenuBookIcon sx={{fontSize:40}} />, route: router.router.Menu },
   ];
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex',overflow:'hidden' }}>
       <CssBaseline />
       <GlassAppBar
         position="fixed"
@@ -212,7 +212,7 @@ function MiniVariantDrawer({ title }) {
             noWrap
             sx={{ color: 'black', fontWeight: 'bold' }}
           >
-            {title}
+            {router.router.title}
           </Typography>
         </Toolbar>
       </GlassAppBar>
@@ -222,9 +222,11 @@ function MiniVariantDrawer({ title }) {
         sx={{
           width: open ? drawerWidth : miniDrawerWidth,
           flexShrink: 0,
+          overflow:'hidden',
           [`& .MuiDrawer-paper`]: {
             width: open ? drawerWidth : miniDrawerWidth,
             boxSizing: 'border-box',
+            overflow:'hidden',
             transition: (theme) =>
               theme.transitions.create('width', {
                 easing: theme.transitions.easing.sharp,
@@ -239,9 +241,23 @@ function MiniVariantDrawer({ title }) {
             <ListItem
               button
               key={index}
-              onClick={() => navigate(item.route)} >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              {open && <ListItemText primary={item.text} />}
+              onClick={() => navigate(item.route)} 
+              sx={{
+                justifyContent: open ? 'flex-start' : 'center', 
+                alignItems: 'center',
+                flexDirection: open ? 'row' : 'column', 
+                margin: '20px 0',
+                color:'white',
+              }}>
+                
+              <ListItemIcon   sx={{
+                justifyContent: 'center',
+                fontSize: 30, 
+                minWidth: open ? 'auto' : 0,
+                marginRight: open ? '16px' : 0, 
+                color:'white',
+        }}>{item.icon}</ListItemIcon>
+              {open && <ListItemText primary={item.text} sx={{ textAlign: 'left'}}/>}
             </ListItem>
           ))}
         </List>

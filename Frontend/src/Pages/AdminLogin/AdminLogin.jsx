@@ -50,7 +50,6 @@ const AdminLogin = () => {
 			setUser("Warden");
 			const data = await response.json(); // Parse the JSON response
 			setData(data);
-			console.log(data);
 			navigate('/warden-dashboard');
 		} catch (error) {
 			setError(error.message);
