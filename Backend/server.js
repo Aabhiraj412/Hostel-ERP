@@ -26,6 +26,8 @@ app.use(cookieParser());
 app.use(
 	cors({
 		origin: "*", // Allow all origins
+		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed methods
+		allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
 		credentials: true, // Allow cookies (Optional, requires specific origins)
 	})
 );
@@ -33,14 +35,18 @@ app.use(
 // Remove Access-Control-Allow-Origin header middleware for specific origin
 // Allow all origins in response headers
 app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
-	res.header(
-		"Access-Control-Allow-Headers",
-		"Origin, X-Requested-With, Content-Type, Accept"
-	);
-	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-	res.header("Access-Control-Allow-Credentials", "true"); // Allow cookies
-	next();
+	app.use((req, res, next) => {
+		res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
+		res.header(
+			"Access-Control-Allow-Methods",
+			"GET, POST, PUT, DELETE, OPTIONS"
+		); // Allowed methods
+		res.header(
+			"Access-Control-Allow-Headers",
+			"Origin, X-Requested-With, Content-Type, Accept, Authorization"
+		); // Allowed headers
+		next();
+	});
 });
 
 // Routers
