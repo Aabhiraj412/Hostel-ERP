@@ -12,8 +12,10 @@
 		},
 		"plugins": ["expo-secure-store"],
 		"platforms": ["ios", "android"],
+		"scheme": "hostelerp",
 		"ios": {
-			"bundleIdentifier": "com.abhiraj.hostel.erp"
+			"bundleIdentifier": "com.abhiraj.hostel.erp",
+			"associatedDomains": ["applinks:yourdomain.com"]
 		},
 		"android": {
 			"package": "com.abhiraj.hostel.erp",
@@ -21,6 +23,21 @@
 				"ACCESS_NETWORK_STATE",
 				"ACCESS_WIFI_STATE",
 				"INTERNET"
+			],
+			"intentFilters": [
+				{
+					"action": "VIEW",
+					"data": [
+						{
+							"scheme": "hostelerp"
+						},
+						{
+							"scheme": "https",
+							"host": "hostelerp.com"
+						}
+					],
+					"category": ["BROWSABLE", "DEFAULT"]
+				}
 			]
 		},
 		"extra": {

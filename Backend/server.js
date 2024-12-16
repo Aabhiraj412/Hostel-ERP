@@ -13,54 +13,57 @@ dotenv.config({ path: "../.env" });
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Allowed origins
+const allowedOrigins = [
+	"http://localhost:5173", // Development frontend
+	"https://hostelerp.com", // Production frontend or app deep linking
+];
+
+// CORS Configuration
+const corsOptions = {
+	origin: (origin, callback) => {
+		// Allow requests with no origin (like mobile apps or Postman)
+		if (!origin || allowedOrigins.includes(origin)) {
+			callback(null, true);
+		} else {
+			callback(new Error("Not allowed by CORS"));
+		}
+	},
+	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed methods
+	allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+	credentials: true, // Allow cookies
+};
+
+app.use(cors(corsOptions));
+
+// Middleware for handling preflight requests explicitly
+app.options("*", cors(corsOptions));
+
+// Parsing middleware
+app.use(express.json({ limit: "50mb" })); // For JSON payloads
+app.use(express.urlencoded({ extended: true, limit: "50mb" })); // For URL-encoded payloads
+app.use(cookieParser());
+
+// Test route
 app.get("/", (req, res) => {
 	res.send("Hello World!");
 });
-
-app.use(express.json({ limit: "50mb" })); // For JSON payloads
-app.use(express.urlencoded({ extended: true, limit: "50mb" })); // For URL-encoded payloads
-
-app.use(cookieParser());
-
-// Configure CORS to allow all origins
-app.use(
-	cors({
-		origin: "*", // Allow all origins
-		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed methods
-		allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
-		credentials: true, // Allow cookies (Optional, requires specific origins)
-	})
-);
-
-// Remove Access-Control-Allow-Origin header middleware for specific origin
-// Allow all origins in response headers
-app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
-	res.header(
-		"Access-Control-Allow-Headers",
-		"Origin, X-Requested-With, Content-Type, Accept, Authorization"
-	);
-	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-	res.header("Access-Control-Allow-Credentials", "true"); // Allow cookies
-	next();
-});
-
-app.options("*", (req, res) => {
-	res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
-	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // Allow all methods
-	res.header(
-	  "Access-Control-Allow-Headers",
-	  "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-	); // Allow all headers
-	res.header("Access-Control-Allow-Credentials", "true"); // Allow cookies (optional)
-	res.sendStatus(204); // Respond with no content for preflight
-  });
 
 // Routers
 app.use("/api/auth", authRouter);
 app.use("/api/warden", wardenRouter);
 app.use("/api/hostler", hostlerRouter);
 
+// Error handler for invalid CORS origins
+app.use((err, req, res, next) => {
+	if (err.message === "Not allowed by CORS") {
+		res.status(403).send({ error: "CORS policy does not allow this origin" });
+	} else {
+		next(err);
+	}
+});
+
+// Start server
 app.listen(PORT, () => {
 	console.log(`listening at port http://localhost:${PORT}`);
 	console.log(`env: ${process.env.NODE_ENV}`);
