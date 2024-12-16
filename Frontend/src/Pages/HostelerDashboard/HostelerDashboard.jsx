@@ -127,10 +127,10 @@ const HostelerDashboard = () => {
 
 			console.log(ip, testlocalhost);
 
-			// if (testlocalhost !== ip) {
-			// 	alert("Attendance IP not matched. Connect to Hostel Wi-Fi");
-			// 	return;
-			// }
+			if (testlocalhost !== ip) {
+				alert("Attendance IP not matched. Connect to Hostel Wi-Fi");
+				return;
+			}
 
 			const markAttendance = await fetch(
 				`http://${localhost}/api/hostler/markattendance`,

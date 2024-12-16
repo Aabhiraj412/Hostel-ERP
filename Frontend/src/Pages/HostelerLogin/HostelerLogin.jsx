@@ -49,9 +49,6 @@ const HostelerLogin = () => {
 			}
 			const data = await response.json();
 
-			// const cookies = data.cookie;
-			
-			// if (cookies) setCookie(cookies);
 			setUser("Hostler");
 
 			setData(data);
