@@ -45,6 +45,17 @@ app.use((req, res, next) => {
 	next();
 });
 
+app.options("*", (req, res) => {
+	res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
+	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // Allow all methods
+	res.header(
+	  "Access-Control-Allow-Headers",
+	  "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+	); // Allow all headers
+	res.header("Access-Control-Allow-Credentials", "true"); // Allow cookies (optional)
+	res.sendStatus(204); // Respond with no content for preflight
+  });
+
 // Routers
 app.use("/api/auth", authRouter);
 app.use("/api/warden", wardenRouter);
