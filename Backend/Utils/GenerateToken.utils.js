@@ -7,7 +7,7 @@ export const generateWardenToken = (user,res)=>{
     res.cookie('jwt', token,{
         maxAge:15*24*60*60*1000,  //15days
         httpOnly: true,
-        sameSite: 'none',  //for https only
+        sameSite: 'strict',  //for https only
         secure: process.env.NODE_ENV !== 'development'
     });
 }
@@ -18,7 +18,7 @@ export const generateHostlerToken = (user,res)=>{
     res.cookie('jwt', token,{
         maxAge:15*24*60*60*1000,  //15days
         httpOnly: true,
-        sameSite: 'none',  //for https only
+        sameSite: 'strict',  //for https only
         secure: process.env.NODE_ENV !== 'development'
     });
 }
