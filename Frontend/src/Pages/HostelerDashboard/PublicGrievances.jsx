@@ -32,7 +32,7 @@ const routing = {title:"Public Grievances",Home: '/hosteler-dashboard', Profile:
 
 			const data = await response.json();
 
-			// console.log(data)
+			// //console.log(data)
 			if (!response.ok) {
 				throw new Error(
 					data.message || "Unable to Fetch data from API"
@@ -40,11 +40,11 @@ const routing = {title:"Public Grievances",Home: '/hosteler-dashboard', Profile:
 			}
 
 			setGrievances(data);
-			// console.log(grievances);
+			// //console.log(grievances);
 		} catch (e) {
 			setErrorMessage(e);
 			setError(true);
-			console.log(e);
+			//console.log(e);
 		} finally {
 			setLoading(false);
 		}
@@ -97,12 +97,12 @@ const routing = {title:"Public Grievances",Home: '/hosteler-dashboard', Profile:
 					throw new Error(data.message || "Unable to add grievance");
 				}
 				setUpload(false);
-				console.log(data);
+				//console.log(data);
 			})
 			.catch((error) => {
 				setErrorMessage(error);
 				setError(true);
-				console.log(error);
+				//console.log(error);
 			});
 
 		toggleDrawer();

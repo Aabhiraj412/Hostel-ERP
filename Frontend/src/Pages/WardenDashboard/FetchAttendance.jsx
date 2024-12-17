@@ -43,12 +43,12 @@ const FetchAttendance = () => {
 		)}T18:30:00.000Z`;
 		setFormatedDate(localFormattedDate);
 
-		console.log("Selected Date:", date);
-		console.log("Formatted Date:", localFormattedDate);
-		console.log("Selected Hostel:", selectedHostel);
+		//console.log("Selected Date:", date);
+		//console.log("Formatted Date:", localFormattedDate);
+		//console.log("Selected Hostel:", selectedHostel);
 
 		try {
-			console.log(formattedDate);
+			//console.log(formattedDate);
 			const response = await fetch(
 				`${localhost}/api/warden/gethostlers`,
 				{
@@ -65,7 +65,7 @@ const FetchAttendance = () => {
 			}
 
 			const fetchedStudents = await response.json();
-			console.log(fetchedStudents);
+			//console.log(fetchedStudents);
 			setStudents(fetchedStudents);
 		} catch (error) {
 			setErrorMessage(error.message);

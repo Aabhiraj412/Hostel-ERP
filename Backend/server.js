@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
 	"http://localhost:5173", // Development frontend
 	"https://hostelerp.com", // Production frontend or app deep linking
+	"https://hostel-erp.vercel.app/", // Production frontend or app deep linking
 ];
 
 // CORS Configuration

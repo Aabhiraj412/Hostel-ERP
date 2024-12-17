@@ -48,10 +48,6 @@ const HostelerLogin = () => {
 				);
 			}
 
-			console.log(response.headers)
-			for (let [key, value] of response.headers.entries()) {
-				console.log(`${key}: ${value}`);
-			}
 			const data = await response.json();
 
 			setUser("Hostler");

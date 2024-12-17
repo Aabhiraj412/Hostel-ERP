@@ -80,11 +80,11 @@ const UploadMessMenu = () => {
 					body: formData,
 				}
 			);
-			console.log(uploadResponse);
+			//console.log(uploadResponse);
 
 			const data = await uploadResponse.json();
 
-			console.log(data);
+			//console.log(data);
 
 			if (!uploadResponse.ok) {
 				const errorDetails = await uploadResponse.json();
@@ -92,7 +92,7 @@ const UploadMessMenu = () => {
 				throw new Error(errorDetails.message || "Upload failed");
 			}
 
-			console.log("Menu uploaded successfully.");
+			//console.log("Menu uploaded successfully.");
 			alert("Menu uploaded successfully!");
 		} catch (uploadError) {
 			console.error("Upload Error:", uploadError.message);

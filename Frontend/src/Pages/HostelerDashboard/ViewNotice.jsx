@@ -29,7 +29,7 @@ const ViewNotice = () => {
 			}
 
 			setNotices(data.notices);
-			console.log(data.notices);
+			//console.log(data.notices);
 		} catch (e) {
 			alert(e);
 		} finally {
@@ -63,7 +63,7 @@ const ViewNotice = () => {
 			document.body.removeChild(link);
 			window.URL.revokeObjectURL(url);
 
-			console.log("Downloaded successfully");
+			//console.log("Downloaded successfully");
 		} catch (e) {
 			console.error(e);
 			alert("Failed to download notice.");
