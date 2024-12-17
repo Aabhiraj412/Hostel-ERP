@@ -58,7 +58,7 @@ const PublishNotice = () => {
       }
 
       const responseData = await response.json();
-      console.log("Notice published successfully:", responseData);
+      //console.log("Notice published successfully:", responseData);
 
       setTitle("");
       setDescription("");

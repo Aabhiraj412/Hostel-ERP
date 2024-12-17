@@ -80,7 +80,7 @@ const ViewPrivateGrievances = () => {
 			);
 
 			setGrievances(grievanceDetails);
-			console.log(grievanceDetails);
+			//console.log(grievanceDetails);
 		} catch (error) {
 			console.error("Error fetching grievances:", error);
 		} finally {

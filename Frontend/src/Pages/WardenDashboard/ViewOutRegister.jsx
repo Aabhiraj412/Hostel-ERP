@@ -38,7 +38,7 @@ const OutRegister = () => {
 
 				const data = await response.json();
 
-				// console.log(data);
+				// //console.log(data);
 				if (!response.ok) {
 					throw new Error(data.message || "Unable to fetch entries");
 				}
@@ -94,7 +94,7 @@ const OutRegister = () => {
 					})
 				);
 
-				console.log("outing Details", outingDetailsList);
+				//console.log("outing Details", outingDetailsList);
 				setOutingDetailsList(outingDetailsList);
 			} catch (error) {
 				console.error("Error fetching entries:", error);

@@ -38,7 +38,7 @@ const AddDetails = () => {
 	};
 
   const date = new Date().toISOString();
-  console.log(date.split("T")[0])
+  //console.log(date.split("T")[0])
   const [dob, setDob] = useState(date.split("T")[0]);
 	const [bloodGroup, setBloodGroup] = useState();
 	const [localGuardian, setLocalGuardian] = useState();
@@ -112,7 +112,7 @@ const AddDetails = () => {
 		} catch (error) {
 			setErrorMessage(error.message || "An unknown error occurred");
 			setError(true);
-			console.log("Error adding details:", error);
+			//console.log("Error adding details:", error);
 		} finally {
 			setLoading(false);
 		}

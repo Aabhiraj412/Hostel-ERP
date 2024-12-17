@@ -178,7 +178,7 @@ const WardenDashboard = () => {
       if(!response.ok){
         throw new Error(data.message || "An error occured. Please try again later.");
       }
-      console.log(data);
+      //console.log(data);
       alert("IP changed successfully.");
     } catch (error) {
       console.error(error);

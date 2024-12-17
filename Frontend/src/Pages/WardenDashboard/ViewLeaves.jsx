@@ -118,7 +118,7 @@ const FetchAttendance = () => {
 	// Update leave status
 	useEffect(() => {
 		fetchLeaves();
-		// console.log(studentDetails);
+		// //console.log(studentDetails);
 	}, [updating]);
 
 	// Function to determine the status color

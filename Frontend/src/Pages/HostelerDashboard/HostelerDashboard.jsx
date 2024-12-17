@@ -125,7 +125,7 @@ const HostelerDashboard = () => {
 
 			const ip = data.ip;
 
-			console.log(ip, testlocalhost);
+			//console.log(ip, testlocalhost);
 
 			if (testlocalhost !== ip) {
 				alert("Attendance IP not matched. Connect to Hostel Wi-Fi");
@@ -150,10 +150,10 @@ const HostelerDashboard = () => {
 				return;
 			}
 
-			console.log("Attendance marked");
+			alert("Attendance marked");
 			handleCloseModal();
 		} catch (error) {
-			console.log(error);
+			//console.log(error);
 			alert("Error marking attendance");
 		}
 	};

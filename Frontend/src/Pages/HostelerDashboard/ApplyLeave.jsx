@@ -116,10 +116,10 @@ const ApplyLeave = () => {
 				(toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
 			) + 1;
 
-		console.log({
-			...formData,
-			calculatedDays: dayDifference,
-		});
+		//console.log({
+		// 	...formData,
+		// 	calculatedDays: dayDifference,
+		// });
 
 		setLoading(true);
 
