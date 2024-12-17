@@ -9,7 +9,8 @@ export const generateWardenToken = (user,res)=>{
         httpOnly: true,
         // sameSite: 'strict',  //for https only
         sameSite: 'lax',
-        secure: process.env.NODE_ENV !== 'development'
+        // secure: process.env.NODE_ENV !== 'development'
+        secure : true,
     });
 }
 export const generateHostlerToken = (user,res)=>{
@@ -20,7 +21,9 @@ export const generateHostlerToken = (user,res)=>{
         maxAge:15*24*60*60*1000,  //15days
         httpOnly: true,
         // sameSite: 'strict',  //for https only
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV !== 'development'
+        // sameSite: 'lax',
+        sameSite: 'none',
+        // secure: process.env.NODE_ENV !== 'development'
+        secure : true,
     });
 }
