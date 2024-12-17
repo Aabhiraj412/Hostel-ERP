@@ -20,7 +20,7 @@ const routing = {title:"Public Grievances",Home: '/hosteler-dashboard', Profile:
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/getPublicgrievance`,
+				`${localhost}/api/hostler/getPublicgrievance`,
 				{
 					method: "GET",
 					header: {
@@ -83,7 +83,7 @@ const routing = {title:"Public Grievances",Home: '/hosteler-dashboard', Profile:
 
 		setUpload(true);
 
-		fetch(`http://${localhost}/api/hostler/Publicgrievance`, {
+		fetch(`${localhost}/api/hostler/Publicgrievance`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

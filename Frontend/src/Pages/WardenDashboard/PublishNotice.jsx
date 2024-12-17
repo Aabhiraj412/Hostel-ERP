@@ -41,10 +41,10 @@ const PublishNotice = () => {
       formData.append("description", description);
       formData.append("file", pdfFile); // Append the file directly
 
-      const protocol = window.location.protocol === "https:" ? "https" : "http";
+      // const protocol = window.location.protocol === "https:" ? "https" : "http";
 
       const response = await fetch(
-        `${protocol}://${localhost}/api/warden/uploadnotice`,
+        `${localhost}/api/warden/uploadnotice`,
         {
           method: "POST",
           body: formData,

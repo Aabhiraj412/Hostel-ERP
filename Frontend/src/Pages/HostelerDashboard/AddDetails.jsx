@@ -80,7 +80,7 @@ const AddDetails = () => {
 
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/adddetails`, // Consider using environment variables here
+				`${localhost}/api/hostler/adddetails`, // Consider using environment variables here
 				{
 					method: "POST",
 					headers: {

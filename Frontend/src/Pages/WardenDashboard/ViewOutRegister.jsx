@@ -26,7 +26,7 @@ const OutRegister = () => {
 			setLoading(true);
 			try {
 				const response = await fetch(
-					`http://${localhost}/api/warden/getentries`,
+					`${localhost}/api/warden/getentries`,
 					{
 						method: "GET",
 						credentials: "include",
@@ -47,7 +47,7 @@ const OutRegister = () => {
 					data.map(async (entry) => {
 						try {
 							const studentDetailsResponse = await fetch(
-								`http://${localhost}/api/warden/getdetail/${entry.student}`,
+								`${localhost}/api/warden/getdetail/${entry.student}`,
 								{
 									method: "GET",
 									credentials: "include",

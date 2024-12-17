@@ -8,15 +8,22 @@ const UploadMessMenu = () => {
 	const { localhost } = useStore();
 	const [imageUri, setImageUri] = useState(null);
 	const [loading, setLoading] = useState(false);
-  const [upload, setUpload] = useState(false);
-  const routing = {title:"Upload Mess Menu",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
+	const [upload, setUpload] = useState(false);
+	const routing = {
+		title: "Upload Mess Menu",
+		Home: "/warden-dashboard",
+		Profile: "/profile-warden",
+		Attendence: "/fetch-attendance",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
 	useEffect(() => {
 		const fetchMessMenu = async () => {
 			setLoading(true);
 			try {
 				const response = await fetch(
-					`http://${localhost}/api/hostler/getmessmenu`,
+					`${localhost}/api/hostler/getmessmenu`,
 					{
 						method: "GET",
 					}
@@ -51,50 +58,50 @@ const UploadMessMenu = () => {
 		fetchMessMenu();
 	}, [localhost, upload]);
 
-  const handleUpload = async (event) => {
-    const file = event.target.files[0];
-  
-    if (!file) {
-      console.error("No file selected.");
-      return;
-    }
-  
-    setUpload(true);
-  
-    try {
-      const formData = new FormData();
-      formData.append("file", file); // Append the file directly
-  
-      const uploadResponse = await fetch(
-        `http://${localhost}/api/warden/uploadmessmenu`,
-        {
-          method: "POST",
-          credentials: "include",
-          body: formData,
-        }
-      );
-      console.log(uploadResponse);
+	const handleUpload = async (event) => {
+		const file = event.target.files[0];
 
-      const data = await uploadResponse.json();
+		if (!file) {
+			console.error("No file selected.");
+			return;
+		}
 
-      console.log(data);
-  
-      if (!uploadResponse.ok) {
-        const errorDetails = await uploadResponse.json();
-        console.error("Upload error:", errorDetails);
-        throw new Error(errorDetails.message || "Upload failed");
-      }
-  
-      console.log("Menu uploaded successfully.");
-      alert("Menu uploaded successfully!");
-    } catch (uploadError) {
-      console.error("Upload Error:", uploadError.message);
-      alert(`Failed to upload menu: ${uploadError.message}`);
-    } finally {
-      setUpload(false);
-    }
-  };
-  
+		setUpload(true);
+
+		try {
+			const formData = new FormData();
+			formData.append("file", file); // Append the file directly
+
+			const uploadResponse = await fetch(
+				`${localhost}/api/warden/uploadmessmenu`,
+				{
+					method: "POST",
+					credentials: "include",
+					body: formData,
+				}
+			);
+			console.log(uploadResponse);
+
+			const data = await uploadResponse.json();
+
+			console.log(data);
+
+			if (!uploadResponse.ok) {
+				const errorDetails = await uploadResponse.json();
+				console.error("Upload error:", errorDetails);
+				throw new Error(errorDetails.message || "Upload failed");
+			}
+
+			console.log("Menu uploaded successfully.");
+			alert("Menu uploaded successfully!");
+		} catch (uploadError) {
+			console.error("Upload Error:", uploadError.message);
+			alert(`Failed to upload menu: ${uploadError.message}`);
+		} finally {
+			setUpload(false);
+		}
+	};
+
 	const handleDownload = () => {
 		if (imageUri) {
 			const link = document.createElement("a");

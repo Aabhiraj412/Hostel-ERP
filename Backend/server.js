@@ -31,6 +31,7 @@ const corsOptions = {
 	},
 	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed methods
 	allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+	exposedHeaders: ["Set-Cookie"], // Expose cookies to the client
 	credentials: true, // Allow cookies
 };
 

@@ -13,7 +13,7 @@ const ViewNotice = () => {
 
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/getnotices`,
+				`${localhost}/api/hostler/getnotices`,
 				{
 					method: "GET",
 					credentials: "include",
@@ -44,7 +44,7 @@ const ViewNotice = () => {
 	const handleDownload = async (notice) => {
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/getnotice/${notice._id}`
+				`${localhost}/api/warden/getnotice/${notice._id}`
 			);
 			if (!response.ok) {
 				throw new Error("Failed to fetch the notice");

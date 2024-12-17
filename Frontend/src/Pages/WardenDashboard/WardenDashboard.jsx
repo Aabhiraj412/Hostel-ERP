@@ -164,7 +164,7 @@ const WardenDashboard = () => {
     try {
       alert(testlocalhost);
       const response = await fetch(
-        `http://${localhost}/api/warden/changeip`,
+        `${localhost}/api/warden/changeip`,
         {
           method: "POST",
           headers: {
