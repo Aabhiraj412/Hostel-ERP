@@ -26,7 +26,7 @@ const AdminLogin = () => {
 		// Send a POST request to the server
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/auth/wardenlogin`,
+				`${localhost}/api/auth/wardenlogin`,
 				{
 					method: "POST",
 					headers: {

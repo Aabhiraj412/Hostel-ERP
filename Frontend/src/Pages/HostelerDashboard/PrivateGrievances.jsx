@@ -20,7 +20,7 @@ const PrivateGrievances = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/getprivategrievance`,
+				`${localhost}/api/hostler/getprivategrievance`,
 				{
 					method: "GET",
 					header: {
@@ -83,7 +83,7 @@ const PrivateGrievances = () => {
 
 		setUpload(true);
 
-		fetch(`http://${localhost}/api/hostler/privategrievance`, {
+		fetch(`${localhost}/api/hostler/privategrievance`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

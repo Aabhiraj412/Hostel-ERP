@@ -24,7 +24,7 @@ const HostelerLogin = () => {
 		setError(null);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/auth/hostlerlogin`, // Consider using environment variables here
+				`${localhost}/api/auth/hostlerlogin`, // Consider using environment variables here
 				{
 					method: "POST",
 					headers: {
@@ -47,6 +47,8 @@ const HostelerLogin = () => {
 					`Login failed with status code: ${response.status}`
 				);
 			}
+
+			console.log(response.headers)
 			const data = await response.json();
 
 			setUser("Hostler");

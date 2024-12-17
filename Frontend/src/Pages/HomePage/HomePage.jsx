@@ -1,7 +1,5 @@
-import React from 'react';
 import logo from '@/assets/whiteBlack.svg';
 //import NavBar from '../../components/NavBar';
-import MiniVariantDrawer from '../../components/MiniVariantDrawer';
 
 
 const HomePage = () => {

@@ -17,7 +17,7 @@ const OutRegister = () => {
   // Fetch the user's IP address
   const getIP = async () => {
     try {
-      const response = await fetch(`http://${localhost}/api/hostler/getip`, {
+      const response = await fetch(`${localhost}/api/hostler/getip`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -33,7 +33,7 @@ const OutRegister = () => {
   const fetchEntries = async () => {
     try {
       const response = await fetch(
-        `http://${localhost}/api/hostler/getentry`,
+        `${localhost}/api/hostler/getentry`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -66,7 +66,7 @@ const OutRegister = () => {
     setOpen(true);
     try {
       const response = await fetch(
-        `http://${localhost}/api/hostler/openentry`,
+        `${localhost}/api/hostler/openentry`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

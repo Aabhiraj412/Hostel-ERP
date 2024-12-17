@@ -10,8 +10,15 @@ const ViewPrivateGrievances = () => {
 	const [grievances, setGrievances] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [updating, setUpdating] = useState(false);
-  const [selected, setSelected] = useState();
-  const routing = {title:"View Private Grievances",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
+	const [selected, setSelected] = useState();
+	const routing = {
+		title: "View Private Grievances",
+		Home: "/warden-dashboard",
+		Profile: "/profile-warden",
+		Attendence: "/fetch-attendance",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
 	// Fetch grievances
 	const fetchGrievances = async () => {
@@ -19,7 +26,7 @@ const ViewPrivateGrievances = () => {
 		try {
 			// Fetch grievances
 			const response = await fetch(
-				`http://${localhost}/api/warden/getprivategrievance`,
+				`${localhost}/api/warden/getprivategrievance`,
 				{
 					method: "GET",
 					credentials: "include",
@@ -38,7 +45,7 @@ const ViewPrivateGrievances = () => {
 				grievances.map(async (grievance) => {
 					try {
 						const hostlerResponse = await fetch(
-							`http://${localhost}/api/warden/getdetail/${grievance.student}`,
+							`${localhost}/api/warden/getdetail/${grievance.student}`,
 							{
 								method: "GET",
 								credentials: "include",
@@ -89,12 +96,12 @@ const ViewPrivateGrievances = () => {
 
 	// Function to resolve a grievance
 	const handleResolve = async (grievance) => {
-    setSelected(grievance._id);
+		setSelected(grievance._id);
 		setUpdating(true);
 		try {
 			const id = grievance._id;
 			const response = await fetch(
-				`http://${localhost}/api/warden/setprivategrievance/${id}`,
+				`${localhost}/api/warden/setprivategrievance/${id}`,
 				{
 					method: "POST",
 					headers: {
@@ -122,18 +129,18 @@ const ViewPrivateGrievances = () => {
 			console.error("Error updating grievance status:", error);
 		} finally {
 			setUpdating(false);
-      setSelected(null);
+			setSelected(null);
 		}
 	};
 
 	// Function to reject a grievance
 	const handleReject = async (grievance) => {
-    setSelected(grievance._id);
+		setSelected(grievance._id);
 		setUpdating(true);
 		try {
 			const id = grievance._id;
 			const response = await fetch(
-				`http://${localhost}/api/warden/setprivategrievance/${id}`,
+				`${localhost}/api/warden/setprivategrievance/${id}`,
 				{
 					method: "POST",
 					headers: {
@@ -161,7 +168,7 @@ const ViewPrivateGrievances = () => {
 			console.error("Error updating grievance status:", error);
 		} finally {
 			setUpdating(false);
-      setSelected(null);
+			setSelected(null);
 		}
 	};
 
@@ -192,7 +199,9 @@ const ViewPrivateGrievances = () => {
 						>
 							<div className="flex justify-between items-center mb-2">
 								<span className="text-sm">
-									{new Date(grievance.date).toLocaleDateString()}
+									{new Date(
+										grievance.date
+									).toLocaleDateString()}
 								</span>
 							</div>
 							<h2 className="text-xl font-bold">

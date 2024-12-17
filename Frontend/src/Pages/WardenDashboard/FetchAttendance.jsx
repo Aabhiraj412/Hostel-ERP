@@ -50,7 +50,7 @@ const FetchAttendance = () => {
 		try {
 			console.log(formattedDate);
 			const response = await fetch(
-				`http://${localhost}/api/warden/gethostlers`,
+				`${localhost}/api/warden/gethostlers`,
 				{
 					method: "GET",
 					headers: {

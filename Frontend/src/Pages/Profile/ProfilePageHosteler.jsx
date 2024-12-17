@@ -98,7 +98,7 @@ const ProfilePageHosteler = () => {
 
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/setpass`,
+				`${localhost}/api/hostler/setpass`,
 				{
 					method: "POST",
 					headers: {
@@ -135,7 +135,7 @@ const ProfilePageHosteler = () => {
 	const fetchHostlerData = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/getdetails`,
+				`${localhost}/api/hostler/getdetails`,
 				{
 					method: "GET",
 					headers: {
@@ -169,7 +169,7 @@ const ProfilePageHosteler = () => {
 		setLoggingOut(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/auth/hostlerlogout`,
+				`${localhost}/api/auth/hostlerlogout`,
 				{
 					method: "POST",
 					headers: {

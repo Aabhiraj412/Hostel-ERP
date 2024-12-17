@@ -37,8 +37,8 @@ function App() {
 
 	useEffect(() => {
 		const hostname = window.location.hostname;
-		// setLocalhost(`hostel-erp-9w6h.onrender.com`);
-		setLocalhost(`${hostname}:3000`);
+		setLocalhost(`https://hostel-erp-9w6h.onrender.com`);
+		// setLocalhost(`http://${hostname}:3000`);
 		setTestLocalhost(hostname);
 		console.log(localhost);
 		console.log("TestLocalHost: ", testlocalhost);

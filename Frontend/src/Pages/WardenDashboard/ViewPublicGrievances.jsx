@@ -5,13 +5,20 @@ import ActivityIndicator from "../../components/ActivityIndicator";
 import useStore from "../../../Store/Store";
 
 const ViewPublicGrievances = () => {
-  // Sample grievances data
+	// Sample grievances data
 	const { localhost } = useStore();
 	const [grievances, setGrievances] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [updating, setUpdating] = useState(false);
-  const [selected, setSelected] = useState();
-  const routing = {title:"View Public Grievances",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
+	const [selected, setSelected] = useState();
+	const routing = {
+		title: "View Public Grievances",
+		Home: "/warden-dashboard",
+		Profile: "/profile-warden",
+		Attendence: "/fetch-attendance",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
 	// Fetch grievances
 	const fetchGrievances = async () => {
@@ -19,7 +26,7 @@ const ViewPublicGrievances = () => {
 		try {
 			// Fetch grievances
 			const response = await fetch(
-				`http://${localhost}/api/warden/getPublicgrievance`,
+				`${localhost}/api/warden/getPublicgrievance`,
 				{
 					method: "GET",
 					credentials: "include",
@@ -38,7 +45,7 @@ const ViewPublicGrievances = () => {
 				grievances.map(async (grievance) => {
 					try {
 						const hostlerResponse = await fetch(
-							`http://${localhost}/api/warden/getdetail/${grievance.student}`,
+							`${localhost}/api/warden/getdetail/${grievance.student}`,
 							{
 								method: "GET",
 								credentials: "include",
@@ -89,12 +96,12 @@ const ViewPublicGrievances = () => {
 
 	// Function to resolve a grievance
 	const handleResolve = async (grievance) => {
-    setSelected(grievance._id);
+		setSelected(grievance._id);
 		setUpdating(true);
 		try {
 			const id = grievance._id;
 			const response = await fetch(
-				`http://${localhost}/api/warden/setPublicgrievance/${id}`,
+				`${localhost}/api/warden/setPublicgrievance/${id}`,
 				{
 					method: "POST",
 					headers: {
@@ -122,18 +129,18 @@ const ViewPublicGrievances = () => {
 			console.error("Error updating grievance status:", error);
 		} finally {
 			setUpdating(false);
-      setSelected(null);
+			setSelected(null);
 		}
 	};
 
 	// Function to reject a grievance
 	const handleReject = async (grievance) => {
-    setSelected(grievance._id);
+		setSelected(grievance._id);
 		setUpdating(true);
 		try {
 			const id = grievance._id;
 			const response = await fetch(
-				`http://${localhost}/api/warden/setpublicgrievance/${id}`,
+				`${localhost}/api/warden/setpublicgrievance/${id}`,
 				{
 					method: "POST",
 					headers: {
@@ -161,7 +168,7 @@ const ViewPublicGrievances = () => {
 			console.error("Error updating grievance status:", error);
 		} finally {
 			setUpdating(false);
-      setSelected(null);
+			setSelected(null);
 		}
 	};
 
@@ -192,7 +199,9 @@ const ViewPublicGrievances = () => {
 						>
 							<div className="flex justify-between items-center mb-2">
 								<span className="text-sm">
-									{new Date(grievance.date).toLocaleDateString()}
+									{new Date(
+										grievance.date
+									).toLocaleDateString()}
 								</span>
 							</div>
 							<h2 className="text-xl font-bold">
@@ -204,7 +213,7 @@ const ViewPublicGrievances = () => {
 									Status: {grievance.status}
 								</p>
 							</div>
-              <h2>{grievance.upvotes.length} Upvotes</h2>
+							<h2>{grievance.upvotes.length} Upvotes</h2>
 							{updating && grievance._id === selected ? (
 								<div className="flex justify-around items-center mt-6">
 									<ActivityIndicator size="small" />

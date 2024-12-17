@@ -21,7 +21,7 @@ const ViewHosteler = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://${localhost}/api/warden/gethostlers`, {
+      const response = await fetch(`${localhost}/api/warden/gethostlers`, {
         method: "GET",
         credentials: "include",
       });

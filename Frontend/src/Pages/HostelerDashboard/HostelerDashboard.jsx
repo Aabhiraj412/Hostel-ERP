@@ -108,7 +108,7 @@ const HostelerDashboard = () => {
 		}
 
 		try {
-			const getip = await fetch(`http://${localhost}/api/hostler/getip`, {
+			const getip = await fetch(`${localhost}/api/hostler/getip`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -133,7 +133,7 @@ const HostelerDashboard = () => {
 			}
 
 			const markAttendance = await fetch(
-				`http://${localhost}/api/hostler/markattendance`,
+				`${localhost}/api/hostler/markattendance`,
 				{
 					method: "GET",
 					headers: {

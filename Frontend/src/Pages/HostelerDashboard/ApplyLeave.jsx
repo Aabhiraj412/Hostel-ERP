@@ -125,7 +125,7 @@ const ApplyLeave = () => {
 
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/hostler/applyleave`,
+				`${localhost}/api/hostler/applyleave`,
 				{
 					method: "POST",
 					headers: {

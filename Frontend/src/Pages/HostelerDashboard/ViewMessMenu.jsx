@@ -20,7 +20,7 @@ const ViewMessMenu = () => {
 			setLoading(true);
 			try {
 				const response = await fetch(
-					`http://${localhost}/api/hostler/getmessmenu`,
+					`${localhost}/api/hostler/getmessmenu`,
 					{
 						method: "GET",
 					}

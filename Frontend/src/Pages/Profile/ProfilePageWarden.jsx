@@ -189,7 +189,7 @@ const ProfilePageWarden = () => {
 
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/resetpass`,
+				`${localhost}/api/warden/resetpass`,
 				{
 					method: "POST",
 					headers: {
@@ -223,7 +223,7 @@ const ProfilePageWarden = () => {
 	const fetchWardenData = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/Warden/getdetails`,
+				`${localhost}/api/Warden/getdetails`,
 				{
 					method: "GET",
 					headers: {
@@ -258,7 +258,7 @@ const ProfilePageWarden = () => {
 		setLoggingOut(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/auth/wardenlogout`,
+				`${localhost}/api/auth/wardenlogout`,
 				{
 					method: "POST",
 					headers: {

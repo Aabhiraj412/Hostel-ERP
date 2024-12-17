@@ -136,7 +136,7 @@ const AddHosteler = () => {
 		setErrorMessage("");
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/addhostler`,
+				`${localhost}/api/warden/addhostler`,
 				{
 					method: "POST",
 					headers: {

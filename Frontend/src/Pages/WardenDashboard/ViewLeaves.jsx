@@ -38,7 +38,7 @@ const FetchAttendance = () => {
 	const fetchLeaves = async () => {
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/getleaves`,
+				`${localhost}/api/warden/getleaves`,
 				{
 					method: "GET",
 					credentials: "include",
@@ -58,7 +58,7 @@ const FetchAttendance = () => {
 				data.map(async (entry) => {
 					try {
 						const response = await fetch(
-							`http://${localhost}/api/warden/getdetail/${entry.student}`,
+							`${localhost}/api/warden/getdetail/${entry.student}`,
 							{
 								method: "GET",
 								credentials: "include",
@@ -140,7 +140,7 @@ const FetchAttendance = () => {
 		setUpdating(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/setleave/${leaveId}`,
+				`${localhost}/api/warden/setleave/${leaveId}`,
 				{
 					method: "POST",
 					headers: {
@@ -183,7 +183,7 @@ const FetchAttendance = () => {
 		setUpdating(true);
 		try {
 			const response = await fetch(
-				`http://${localhost}/api/warden/setleave/${leaveId}`,
+				`${localhost}/api/warden/setleave/${leaveId}`,
 				{
 					method: "POST",
 					headers: {
