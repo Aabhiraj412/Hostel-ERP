@@ -45,248 +45,245 @@ function App() {
 	}, [localhost, setLocalhost, setTestLocalhost, testlocalhost]);
 
 	return (
-		<Router>
-			<Routes>
-				
-        <Route
-					path="/"
-					element={
-						user === "Warden" ? (
-							<Navigate to="/warden-dashboard" replace />
-						) : user === "Hostler" ? (
-							<Navigate to="/hosteler-dashboard" replace />
-						) : (
-							<HomePage />
-						)
-					}
-				/>
+		// <Router>
+		<Routes>
+			<Route
+				path="/"
+				element={
+					user === "Warden" ? (
+						<Navigate to="/warden-dashboard" replace />
+					) : user === "Hostler" ? (
+						<Navigate to="/hosteler-dashboard" replace />
+					) : (
+						<HomePage />
+					)
+				}
+			/>
 
-				<Route
-					path="/admin-login"
-					element={
-						user === "Warden" ? (
-							<Navigate to="/warden-dashboard" replace />
-						) : (
-							<AdminLogin />
-						)
-					}
-				/>
-				<Route
-					path="/warden-dashboard"
-					element={
-						user === "Warden" ? (
-							<WardenDashboard />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/profile-warden"
-					element={
-						user === "Warden" ? (
-							<ProfilePageWarden />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/upload-mess-menu"
-					element={
-						user === "Warden" ? (
-							<UploadMessMenu />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/publish-notice"
-					element={
-						user === "Warden" ? (
-							<PublishNotice />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-        <Route
-					path="/view-leave"
-					element={
-						user === "Warden" ? (
-							<ViewLeaves />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-        <Route
-					path="/view-out-register"
-					element={
-						user === "Warden" ? (
-							<ViewOutRegister />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/view-hosteler"
-					element={
-						user === "Warden" ? (
-							<ViewHosteler />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/add-hosteler"
-					element={
-						user === "Warden" ? (
-							<AddHosteler />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/fetch-attendance"
-					element={
-						user === "Warden" ? (
-							<FetchAttendance />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-        <Route
-					path="/view-private-grievance"
-					element={
-						user === "Warden" ? (
-							<ViewPrivateGrievances />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/view-public-grievance"
-					element={
-						user === "Warden" ? (
-							<ViewPublicGrievances />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				
+			<Route
+				path="/admin-login"
+				element={
+					user === "Warden" ? (
+						<Navigate to="/warden-dashboard" replace />
+					) : (
+						<AdminLogin />
+					)
+				}
+			/>
+			<Route
+				path="/warden-dashboard"
+				element={
+					user === "Warden" ? (
+						<WardenDashboard />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/profile-warden"
+				element={
+					user === "Warden" ? (
+						<ProfilePageWarden />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/upload-mess-menu"
+				element={
+					user === "Warden" ? (
+						<UploadMessMenu />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/publish-notice"
+				element={
+					user === "Warden" ? (
+						<PublishNotice />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/view-leave"
+				element={
+					user === "Warden" ? (
+						<ViewLeaves />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/view-out-register"
+				element={
+					user === "Warden" ? (
+						<ViewOutRegister />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/view-hosteler"
+				element={
+					user === "Warden" ? (
+						<ViewHosteler />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/add-hosteler"
+				element={
+					user === "Warden" ? (
+						<AddHosteler />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/fetch-attendance"
+				element={
+					user === "Warden" ? (
+						<FetchAttendance />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/view-private-grievance"
+				element={
+					user === "Warden" ? (
+						<ViewPrivateGrievances />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/view-public-grievance"
+				element={
+					user === "Warden" ? (
+						<ViewPublicGrievances />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
 
-				<Route
-					path="/view-notice"
-					element={
-						user === "Warden" || user === "Hostler" ? (
-							<ViewNotice />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-        <Route
-					path="/view-mess-menu"
-					element={
-						user === "Warden" || user === "Hostler" ? (
-							<ViewMessMenu />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-        
-        
-        <Route
-					path="/hosteler-login"
-					element={
-						user === "Hostler" ? (
-							<Navigate to="/hosteler-dashboard" replace />
-						) : (
-							<HostelerLogin />
-						)
-					}
-				/>
-        <Route
-					path="/hosteler-dashboard"
-					element={
-						user === "Hostler" ? (
-							<HostelerDashboard />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/profile-hosteler"
-					element={
-						user === "Hostler" ? (
-							<ProfilePageHosteler />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/private-grievance"
-					element={
-						user === "Hostler" ? (
-							<PrivateGrievances />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/public-grievance"
-					element={
-						user === "Hostler" ? (
-							<PublicGrievances />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/out-register"
-					element={
-						user === "Hostler" ? (
-							<OutRegister />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/apply-leave"
-					element={
-						user === "Hostler" ? (
-							<ApplyLeave />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-				<Route
-					path="/add-details"
-					element={
-						user === "Hostler" ? (
-							<AddDetails />
-						) : (
-							<Navigate to="/" replace />
-						)
-					}
-				/>
-			</Routes>
-		</Router>
+			<Route
+				path="/view-notice"
+				element={
+					user === "Warden" || user === "Hostler" ? (
+						<ViewNotice />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/view-mess-menu"
+				element={
+					user === "Warden" || user === "Hostler" ? (
+						<ViewMessMenu />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+
+			<Route
+				path="/hosteler-login"
+				element={
+					user === "Hostler" ? (
+						<Navigate to="/hosteler-dashboard" replace />
+					) : (
+						<HostelerLogin />
+					)
+				}
+			/>
+			<Route
+				path="/hosteler-dashboard"
+				element={
+					user === "Hostler" ? (
+						<HostelerDashboard />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/profile-hosteler"
+				element={
+					user === "Hostler" ? (
+						<ProfilePageHosteler />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/private-grievance"
+				element={
+					user === "Hostler" ? (
+						<PrivateGrievances />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/public-grievance"
+				element={
+					user === "Hostler" ? (
+						<PublicGrievances />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/out-register"
+				element={
+					user === "Hostler" ? (
+						<OutRegister />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/apply-leave"
+				element={
+					user === "Hostler" ? (
+						<ApplyLeave />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+			<Route
+				path="/add-details"
+				element={
+					user === "Hostler" ? (
+						<AddDetails />
+					) : (
+						<Navigate to="/" replace />
+					)
+				}
+			/>
+		</Routes>
+		// </Router>
 	);
 }
 
