@@ -9,4 +9,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  server: {
+    historyApiFallback: true, // Enables fallback for client-side routing during development
+  },
+  build: {
+    outDir: 'dist', // Ensures Vite builds to the "dist" folder
+  },
 });
