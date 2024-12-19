@@ -45,13 +45,13 @@ const ViewHosteler = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center">
-        <ActivityIndicator size="large" color="#2cb5a0" />
-      </div>
-    );
-  }
-  if (error) {
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-teal-700 to-black">
+				<ActivityIndicator size="large" color="#2cb5a0" />
+			</div>
+		);
+	}
+if (error) {
     return (
       <div className="text-center">
         <p className="text-red-600">Error: {error}</p>

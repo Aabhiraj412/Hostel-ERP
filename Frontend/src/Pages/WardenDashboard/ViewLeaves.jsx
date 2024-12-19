@@ -6,7 +6,6 @@ import useStore from "../../../Store/Store";
 import { format } from "date-fns";
 import ActivityIndicator from "../../components/ActivityIndicator";
 
-
 const GlassCard = styled(Card)`
 	width: 350px;
 	margin: 15px;
@@ -32,18 +31,22 @@ const FetchAttendance = () => {
 	const [updating, setUpdating] = useState(false);
 	const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
-  const routing = {title:"View Leaves",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
+	const routing = {
+		title: "View Leaves",
+		Home: "/warden-dashboard",
+		Profile: "/profile-warden",
+		Attendence: "/fetch-attendance",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
 	// Fetch leave applications
 	const fetchLeaves = async () => {
 		try {
-			const response = await fetch(
-				`${localhost}/api/warden/getleaves`,
-				{
-					method: "GET",
-					credentials: "include",
-				}
-			);
+			const response = await fetch(`${localhost}/api/warden/getleaves`, {
+				method: "GET",
+				credentials: "include",
+			});
 
 			if (!response.ok) {
 				const errorData = await response.json();
@@ -221,14 +224,12 @@ const FetchAttendance = () => {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5 pt-20">
-				<div className="flex flex-wrap justify-center gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3">
-					<ActivityIndicator />
-				</div>
+			<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-teal-700 to-black">
+				<ActivityIndicator size="large" color="#2cb5a0" />
 			</div>
 		);
 	}
-	if (error) {
+if (error) {
 		return (
 			<div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-teal-700 to-black p-5 pt-20">
 				<div className="flex flex-wrap justify-center gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3">

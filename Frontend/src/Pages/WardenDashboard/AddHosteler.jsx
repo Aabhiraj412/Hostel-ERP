@@ -135,64 +135,60 @@ const AddHosteler = () => {
 		setError(false);
 		setErrorMessage("");
 		try {
-			const response = await fetch(
-				`${localhost}/api/warden/addhostler`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
-					body: JSON.stringify({
-						name,
-						roll_no: rollNo,
-						aadhar: aadharNo,
-						fathers_name: fatherName,
-						mothers_name: motherName,
-						phone_no: phoneNo,
-						email,
-						address,
-						college,
-						room_no: roomNo,
-						password,
-						confirm_password: password,
-						gender: selectedGender,
-						hostel: selectedHostel,
-						year: selectedYear,
-					}),
-				}
-			);
+			const response = await fetch(`${localhost}/api/warden/addhostler`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+				body: JSON.stringify({
+					name,
+					roll_no: rollNo,
+					aadhar: aadharNo,
+					fathers_name: fatherName,
+					mothers_name: motherName,
+					phone_no: phoneNo,
+					email,
+					address,
+					college,
+					room_no: roomNo,
+					password,
+					confirm_password: password,
+					gender: selectedGender,
+					hostel: selectedHostel,
+					year: selectedYear,
+				}),
+			});
 			const result = await response.json();
 
-      //console.log(result);
+			//console.log(result);
 			if (!response.ok) {
 				throw new Error(result.message || "Failed to add hosteler");
 			}
 
 			alert("Hosteler added successfully!");
 
-      setName("");
-      setRollNo("");
-      setAadharNo("");
-      setFatherName("");
-      setMotherName("");
-      setPhoneNo("");
-      setEmail("");
-      setAddress("");
-      setCollege("");
-      setRoomNo("");
-      setPassword("");
-      setSelectedGender(null);
-      setSelectedHostel(null);
-      setSelectedYear(null);
+			setName("");
+			setRollNo("");
+			setAadharNo("");
+			setFatherName("");
+			setMotherName("");
+			setPhoneNo("");
+			setEmail("");
+			setAddress("");
+			setCollege("");
+			setRoomNo("");
+			setPassword("");
+			setSelectedGender(null);
+			setSelectedHostel(null);
+			setSelectedYear(null);
 		} catch (error) {
 			console.error("Error adding hosteler:", error);
 			setErrorMessage(error.message || "Error adding hosteler");
 			setError(true);
+		} finally {
+			setLoading(false);
 		}
-    finally {
-      setLoading(false);
-    }
 	};
 
 	return (

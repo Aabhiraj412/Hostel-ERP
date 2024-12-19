@@ -110,13 +110,12 @@ const PrivateGrievances = () => {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-b from-teal-700 to-black p-6 relative">
-				<div className="flex justify-center h-screen items-center">
-					<ActivityIndicator size="large" color="#0d9488" />
-				</div>
+			<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-teal-700 to-black">
+				<ActivityIndicator size="large" color="#2cb5a0" />
 			</div>
 		);
 	}
+
 
 	return (
 		<>

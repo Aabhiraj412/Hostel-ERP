@@ -57,7 +57,7 @@ const PublishNotice = () => {
         throw new Error(errorDetails.message || "Failed to upload notice.");
       }
 
-      const responseData = await response.json();
+      // const responseData = await response.json();
       //console.log("Notice published successfully:", responseData);
 
       setTitle("");

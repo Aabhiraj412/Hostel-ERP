@@ -15,7 +15,14 @@ const FetchAttendance = () => {
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [formattedDate, setFormatedDate] = useState("");
-  const routing = {title:"View Attendance",Home: '/warden-dashboard', Profile: '/profile-warden', Attendence:'/fetch-attendance', Notice: '/view-notice', Menu: '/view-mess-menu' }
+	const routing = {
+		title: "View Attendance",
+		Home: "/warden-dashboard",
+		Profile: "/profile-warden",
+		Attendence: "/fetch-attendance",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 
 	const hostelOptions = [
 		{ label: "All Hostels", value: null },
@@ -38,9 +45,9 @@ const FetchAttendance = () => {
 		setLoading(true);
 		setErrorMessage("");
 
-		const localFormattedDate = `${date.toLocaleDateString(
-			"en-CA",{ timeZone: "Asia/Kolkata" }
-		)}T18:30:00.000Z`;
+		const localFormattedDate = `${date.toLocaleDateString("en-CA", {
+			timeZone: "Asia/Kolkata",
+		})}T18:30:00.000Z`;
 		setFormatedDate(localFormattedDate);
 
 		//console.log("Selected Date:", date);
@@ -161,8 +168,8 @@ const FetchAttendance = () => {
 
 				{/* Displaying Student Cards */}
 				{loading ? (
-					<div className="w-100 h-screen flex justify-center align-middle">
-						<ActivityIndicator />
+					<div className="flex items-center justify-center">
+						<ActivityIndicator size="large" color="#2cb5a0" />
 					</div>
 				) : (
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
