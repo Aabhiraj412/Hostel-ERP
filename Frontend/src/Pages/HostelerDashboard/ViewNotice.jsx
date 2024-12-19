@@ -86,9 +86,11 @@ const ViewNotice = () => {
 					<h1 className="text-2xl font-bold text-center text-teal-300 tracking-wider mb-6">
 						NOTICES
 					</h1>
-
-					{loading && <ActivityIndicator />}
-
+					{loading && (
+						<div className="flex items-center justify-center">
+							<ActivityIndicator size="large" color="#2cb5a0" />
+						</div>
+					)}
 					{notices.map((notice) => (
 						<div
 							key={notice.id}

@@ -71,9 +71,15 @@ const InputField = styled("input")`
 	}
 `;
 const ApplyLeave = () => {
-	const routing = {title:"Apply for Leave",Home: '/hosteler-dashboard', Profile: '/profile-hosteler', Notice: '/view-notice', Menu: '/view-mess-menu' }
+	const routing = {
+		title: "Apply for Leave",
+		Home: "/hosteler-dashboard",
+		Profile: "/profile-hosteler",
+		Notice: "/view-notice",
+		Menu: "/view-mess-menu",
+	};
 	const { localhost } = useStore();
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [formData, setFormData] = useState({
 		address: "",
@@ -116,6 +122,11 @@ const ApplyLeave = () => {
 				(toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
 			) + 1;
 
+		if (dayDifference !== days) {
+			alert("Enetr correct no of Days");
+			return;
+		}
+
 		//console.log({
 		// 	...formData,
 		// 	calculatedDays: dayDifference,
@@ -149,7 +160,7 @@ const ApplyLeave = () => {
 				reason: "",
 			});
 			alert("Successfully applied for leave.");
-      navigate("/hosteler-dashboard");
+			navigate("/hosteler-dashboard");
 		} catch (error) {
 			console.error("Error applying for leave:", error);
 			alert("Failed to apply for leave. Please try again later.");

@@ -82,7 +82,7 @@ const UploadMessMenu = () => {
 			);
 			//console.log(uploadResponse);
 
-			const data = await uploadResponse.json();
+			// const data = await uploadResponse.json();
 
 			//console.log(data);
 

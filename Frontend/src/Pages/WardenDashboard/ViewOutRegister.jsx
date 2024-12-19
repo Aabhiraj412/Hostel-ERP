@@ -120,8 +120,8 @@ const OutRegister = () => {
 
 	if (loading) {
 		return (
-			<div className="flex justify-center items-center h-screen">
-				<ActivityIndicator size="large" />
+			<div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-teal-700 to-black">
+				<ActivityIndicator size="large" color="#2cb5a0" />
 			</div>
 		);
 	}
