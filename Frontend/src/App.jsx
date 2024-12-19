@@ -26,6 +26,7 @@ import "./index.css";
 
 import useStore from "../Store/Store.js";
 import { useEffect } from "react";
+import NotFound from "./NotFound.jsx";
 function App() {
 	const { setLocalhost, localhost, setTestLocalhost, testlocalhost, user } =
 		useStore();
@@ -278,6 +279,7 @@ function App() {
 						)
 					}
 				/>
+				<Route path="*" element={<NotFound/>} />
 			</Routes>
 		</>
 		// </Router>
