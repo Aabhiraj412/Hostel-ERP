@@ -32,28 +32,12 @@ function App() {
 		useStore();
 
 	useEffect(() => {
-		const getLocalIP = async () => {
-			const peerConnection = new RTCPeerConnection();
-			const ipRegex = /(\d{1,3}\.){3}\d{1,3}/;
-
-			peerConnection.createDataChannel(""); // Create a dummy data channel
-			peerConnection
-				.createOffer()
-				.then((offer) => peerConnection.setLocalDescription(offer));
-
-			peerConnection.onicecandidate = (event) => {
-				if (event && event.candidate && event.candidate.candidate) {
-					const ipMatch = event.candidate.candidate.match(ipRegex);
-					if (ipMatch) {
-						const ipAddress = ipMatch[0]; // Extract the IPv4 address
-						setTestLocalhost(ipAddress); // Set testlocalhost to the IP
-						peerConnection.close(); // Close the connection once the IP is retrieved
-					}
-				}
-			};
-		};
-
-		getLocalIP();
+		const getPublicIP = async () => {
+			const response = await fetch("https://api.ipify.org?format=json");
+			const data = await response.json();
+			setTestLocalhost(data.ip);
+		  };
+		  getPublicIP();
 
 		// Hardcoded production URL for localhost
 		setLocalhost("https://hostel-erp-9w6h.onrender.com");
