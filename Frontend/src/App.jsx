@@ -37,7 +37,7 @@ function App() {
 		// setLocalhost(`http://${hostname}:3000`);
 		setTestLocalhost(hostname);
 		// console.log(localhost);
-		// console.log("TestLocalHost: ", testlocalhost);
+		console.log("TestLocalHost: ", testlocalhost);
 	}, [localhost, setLocalhost, setTestLocalhost, testlocalhost]);
 
 	return (
