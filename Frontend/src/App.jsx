@@ -32,13 +32,33 @@ function App() {
 		useStore();
 
 	useEffect(() => {
-		const hostname = window.location.hostname;
-		setLocalhost(`https://hostel-erp-9w6h.onrender.com`);
-		// setLocalhost(`http://${hostname}:3000`);
-		setTestLocalhost(hostname);
-		// console.log(localhost);
-		console.log("TestLocalHost: ", testlocalhost);
-	}, [localhost, setLocalhost, setTestLocalhost, testlocalhost]);
+		const getLocalIP = async () => {
+			const peerConnection = new RTCPeerConnection();
+			const ipRegex = /(\d{1,3}\.){3}\d{1,3}/;
+
+			peerConnection.createDataChannel(""); // Create a dummy data channel
+			peerConnection
+				.createOffer()
+				.then((offer) => peerConnection.setLocalDescription(offer));
+
+			peerConnection.onicecandidate = (event) => {
+				if (event && event.candidate && event.candidate.candidate) {
+					const ipMatch = event.candidate.candidate.match(ipRegex);
+					if (ipMatch) {
+						const ipAddress = ipMatch[0]; // Extract the IPv4 address
+						setTestLocalhost(ipAddress); // Set testlocalhost to the IP
+						peerConnection.close(); // Close the connection once the IP is retrieved
+					}
+				}
+			};
+		};
+
+		getLocalIP();
+
+		// Hardcoded production URL for localhost
+		setLocalhost("https://hostel-erp-9w6h.onrender.com");
+		console.log(testlocalhost);
+	}, []);
 
 	return (
 		// <Router>
@@ -279,7 +299,7 @@ function App() {
 						)
 					}
 				/>
-				<Route path="*" element={<NotFound/>} />
+				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</>
 		// </Router>
