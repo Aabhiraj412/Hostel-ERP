@@ -136,9 +136,11 @@ export default function Warden() {
 			});
 		} catch (error: any) {
 			console.error("Logout error:", error.message);
-			setAlertMessage(
-				"An error occurred while logging out. Please try again."
-			);
+			if (error.message === "Network request failed") {
+				setAlertMessage("Network error. Please check your connection and try again.");
+			} else {
+				setAlertMessage("An error occurred while logging out. Please try again.");
+			}
 			setAlert(true);
 		} finally {
 			setLoggingout(false);

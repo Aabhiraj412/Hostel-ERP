@@ -28,20 +28,12 @@ import useStore from "../Store/Store.js";
 import { useEffect } from "react";
 import NotFound from "./NotFound.jsx";
 function App() {
-	const { setLocalhost, localhost, setTestLocalhost, testlocalhost, user } =
-		useStore();
+	const { setLocalhost, localhost, user } = useStore();
 
 	useEffect(() => {
-		const getPublicIP = async () => {
-			const response = await fetch("https://api.ipify.org?format=json");
-			const data = await response.json();
-			setTestLocalhost(data.ip);
-		  };
-		  getPublicIP();
-
 		// Hardcoded production URL for localhost
-		setLocalhost("https://hostel-erp-9w6h.onrender.com");
-		console.log(testlocalhost);
+		// setLocalhost("https://hostel-erp-9w6h.onrender.com");
+		setLocalhost("http://localhost:3000");
 	}, []);
 
 	return (

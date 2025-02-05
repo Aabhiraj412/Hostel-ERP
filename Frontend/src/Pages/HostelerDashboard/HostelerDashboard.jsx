@@ -43,8 +43,6 @@ const GlassCard = styled(Card)`
 `;
 
 const HostelerDashboard = () => {
-	const [openModal, setOpenModal] = useState(false);
-	const { localhost, testlocalhost } = useStore();
 	const navigate = useNavigate();
 	const routing = {
 		title: "Hosteler Dashboard",
@@ -60,7 +58,6 @@ const HostelerDashboard = () => {
 			label: "Profile",
 			route: "/profile-hosteler",
 		},
-		{ icon: <TaskAlt fontSize="large" />, label: "Mark Attendance" },
 		{
 			icon: <CalendarToday fontSize="large" />,
 			label: "Leaves",
@@ -96,67 +93,12 @@ const HostelerDashboard = () => {
 			label: "Add Details",
 			route: "/add-details",
 		},
+		{
+			icon: <TaskAlt fontSize="large" />,
+			label: "View Attendance",
+			route: "/view-attendance",
+		}
 	];
-
-	const handleOpenModal = () => setOpenModal(true);
-	const handleCloseModal = () => setOpenModal(false);
-
-	const handleMarkAttendance = async () => {
-		if (!localhost && !testlocalhost) {
-			alert("Attendance IP not set");
-			return;
-		}
-
-		try {
-			const getip = await fetch(`${localhost}/api/hostler/getip`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				credentials: "include",
-			});
-
-			if (!getip.ok) {
-				alert("Error fetching IP");
-				return;
-			}
-
-			const data = await getip.json();
-
-			const ip = data.ip;
-
-			//console.log(ip, testlocalhost);
-
-			if (testlocalhost !== ip) {
-				alert("Attendance IP not matched. Connect to Hostel Wi-Fi");
-				return;
-			}
-
-			const markAttendance = await fetch(
-				`${localhost}/api/hostler/markattendance`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
-				}
-			);
-
-			const result = await markAttendance.json();
-
-			if (!markAttendance.ok) {
-				alert(result.message);
-				return;
-			}
-
-			alert("Attendance marked");
-			handleCloseModal();
-		} catch (error) {
-			//console.log(error);
-			alert("Error marking attendance");
-		}
-	};
 
 	return (
 		<>
@@ -167,11 +109,7 @@ const HostelerDashboard = () => {
 					{dashboardItems.map((item, index) => (
 						<GlassCard
 							key={index}
-							onClick={
-								item.label === "Mark Attendance"
-									? handleOpenModal
-									: () => navigate(item.route)
-							}
+							onClick={() => navigate(item.route)}
 						>
 							<div
 								style={{ color: "white", marginBottom: "10px" }}
@@ -188,12 +126,6 @@ const HostelerDashboard = () => {
 					))}
 				</div>
 			</div>
-
-			<AttendanceModal
-				open={openModal}
-				onClose={handleCloseModal}
-				onMarkAttendance={handleMarkAttendance}
-			/>
 		</>
 	);
 };

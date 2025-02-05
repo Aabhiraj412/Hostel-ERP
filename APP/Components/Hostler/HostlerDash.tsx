@@ -20,7 +20,7 @@ import SuccessAlert from "../Components/SuccessAlert";
 
 const HostlerDash = () => {
 	const navigation = useNavigation<any>();
-	const { localhost, cookie, data, setData, testlocalhost } = useStore();
+	const { localhost, cookie, data, setData } = useStore();
 	const [loading, setLoading] = useState(false);
 	const [check, setCheck] = useState(true);
 	const [modalVisible, setModalVisible] = useState(false);
@@ -28,8 +28,6 @@ const HostlerDash = () => {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false); // Toggle for password visibility
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle for confirm password visibility
-	const [modal, setModal] = useState(false);
-	const [mark, setMark] = useState(false);
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 	const [success, setSuccess] = useState(false);
@@ -68,67 +66,6 @@ const HostlerDash = () => {
 		} else {
 			setAlertMessage("Invalid navigation route");
 			setAlert(true);
-		}
-	};
-
-	const markAttendance = async () => {
-		// Show the confirmation modal
-		setMark(true);
-		try {
-			const response = await fetch(
-				`https://${localhost}/api/hostler/getip`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Cookie: cookie,
-					},
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Failed to fetch IP address.");
-			}
-
-			const { ip } = await response.json();
-
-			// Check if the IP address matches 'localhost'
-			if (testlocalhost === ip) {
-				// Proceed to mark attendance
-				const markResponse = await fetch(
-					`https://${localhost}/api/hostler/markattendance`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-							Cookie: cookie,
-						},
-					}
-				);
-
-				if (!markResponse.ok) {
-					const fail = await markResponse.json();
-
-					throw new Error(fail.message);
-				}
-
-				const markResult = await markResponse.json();
-				setSuccessMessage(
-					markResult.message || "Attendance marked successfully."
-				);
-				setSuccess(true);
-			} else {
-				setAlertMessage(
-					"IP mismatch. Cannot mark attendance. Connect to Hostel Wi-Fi to Mark Attendance"
-				);
-				setAlert(true);
-			}
-		} catch (error) {
-			setAlertMessage(error.message || "Something went wrong.");
-			setAlert(true);
-		} finally {
-			setMark(false);
-			setModal(false);
 		}
 	};
 
@@ -190,7 +127,7 @@ const HostlerDash = () => {
 								onPress={navigateTo("Add Details")}
 								IconComponent={({ size, color }) => (
 									<Ionicons
-										name="person-add-outline"
+										name="person-add"
 										size={size}
 										color={color}
 									/>
@@ -201,7 +138,7 @@ const HostlerDash = () => {
 								onPress={updatePassword}
 								IconComponent={({ size, color }) => (
 									<Ionicons
-										name="lock-closed-outline"
+										name="lock-closed"
 										size={size}
 										color={color}
 									/>
@@ -216,18 +153,18 @@ const HostlerDash = () => {
 							onPress={navigateTo("Hostler")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="person-circle-outline"
+									name="person-circle"
 									size={size}
 									color={color}
 								/>
 							)}
 						/>
 						<MiniCard
-							title="Mark Attendance"
-							onPress={() => setModal(true)}
+							title="View Attendance"
+							onPress={navigateTo("Hostler Attendance ")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="checkmark-done-outline"
+									name="checkmark-done"
 									size={size}
 									color={color}
 								/>
@@ -241,7 +178,7 @@ const HostlerDash = () => {
 							onPress={navigateTo("Leaves ")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="calendar-outline"
+									name="calendar"
 									size={size}
 									color={color}
 								/>
@@ -252,7 +189,7 @@ const HostlerDash = () => {
 							onPress={navigateTo("Out Register ")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="clipboard-outline"
+									name="clipboard"
 									size={size}
 									color={color}
 								/>
@@ -267,7 +204,7 @@ const HostlerDash = () => {
 							onPress={navigateTo("Public Grievances ")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="help-circle-outline"
+									name="help-circle"
 									size={size}
 									color={color}
 								/>
@@ -278,7 +215,7 @@ const HostlerDash = () => {
 							onPress={navigateTo("Private Grievances ")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="lock-closed-outline"
+									name="lock-closed"
 									size={size}
 									color={color}
 								/>
@@ -293,7 +230,7 @@ const HostlerDash = () => {
 							onPress={navigateTo("Mess Menu ")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="restaurant-outline"
+									name="restaurant"
 									size={size}
 									color={color}
 								/>
@@ -304,7 +241,7 @@ const HostlerDash = () => {
 							onPress={navigateTo("Notices ")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="megaphone-outline"
+									name="megaphone"
 									size={size}
 									color={color}
 								/>
@@ -407,50 +344,6 @@ const HostlerDash = () => {
 													}
 												>
 													Set Password
-												</Text>
-											</TouchableOpacity>
-										</View>
-									)}
-								</View>
-							</View>
-						</TouchableWithoutFeedback>
-					</Modal>
-					<Modal
-						visible={modal}
-						animationType="slide"
-						transparent={true}
-						onRequestClose={() => setModal(false)}
-					>
-						<TouchableWithoutFeedback
-							onPress={() => setModal(false)}
-						>
-							<View style={styles.modalContainer}>
-								<View style={styles.modalContent}>
-									<Text style={styles.modalTitle}>
-										Mark Your Attendance
-									</Text>
-
-									<Text style={styles.modaltext}>
-										Are you sure you want to mark your
-										attendance?
-									</Text>
-									{mark ? (
-										<ActivityIndicator
-											size="large"
-											color="#2cb5a0"
-										/>
-									) : (
-										<View style={styles.buttonContainer}>
-											<TouchableOpacity
-												style={styles.submitButton}
-												onPress={markAttendance}
-											>
-												<Text
-													style={
-														styles.submitButtonText
-													}
-												>
-													Confirm
 												</Text>
 											</TouchableOpacity>
 										</View>
