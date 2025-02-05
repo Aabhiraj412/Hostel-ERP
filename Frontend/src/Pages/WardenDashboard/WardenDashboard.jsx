@@ -24,6 +24,7 @@ import {
 	RestaurantMenu,
 	Assignment,
 	Wifi,
+	Task,
 } from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
@@ -102,6 +103,11 @@ const WardenDashboard = () => {
 			route: "/profile-warden",
 		},
 		{
+			icon: <Task fontSize="large" />,
+			label: "Mark Attendance",
+			route: "/mark-attendance",
+		},
+		{
 			icon: <CheckCircleOutline fontSize="large" />,
 			label: "Attendance",
 			route: "/fetch-attendance",
@@ -141,56 +147,11 @@ const WardenDashboard = () => {
 			label: "Outdoor Register",
 			route: "/view-out-register",
 		},
-		{
-			icon: <Wifi fontSize="large" />,
-			label: "Change Attendance IP",
-		},
+		
 	];
 
 	const navigate = useNavigate();
-	const { localhost, testlocalhost } = useStore();
-
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
-	const [errorMessage, setErrorMessage] = useState("");
-	const [dialog, setDialog] = useState(false);
-
-  const changeIP = async() =>{
-
-    setError(false);
-    setErrorMessage("");
-    setLoading(true);
-
-    try {
-      alert(testlocalhost);
-      const response = await fetch(
-        `${localhost}/api/warden/changeip`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ localhost: testlocalhost }),
-        }
-      );
-      const data = await response.json();
-      if(!response.ok){
-        throw new Error(data.message || "An error occured. Please try again later.");
-      }
-      //console.log(data);
-      alert("IP changed successfully.");
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
-      setErrorMessage("An error occured. Please try again later.");
-      setError(true);
-    }
-    finally{
-      setLoading(false);
-      setDialog(false);
-    }
-  }
+  
 	return (
 		<>
 			<MiniVariantDrawer router={routing} />
@@ -201,9 +162,7 @@ const WardenDashboard = () => {
 						<GlassCard
 							key={index}
 							onClick={() =>
-								item.label !== "Change Attendance IP"
-									? navigate(item.route)
-									: setDialog(true)
+								navigate(item.route)
 							}
 						>
 							<div
@@ -220,27 +179,7 @@ const WardenDashboard = () => {
 						</GlassCard>
 					))}
 
-					{/* Dialog for changing IP */}
-					<CustomDialog open={dialog} onClose={()=> setDialog(false)}>
-						<DialogTitle>Confirm Logout</DialogTitle>
-						<DialogContent>
-							<DialogContentText>
-								Are you sure you want to log out?
-							</DialogContentText>
-						</DialogContent>
-						<DialogActions>
-							<Button onClick={()=> setDialog(false)} color="primary">
-								Cancel
-							</Button>
-							<Button
-								onClick={changeIP}
-								color="error"
-							>
-                Set Current IP
-							</Button>
-						</DialogActions>
-            {error && <Alert >{errorMessage}</Alert>}
-					</CustomDialog>
+					
 				</div>
 			</div>
 		</>

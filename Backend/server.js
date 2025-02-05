@@ -15,16 +15,17 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS Configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
-  : [
-      "http://localhost:5173",
-      "https://hostelerp.com",
-      "https://hostel-erp.vercel.app",
-    ];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://192.168.31.175:8081",
+  "https://hostelerp.com",
+  "https://hostel-erp.vercel.app",
+];
 
 const corsOptions = {
   origin: (origin, callback) => {
+    console.log("Incoming Origin:", origin); // Debug log
+
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -40,18 +41,36 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // Preflight handling
 
+// Helmet Security Middleware
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // Disable CSP to avoid interference
+  })
+);
+
 // Middleware
-app.use(helmet()); // Security middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 
-// Test route
+// Force CORS Headers Middleware (Extra Safety)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
+// Test Route
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// Routers
+// API Routes
 app.use("/api/auth", authRouter);
 app.use("/api/warden", wardenRouter);
 app.use("/api/hostler", hostlerRouter);
@@ -59,24 +78,23 @@ app.use("/api/hostler", hostlerRouter);
 // Handle CORS errors
 app.use((err, req, res, next) => {
   if (err.message === "Not allowed by CORS") {
-    res.status(403).send({ error: "CORS policy does not allow this origin" });
-  } else {
-    next(err);
+    return res.status(403).json({ error: "CORS policy does not allow this origin" });
   }
+  next(err);
 });
 
-// Handle unhandled routes
+// Handle Unhandled Routes
 app.use("*", (req, res) => {
-  res.status(404).send({ error: "Route not found" });
+  res.status(404).json({ error: "Route not found" });
 });
 
-// Error handler
+// Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(err.status || 500).send({ error: err.message || "Internal Server Error" });
+  res.status(err.status || 500).json({ error: err.message || "Internal Server Error" });
 });
 
-// Start server
+// Start Server
 app.listen(PORT, () => {
   console.log(`Listening at http://localhost:${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV}`);

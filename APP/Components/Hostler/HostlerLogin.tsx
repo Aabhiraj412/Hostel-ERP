@@ -68,6 +68,7 @@ const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 		setLoading(true);
 		setError(null);
 		try {
+			
 			const response = await fetch(
 				`https://${localhost}/api/auth/hostlerlogin`, // Consider using environment variables here
 				{

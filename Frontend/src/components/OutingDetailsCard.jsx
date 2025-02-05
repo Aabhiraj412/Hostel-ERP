@@ -1,18 +1,12 @@
 import useStore from "../../Store/Store";
 import PropTypes from 'prop-types';
 
-const OutingDetailsCard = ({ outingDetails, ip, fetchEntries }) => {
-  const { localhost, testlocalhost, user } = useStore();
+const OutingDetailsCard = ({ outingDetails, fetchEntries }) => {
+  const { localhost, user } = useStore();
   const { purpose, out_time, in_time, _id } = outingDetails;
 
   const closeEntry = async () => {
-    if (testlocalhost !== ip) {
-      alert(
-        "You are not authorized to close an entry. Connect to Hostel Wi-Fi to proceed further."
-      );
-      return;
-    }
-
+    
     if (!window.confirm(`Are you sure you want to close the entry for "${purpose}"?`)) {
       return;
     }
@@ -20,7 +14,7 @@ const OutingDetailsCard = ({ outingDetails, ip, fetchEntries }) => {
 
     try {
       const response = await fetch(
-        `http://${localhost}/api/hostler/closeentry`,
+        `${localhost}/api/hostler/closeentry`,
         {
           method: "GET",
           credentials: "include",
@@ -47,7 +41,7 @@ const OutingDetailsCard = ({ outingDetails, ip, fetchEntries }) => {
       <p className="text-gray-300">
         In Time: {in_time ? new Date(in_time).toLocaleString() : "Not Returned"}
       </p>
-      {!in_time && user!=="Warden" (
+      {!in_time && user !== "Warden" && (
         <button
           className="mt-4 w-full bg-teal-400 text-white font-bold py-2 px-4 rounded-md"
           onClick={closeEntry}

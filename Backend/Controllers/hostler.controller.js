@@ -5,7 +5,6 @@ import PrivateGrivance from "../Schemas/PrivateGrivance.model.js";
 import PublicGrivance from "../Schemas/PublicGrivance.model.js";
 import Leave from "../Schemas/Leave.model.js";
 import OutRegister from "../Schemas/OutRegister.model.js";
-import IP from "../Schemas/IP.model.js";
 
 export const publicgrivance = async (req, res) => {
 	console.log("publicgrivance called");
@@ -371,21 +370,13 @@ export const markAttendence = async (req, res) => {
 
 		// Get today's date
 		const date = new Date();
-		// const day = date.getDate(); // Get the day of the month
-		// const month = date.getMonth() + 1; // Months are 0-indexed, so we add 1
-		// const year = date.getFullYear();
-		// Format the date as yyyy-mm-dd
 		const attendanceDate = date.toLocaleDateString("en-CA", {
 			timeZone: "Asia/Kolkata",
 		});
 
 		console.log("Attendance Date: ", attendanceDate);
-
-		// Check if attendance is already marked for the current date
-		// Convert each Date object to ISO string and split at 'T' to check only the date part (yyyy-mm-dd)
 		if (
 			hostler.present_on.some((dateObj) => {
-				// If the item is a Date object, convert it to ISO string, otherwise keep it as is
 				const dateString =
 					dateObj instanceof Date ? dateObj.toISOString() : dateObj;
 				return dateString.split("T")[0] === attendanceDate;
@@ -411,29 +402,5 @@ export const markAttendence = async (req, res) => {
 		res.status(500).json({ message: "Server Error" });
 	}
 }; // Path to the file storing the IP
-
-export const getIP = async (req, res) => {
-	try {
-		const hostler = req.hostler;
-
-		if (!hostler) {
-			return res
-				.status(401)
-				.json({ message: "Unauthorized - No Hostler Provided" });
-		}
-
-		const ip = await IP.findOne();
-
-		if (!ip) {
-			return res.status(404).json({ message: "IP not found" });
-		}
-
-		res.status(200).json(ip);
-		console.log("IP fetched successfully:", ip.ip);
-	} catch (error) {
-		console.error(`Error: ${error.message}`);
-		res.status(500).json({ message: "Server Error" });
-	}
-};
 
 export const getAttendance = async (req, res) => {};

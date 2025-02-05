@@ -1,9 +1,6 @@
-import React, { useEffect } from "react";
-import * as Network from "expo-network";
-import Constants from "expo-constants";
+import { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NetworkInfo } from "react-native-network-info"; // Import the library
 import Landing from "./Components/Landing";
 import WardenLogin from "./Components/Warden/WardenLogin";
 import Warden from "./Components/Warden/Warden";
@@ -30,11 +27,13 @@ import HNotices from "./Components/Hostler/Notices";
 import HOutRegister from "./Components/Hostler/OutRegister";
 import HPrivateGrievances from "./Components/Hostler/PrivateGrievances";
 import HPublicGrievances from "./Components/Hostler/PublicGrievances";
+import HostlerAttendance from "./Components/Hostler/HostlerAttendance";
+import MarkAttendance from "./Components/Warden/MarkAttendance";
 
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
-	const { cookie, user, setLocalhost, setTestLocalhost } =
+	const { cookie, user, setLocalhost } =
 		useStore();
 	const nextRouteName = cookie
 		? user === "Warden"
@@ -47,26 +46,9 @@ const App: React.FC = () => {
 	useEffect(() => {
 		// Set to your remote server URL
 		setLocalhost("hostel-erp-9w6h.onrender.com");
+		// setLocalhost("http://localhost:3000");
 
-		// Fetch the device's IPv4 address
-		NetworkInfo.getIPV4Address().then((ipv4) => {
-			if (ipv4) {
-				setTestLocalhost(ipv4);
-				console.log("IPv4 address: ", ipv4);
-			} else {
-				console.warn("Unable to fetch IPv4 address.");
-			}
-		});
-
-		// Fallback: If unable to fetch IPv4, fallback to Constants (if available)
-		const hostUri = Constants.manifest2?.extra?.expoClient?.hostUri;
-		if (hostUri) {
-			const fallbackLocalhost = hostUri.split(":")[0];
-			setTestLocalhost(fallbackLocalhost);
-			console.log("Fallback IPv4 address: ", fallbackLocalhost);
-			// setLocalhost(`${fallbackLocalhost}:3000`);
-		}
-	}, [setLocalhost, setTestLocalhost]);
+			}, [setLocalhost]);
 
 	// Navigation stack
 	return (
@@ -92,6 +74,7 @@ const App: React.FC = () => {
 
 				<Stack.Screen name="Add Hostler" component={AddHostler} />
 				<Stack.Screen name="Hostlers" component={Hostlers} />
+				<Stack.Screen name="Mark Attendance" component={MarkAttendance}/>
 				<Stack.Screen
 					name="Hostlers Attendance"
 					component={ViewAttendance}
@@ -123,6 +106,7 @@ const App: React.FC = () => {
 				/>
 
 				<Stack.Screen name="Add Details" component={AddDetails} />
+				<Stack.Screen name="Hostler Attendance " component={HostlerAttendance}/>
 				<Stack.Screen name="Leaves " component={HLeaves} />
 				<Stack.Screen name="Mess Menu " component={HMessMenu} />
 				<Stack.Screen name="Notices " component={HNotices} />

@@ -1,7 +1,6 @@
 import express from "express";
 import {
 	addHostler,
-	changeIP,
 	getAttendance,
 	gethostler,
 	getHostlers,
@@ -11,6 +10,7 @@ import {
 	getPublicGrievances,
 	markAttendence,
 	removeHostler,
+	saveAttendence,
 	setLeaves,
 	setPrivateGrievance,
 	setPublicGrievance,
@@ -52,6 +52,7 @@ router.get("/getentries", wardenProtectRoute, getOutRegister);
 
 router.get("/removehostler/:id",wardenProtectRoute, removeHostler);
 
+router.post("/saveattendance", wardenProtectRoute, saveAttendence);
 router.post("/markattendance", wardenProtectRoute, markAttendence);
 
 router.post("/attendanceof", wardenProtectRoute, getAttendance);
@@ -60,7 +61,6 @@ router.get("/getmessmenu", getMessMenu);
 router.get("/getnotices", wardenProtectRoute, getNotices);
 router.get("/getnotice/:id",  getNotice);
 
-router.post('/changeip', wardenProtectRoute, changeIP);
 router.post('/forgetpass', forgetPass);
 router.post('/resetpass', wardenProtectRoute, resetPass);
 

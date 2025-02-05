@@ -9,7 +9,6 @@ import {
 	Keyboard,
 	Modal,
 	TextInput,
-	Button,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
@@ -17,9 +16,8 @@ import SuccessAlert from "../Components/SuccessAlert";
 import ErrorAlert from "../Components/ErrorAlert";
 
 const HOutRegister = () => {
-	const { localhost, cookie, testlocalhost } = useStore();
+	const { localhost, cookie } = useStore();
 	const [entries, setEntries] = useState([]);
-	const [ip, setIP] = useState();
 	const [loading, setLoading] = useState(true);
 	const [close, setClose] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -31,24 +29,6 @@ const HOutRegister = () => {
 	const [success, setSuccess] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
 
-	const getIP = async () => {
-		try {
-			const response = await fetch(
-				`https://${localhost}/api/hostler/getip`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Cookie: cookie,
-					},
-				}
-			);
-			const data = await response.json();
-			setIP(data.ip);
-		} catch (error) {
-			console.error("Error getting IP:", error);
-		}
-	};
 	// Fetch out register entries
 	const fetchEntries = async () => {
 		try {
@@ -74,14 +54,7 @@ const HOutRegister = () => {
 			setAlert(true);
 			return;
 		}
-		if (testlocalhost !== ip) {
-			setAlertMessage(
-				"You are not authorized to open an entry. Connect to Hostel Wi-Fi to procide further."
-			);
-			setAlert(true);
-			return;
-		}
-
+	
 		setOpen(true); // Set loading state only if validation passes
 
 		try {
@@ -123,13 +96,6 @@ const HOutRegister = () => {
 
 	// Close an existing entry
 	const closeEntry = async (entryId) => {
-		if (testlocalhost !== ip) {
-			setAlertMessage(
-				"You are not authorized to close an entry. Connect to Hostel Wi-Fi to procide further."
-			);
-			setAlert(true);
-			return;
-		}
 		setClose(true); // Show the confirmation modal
 		try {
 			const response = await fetch(
@@ -163,7 +129,6 @@ const HOutRegister = () => {
 	};
 
 	useEffect(() => {
-		getIP();
 		fetchEntries();
 	}, []);
 

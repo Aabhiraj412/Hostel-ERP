@@ -9,7 +9,6 @@ import {
 	applyLeave,
 	closeEntry,
 	getEntry,
-	getIP,
 	getLeaves,
 	getPrivateGrievances,
 	getPublicGrievances,
@@ -52,7 +51,6 @@ router.post("/openentry", hostlerProtectRoute, openEntry);
 router.get("/closeentry", hostlerProtectRoute, closeEntry);
 router.get("/getentry", hostlerProtectRoute, getEntry);
 
-router.get("/getip", hostlerProtectRoute, getIP);
 
 router.post("/forgetpass", forgetPass);
 

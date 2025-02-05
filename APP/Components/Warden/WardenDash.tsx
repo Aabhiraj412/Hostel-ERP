@@ -3,8 +3,6 @@ import {
 	StyleSheet,
 	TouchableWithoutFeedback,
 	Keyboard,
-	TouchableOpacity,
-	Text,
 } from "react-native";
 import React, { useState } from "react";
 import MiniCard from "../Components/MiniCard";
@@ -14,67 +12,17 @@ import { useNavigation } from "@react-navigation/native";
 import useStore from "../../Store/Store";
 import ErrorAlert from "../Components/ErrorAlert";
 import SuccessAlert from "../Components/SuccessAlert";
-import { Modal } from "react-native";
-import { ActivityIndicator } from "react-native";
 
 const WardenDash = () => {
 	const navigation = useNavigation<any>();
-	const { localhost, cookie, testlocalhost } = useStore();
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 	const [success, setSuccess] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
-	const [ip, setIP] = useState(false);
-	const [changeIp, setChangeIp] = useState(false);
 
 	// Navigation handlers
 	const navigateTo = (route) => () => {
 		navigation.navigate(route);
-	};
-
-	const changeIP = async () => {
-		// Show a confirmation dialog
-		setChangeIp(true);
-		try {
-			const response = await fetch(
-				`https://${localhost}/api/warden/changeip`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Cookie: cookie,
-					},
-					body: JSON.stringify({
-						localhost: testlocalhost, // Send the localhost IP to the backend
-					}),
-				}
-			);
-
-			if (!response.ok) {
-				const errorResponse = await response.json();
-				throw new Error(
-					errorResponse.message || "Login failed. Please try again."
-				);
-			}
-
-			const result = await response.json();
-			console.log(result.message); // Log success message
-
-			// Show a success alert after updating IP
-			setSuccessMessage(
-				"The Attendance IP has been updated successfully."
-			);
-			setSuccess(true);
-		} catch (error) {
-			console.error("Error updating IP:", error.message);
-
-			// Show an error alert if the update fails
-			setAlertMessage("Failed to update the Attendance IP.");
-		}
-		finally {
-			setIP(false);
-            setChangeIp(false);
-        }
 	};
 
 	return (
@@ -88,7 +36,7 @@ const WardenDash = () => {
 							onPress={navigateTo("Add Hostler")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="person-add-outline"
+									name="person-add"
 									size={size}
 									color={color}
 								/>
@@ -99,7 +47,7 @@ const WardenDash = () => {
 							onPress={navigateTo("Hostlers")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="people-outline"
+									name="people"
 									size={size}
 									color={color}
 								/>
@@ -107,51 +55,51 @@ const WardenDash = () => {
 						/>
 					</View>
 
-					{/* Row 2: Profile */}
+					{/* Row 2: Profile and Mark Attendance */}
 					<View style={styles.row}>
 						<MiniCard
 							title="Profile"
 							onPress={navigateTo("Warden")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="person-circle-outline"
+									name="person-circle"
 									size={size}
 									color={color}
 								/>
 							)}
 						/>
+						<MiniCard
+							title="Mark Attendance"
+							onPress={navigateTo("Mark Attendance")}
+							IconComponent={({ size, color }) => (
+								<Ionicons
+									name="checkbox"
+									size={size}
+									color={color}
+								/>
+							)}
+						/>
+					</View>
+
+					{/* Row 3: Attendance & Leaves */}
+					<View style={styles.row}>
 						<MiniCard
 							title="Attendance"
 							onPress={navigateTo("Hostlers Attendance")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="clipboard-outline"
+									name="clipboard"
 									size={size}
 									color={color}
 								/>
 							)}
 						/>
-					</View>
-
-					{/* Row 3: Leaves */}
-					<View style={styles.row}>
 						<MiniCard
 							title="Leaves"
 							onPress={navigateTo("Leaves")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="calendar-outline"
-									size={size}
-									color={color}
-								/>
-							)}
-						/>
-						<MiniCard
-							title="Publish Notice"
-							onPress={navigateTo("Publish Notice")}
-							IconComponent={({ size, color }) => (
-								<Ionicons
-									name="megaphone-outline"
+									name="calendar"
 									size={size}
 									color={color}
 								/>
@@ -159,14 +107,14 @@ const WardenDash = () => {
 						/>
 					</View>
 
-					{/* Row 4: Grievances */}
+					{/* Row 4: Grievances Management */}
 					<View style={styles.row}>
 						<MiniCard
 							title="Public Grievances"
 							onPress={navigateTo("Public Grievances")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="help-circle-outline"
+									name="help-circle"
 									size={size}
 									color={color}
 								/>
@@ -177,7 +125,7 @@ const WardenDash = () => {
 							onPress={navigateTo("Private Grievances")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="lock-closed-outline"
+									name="lock-closed"
 									size={size}
 									color={color}
 								/>
@@ -192,7 +140,7 @@ const WardenDash = () => {
 							onPress={navigateTo("Notices")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="document-text-outline"
+									name="document-text"
 									size={size}
 									color={color}
 								/>
@@ -203,7 +151,7 @@ const WardenDash = () => {
 							onPress={navigateTo("Mess Menu")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
-									name="restaurant-outline"
+									name="restaurant"
 									size={size}
 									color={color}
 								/>
@@ -211,25 +159,25 @@ const WardenDash = () => {
 						/>
 					</View>
 
-					{/* Row 6: Outdoor Register & Change IP */}
+					{/* Row 6: Outdoor Register & Publish Notice */}
 					<View style={styles.row}>
 						<MiniCard
 							title="Outdoor Register"
 							onPress={navigateTo("Out Register")}
 							IconComponent={({ size, color }) => (
 								<MaterialCommunityIcons
-									name="clipboard-text-outline"
+									name="clipboard-text"
 									size={size}
 									color={color}
 								/>
 							)}
 						/>
 						<MiniCard
-							title="Change Attendance IP"
-							onPress={() => setIP(true)}
+							title="Publish Notice"
+							onPress={navigateTo("Publish Notice")}
 							IconComponent={({ size, color }) => (
-								<MaterialCommunityIcons
-									name="wifi-settings"
+								<Ionicons
+									name="megaphone"
 									size={size}
 									color={color}
 								/>
@@ -246,38 +194,7 @@ const WardenDash = () => {
 					message={successMessage}
 					success={success}
 					setSuccess={setSuccess}
-				/>
-				<Modal animationType="slide" transparent={true} visible={ip}>
-					<TouchableWithoutFeedback onPress={() => setIP(false)}>
-						<View style={styles.modalContainer}>
-							<View style={styles.modalContent}>
-								<Text style={styles.modalTitle}>
-									Confirm IP Change
-								</Text>
-
-								<Text style={styles.modalText}>
-									Are you sure you want to change the
-									Attendance IP?
-								</Text>
-
-
-								<View style={styles.modalButtonContainer}>
-							{changeIp?
-							<ActivityIndicator size="large" color="#2cb5a0"/>
-							:
-								<TouchableOpacity
-								style={styles.modalButton}
-								onPress={changeIP}
-							>
-								<Text style={styles.modalButtonText}>
-									Confirm
-								</Text>
-							</TouchableOpacity>
-						}</View>
-							</View>
-						</View>
-					</TouchableWithoutFeedback>
-				</Modal>
+				/>{" "}
 			</View>
 		</TouchableWithoutFeedback>
 	);
