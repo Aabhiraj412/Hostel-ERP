@@ -70,7 +70,7 @@ const PublishNotice = () => {
 			});
 			// Send the payload via fetch
 			const response = await fetch(
-				`https://${localhost}/api/warden/uploadnotice`,
+				`${localhost}/api/warden/uploadnotice`,
 				{
 					method: "POST",
 					body: formData,

@@ -23,7 +23,7 @@ const Leaves = () => {
 	const fetchLeaves = async () => {
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/getleaves`,
+				`${localhost}/api/warden/getleaves`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -42,7 +42,7 @@ const Leaves = () => {
 		
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/getdetail/${leaveId}`,
+				`${localhost}/api/warden/getdetail/${leaveId}`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -65,7 +65,7 @@ const Leaves = () => {
 		setUpdating(true);
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/setleave/${leaveId}`,
+				`${localhost}/api/warden/setleave/${leaveId}`,
 				{
 					method: "POST",
 					headers: {

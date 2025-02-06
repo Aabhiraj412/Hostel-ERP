@@ -17,7 +17,6 @@ const PORT = process.env.PORT || 5000;
 // CORS Configuration
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://192.168.31.175:8081",
   "https://hostelerp.com",
   "https://hostel-erp.vercel.app",
 ];

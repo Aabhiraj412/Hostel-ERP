@@ -79,7 +79,7 @@ const HostlerDash = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/hostler/setpass`,
+				`${localhost}/api/hostler/setpass`,
 				{
 					method: "POST",
 					headers: {

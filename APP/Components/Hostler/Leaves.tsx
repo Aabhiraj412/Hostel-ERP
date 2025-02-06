@@ -43,7 +43,7 @@ const HLeaves = () => {
 	const fetchLeaves = async () => {
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/Hostler/getleaves`,
+				`${localhost}/api/Hostler/getleaves`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -67,7 +67,7 @@ const HLeaves = () => {
 		event: React.SyntheticEvent<unknown>,
 		date?: Date
 	) => {
-		setShowDatePicker(false);
+		setShowDatePicker(null);
 
 		if (date) {
 			const formattedDate = date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
@@ -111,7 +111,7 @@ const HLeaves = () => {
 
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/hostler/applyleave`,
+				`${localhost}/api/hostler/applyleave`,
 				{
 					method: "POST",
 					headers: {

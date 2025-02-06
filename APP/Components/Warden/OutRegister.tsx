@@ -24,7 +24,7 @@ const OutRegister = () => {
 	const fetchEntries = async () => {
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/getentries`,
+				`${localhost}/api/warden/getentries`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -46,7 +46,7 @@ const OutRegister = () => {
 		setFetching(true);
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/getdetail/${studentId}`,
+				`${localhost}/api/warden/getdetail/${studentId}`,
 				{
 					headers: { Cookie: cookie },
 				}

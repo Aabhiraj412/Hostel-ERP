@@ -44,7 +44,7 @@ const ViewAttendance = () => {
 
 			const formattedDate = adjustedDate.toISOString().split("T")[0]; // Convert to "yyyy-mm-dd" format (date only)
 			const response = await fetch(
-				`https://${localhost}/api/warden/getHostlers`, // Make sure this endpoint is correct
+				`${localhost}/api/warden/getHostlers`, // Make sure this endpoint is correct
 				{
 					method: "GET",
 					headers: {
@@ -117,7 +117,7 @@ const ViewAttendance = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.header}>View Attendance</Text>
+			{/* <Text style={styles.header}>View Attendance</Text> */}
 
 			{/* Date Picker */}
 			<TouchableOpacity
@@ -144,7 +144,7 @@ const ViewAttendance = () => {
 						selectedValue={selectedHostel}
 						onValueChange={(value) => setSelectedHostel(value)}
 					>
-						<Picker.Item label="Select Hostel" value="All" />
+						<Picker.Item label="All Hostels" value="All" />
 						<Picker.Item label="Aryabhatt" value="Aryabhatt" />
 						<Picker.Item label="RN Tagore" value="RN Tagore" />
 						<Picker.Item

@@ -33,8 +33,7 @@ import MarkAttendance from "./Components/Warden/MarkAttendance";
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
-	const { cookie, user, setLocalhost } =
-		useStore();
+	const { cookie, user, setLocalhost } = useStore();
 	const nextRouteName = cookie
 		? user === "Warden"
 			? "Warden Dashboard"
@@ -45,10 +44,9 @@ const App: React.FC = () => {
 
 	useEffect(() => {
 		// Set to your remote server URL
-		setLocalhost("hostel-erp-9w6h.onrender.com");
+		setLocalhost("https://hostel-erp-9w6h.onrender.com");
 		// setLocalhost("http://localhost:3000");
-
-			}, [setLocalhost]);
+	}, [setLocalhost]);
 
 	// Navigation stack
 	return (
@@ -74,7 +72,10 @@ const App: React.FC = () => {
 
 				<Stack.Screen name="Add Hostler" component={AddHostler} />
 				<Stack.Screen name="Hostlers" component={Hostlers} />
-				<Stack.Screen name="Mark Attendance" component={MarkAttendance}/>
+				<Stack.Screen
+					name="Mark Attendance"
+					component={MarkAttendance}
+				/>
 				<Stack.Screen
 					name="Hostlers Attendance"
 					component={ViewAttendance}
@@ -106,7 +107,10 @@ const App: React.FC = () => {
 				/>
 
 				<Stack.Screen name="Add Details" component={AddDetails} />
-				<Stack.Screen name="Hostler Attendance " component={HostlerAttendance}/>
+				<Stack.Screen
+					name="Hostler Attendance "
+					component={HostlerAttendance}
+				/>
 				<Stack.Screen name="Leaves " component={HLeaves} />
 				<Stack.Screen name="Mess Menu " component={HMessMenu} />
 				<Stack.Screen name="Notices " component={HNotices} />

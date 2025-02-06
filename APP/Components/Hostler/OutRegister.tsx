@@ -33,7 +33,7 @@ const HOutRegister = () => {
 	const fetchEntries = async () => {
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/hostler/getentry`,
+				`${localhost}/api/hostler/getentry`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -62,7 +62,7 @@ const HOutRegister = () => {
 			console.log("Request body:", body);
 
 			const response = await fetch(
-				`https://${localhost}/api/hostler/openentry`,
+				`${localhost}/api/hostler/openentry`,
 				{
 					method: "POST",
 					headers: {
@@ -99,7 +99,7 @@ const HOutRegister = () => {
 		setClose(true); // Show the confirmation modal
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/hostler/closeentry`,
+				`${localhost}/api/hostler/closeentry`,
 				{
 					method: "GET",
 					headers: {
