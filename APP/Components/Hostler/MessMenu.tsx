@@ -28,7 +28,7 @@ const MessMenu = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/hostler/getmessmenu`,
+				`${localhost}/api/hostler/getmessmenu`,
 				{
 					method: "GET",
 					headers: {
@@ -83,7 +83,7 @@ const MessMenu = () => {
             }
 
             const downloadPath = `${FileSystem.cacheDirectory}mess_menu.png`;
-            await FileSystem.downloadAsync(`https://${localhost}/api/hostler/getmessmenu`, downloadPath);
+            await FileSystem.downloadAsync(`${localhost}/api/hostler/getmessmenu`, downloadPath);
 
             const asset = await MediaLibrary.createAssetAsync(downloadPath);
             await MediaLibrary.createAlbumAsync("Download", asset, false);

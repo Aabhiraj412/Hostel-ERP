@@ -9,7 +9,6 @@ import MiniCard from "../Components/MiniCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import useStore from "../../Store/Store";
 import ErrorAlert from "../Components/ErrorAlert";
 import SuccessAlert from "../Components/SuccessAlert";
 
@@ -194,7 +193,7 @@ const WardenDash = () => {
 					message={successMessage}
 					success={success}
 					setSuccess={setSuccess}
-				/>{" "}
+				/>
 			</View>
 		</TouchableWithoutFeedback>
 	);

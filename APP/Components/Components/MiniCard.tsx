@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 interface MiniCardProps {
-  title: string;
+  title: React.ReactNode;
   onPress: () => void;
   IconComponent: React.FC<{ size: number; color: string }>; // Icon as a prop
 }

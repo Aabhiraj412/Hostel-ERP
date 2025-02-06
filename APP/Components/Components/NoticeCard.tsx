@@ -25,7 +25,7 @@ const NoticeCard: React.FC<NoticeCardProps> = ({ data }) => {
 	const { localhost } = useStore();
 
 	const onPress = () => {
-		const url = `https://${localhost}/api/warden/getnotice/${data._id}`;
+		const url = `${localhost}/api/warden/getnotice/${data._id}`;
 		Linking.openURL(url).catch((err) =>
 			console.error("Failed to open URL:", err)
 		);

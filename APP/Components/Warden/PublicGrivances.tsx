@@ -22,7 +22,7 @@ const PublicGrievances = () => {
 	const fetchGrievances = async () => {
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/getpublicgrievance`,
+				`${localhost}/api/warden/getpublicgrievance`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -46,7 +46,7 @@ const PublicGrievances = () => {
 		setUpdating(true);
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/setpublicgrievance/${grievanceId}`,
+				`${localhost}/api/warden/setpublicgrievance/${grievanceId}`,
 				{
 					method: "POST",
 					headers: {

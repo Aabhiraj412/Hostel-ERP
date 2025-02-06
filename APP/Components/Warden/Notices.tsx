@@ -20,7 +20,7 @@ const Notices = () => {
 		setError(null); // Reset error before fetching
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/getnotices`,
+				`${localhost}/api/warden/getnotices`,
 				{
 					headers: {
 						Cookie: cookie,

@@ -24,7 +24,7 @@ const PrivateGrievances = () => {
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/getprivategrievance`,
+				`${localhost}/api/warden/getprivategrievance`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -45,7 +45,7 @@ const PrivateGrievances = () => {
 	const fetchHostlerDetails = async (studentId) => {
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/getdetail/${studentId}`,
+				`${localhost}/api/warden/getdetail/${studentId}`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -65,7 +65,7 @@ const PrivateGrievances = () => {
 		setUpdating(true);
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/setprivategrievance/${grievanceId}`,
+				`${localhost}/api/warden/setprivategrievance/${grievanceId}`,
 				{
 					method: "POST",
 					headers: {

@@ -31,7 +31,7 @@ const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 
 		setForgetting(true);
 
-		fetch(`https://${localhost}/api/hostler/forgetpass`, {
+		fetch(`${localhost}/api/hostler/forgetpass`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -70,7 +70,7 @@ const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 		try {
 			
 			const response = await fetch(
-				`https://${localhost}/api/auth/hostlerlogin`, // Consider using environment variables here
+				`${localhost}/api/auth/hostlerlogin`, // Consider using environment variables here
 				{
 					method: "POST",
 					headers: {

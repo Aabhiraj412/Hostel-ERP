@@ -20,7 +20,7 @@ const Notices = () => {
 		setError(null); // Reset error before fetching
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/hostler/getnotices`,
+				`${localhost}/api/hostler/getnotices`,
 				{
 					headers: {
 						Cookie: cookie,

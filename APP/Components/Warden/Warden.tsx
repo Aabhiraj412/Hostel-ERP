@@ -65,7 +65,7 @@ export default function Warden() {
 
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/warden/resetpass`,
+				`${localhost}/api/warden/resetpass`,
 				{
 					method: "POST",
 					headers: {
@@ -103,7 +103,7 @@ export default function Warden() {
 		setLoggingout(true); // Set logging out to true to show loading indicator
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/auth/wardenlogout`,
+				`${localhost}/api/auth/wardenlogout`,
 				{
 					method: "POST",
 					headers: {

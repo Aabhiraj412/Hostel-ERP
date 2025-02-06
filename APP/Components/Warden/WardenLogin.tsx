@@ -32,7 +32,7 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 
 		setForgetting(true);
 
-		fetch(`https://${localhost}/api/warden/forgetpass`, {
+		fetch(`${localhost}/api/warden/forgetpass`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -71,7 +71,7 @@ const WardenLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 		setError(null);
 		try {
 			const response = await fetch(
-				`https://${localhost}/api/auth/wardenlogin`,
+				`${localhost}/api/auth/wardenlogin`,
 				{
 					method: "POST",
 					headers: {
