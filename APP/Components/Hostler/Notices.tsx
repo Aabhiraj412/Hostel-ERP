@@ -8,13 +8,16 @@ import {
 } from "react-native";
 import useStore from "../../Store/Store";
 import NoticeCard from "../Components/NoticeCard";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const Notices = () => {
 	const { localhost, cookie } = useStore();
 	const [data, setData] = useState([]); // Initialize data as an empty array
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [refreshing, setRefreshing] = useState(false);
 
+	// Fetch notices function
 	const getNotices = async () => {
 		setLoading(true);
 		setError(null); // Reset error before fetching
@@ -49,7 +52,15 @@ const Notices = () => {
 		getNotices();
 	}, []);
 
-	if (loading) {
+	// Handle refresh
+	const onRefresh = async () => {
+		setRefreshing(true); // Start the refresh animation
+		await getNotices(); // Fetch notices
+		setRefreshing(false); // Stop the refresh animation
+	};
+
+	// Loading state
+	if (loading && !refreshing) {
 		return (
 			<View style={styles.loadingContainer}>
 				<ActivityIndicator size="large" color="#2cb5a0" />
@@ -57,6 +68,7 @@ const Notices = () => {
 		);
 	}
 
+	// Error state
 	if (error) {
 		return (
 			<View style={styles.loadingContainer}>
@@ -65,6 +77,7 @@ const Notices = () => {
 		);
 	}
 
+	// No data state
 	if (!data.length) {
 		return (
 			<View style={styles.loadingContainer}>
@@ -73,9 +86,17 @@ const Notices = () => {
 		);
 	}
 
+	// Notices found, render list
 	return (
 		<View style={styles.container}>
-			<ScrollView>
+			<ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+					/>
+				}
+			>
 				{data.map((notice: any) => (
 					<NoticeCard key={notice._id} data={notice} />
 				))}
@@ -88,7 +109,7 @@ export default Notices;
 
 const styles = StyleSheet.create({
 	container: {
-		flexGrow: 1,
+		flex: 1, // Ensure container takes the full height available
 		padding: 20,
 		backgroundColor: "#f5f5f5",
 	},

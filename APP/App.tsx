@@ -37,8 +37,8 @@ const App: React.FC = () => {
 	const nextRouteName = cookie
 		? user === "Warden"
 			? "Warden Dashboard"
-			: user === "Hostler"
-			? "Hostler Dashboard"
+			: user === "Hosteller"
+			? "Hosteller Dashboard"
 			: "Home"
 		: "Home";
 
@@ -70,14 +70,14 @@ const App: React.FC = () => {
 				<Stack.Screen name="Warden" component={Warden} />
 				<Stack.Screen name="Warden Dashboard" component={WardenDash} />
 
-				<Stack.Screen name="Add Hostler" component={AddHostler} />
-				<Stack.Screen name="Hostlers" component={Hostlers} />
+				<Stack.Screen name="Add Hosteller" component={AddHostler} />
+				<Stack.Screen name="Hostellers" component={Hostlers} />
 				<Stack.Screen
 					name="Mark Attendance"
 					component={MarkAttendance}
 				/>
 				<Stack.Screen
-					name="Hostlers Attendance"
+					name="Hostellers Attendance"
 					component={ViewAttendance}
 				/>
 				<Stack.Screen name="Publish Notice" component={PublishNotice} />
@@ -94,21 +94,21 @@ const App: React.FC = () => {
 				<Stack.Screen name="Notices" component={Notices} />
 				<Stack.Screen name="Out Register" component={OutRegister} />
 				<Stack.Screen
-					name="Hostler Details"
+					name="Hosteller Details"
 					component={HostlerDetails}
 				/>
 
-				<Stack.Screen name="Hostler Login" component={HostlerLogin} />
-				<Stack.Screen name="Hostler" component={Hostler} />
+				<Stack.Screen name="Hosteller Login" component={HostlerLogin} />
+				<Stack.Screen name="Hosteller" component={Hostler} />
 
 				<Stack.Screen
-					name="Hostler Dashboard"
+					name="Hosteller Dashboard"
 					component={HostlerDash}
 				/>
 
 				<Stack.Screen name="Add Details" component={AddDetails} />
 				<Stack.Screen
-					name="Hostler Attendance "
+					name="Hosteller Attendance "
 					component={HostlerAttendance}
 				/>
 				<Stack.Screen name="Leaves " component={HLeaves} />

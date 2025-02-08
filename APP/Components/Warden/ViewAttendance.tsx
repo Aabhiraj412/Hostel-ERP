@@ -11,6 +11,7 @@ import { Picker } from "@react-native-picker/picker"; // For dropdown
 import useStore from "../../Store/Store";
 import SuccessAlert from "../Components/SuccessAlert";
 import ErrorAlert from "../Components/ErrorAlert";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const ViewAttendance = () => {
 	const { localhost, cookie } = useStore();
@@ -23,6 +24,7 @@ const ViewAttendance = () => {
 	const [alertMessage, setAlertMessage] = useState("");
 	const [success, setSuccess] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
+	const [refresh, setRefresh] = useState(false);
 
 	useEffect(() => {
 		if (selectedHostel) {
@@ -82,6 +84,12 @@ const ViewAttendance = () => {
 				status: isPresent ? "present" : "absent",
 			};
 		});
+	};
+
+	const onRefresh = () => {
+		setRefresh(true);
+		fetchHostlers();
+		setRefresh(false);
 	};
 
 	const filterHostlersByHostel = (hostlers) => {
@@ -160,6 +168,7 @@ const ViewAttendance = () => {
 				style={styles.fetchButton}
 				onPress={fetchHostlers}
 				disabled={loading}
+				
 			>
 				<Text style={styles.fetchButtonText}>
 					{loading ? "Fetching..." : "Fetch Attendance"}
@@ -171,6 +180,12 @@ const ViewAttendance = () => {
 				data={hostlers}
 				keyExtractor={(item) => item._id}
 				renderItem={renderHostlerItem}
+				refreshControl={
+					<RefreshControl
+						refreshing={refresh}
+						onRefresh={onRefresh}
+					/>
+				}
 			/>
 			<ErrorAlert
 				message={alertMessage}

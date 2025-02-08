@@ -144,7 +144,7 @@ export const getPrivateGrievances = async (req, res) => {
 
 		const privateGrievances = await PrivateGrivance.find({
 			student: hostler._id,
-		});
+		}).sort({ date: -1 });
 
 		res.status(200).json(privateGrievances);
 		console.log("Private Grievances fetched successfully");

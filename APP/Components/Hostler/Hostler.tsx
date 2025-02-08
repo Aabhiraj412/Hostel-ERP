@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
 import { useNavigation } from "@react-navigation/native";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { Modal } from "react-native";
 import SuccessAlert from "../Components/SuccessAlert";
 import ErrorAlert from "../Components/ErrorAlert";
@@ -24,45 +24,52 @@ export default function Hostler() {
 	const [successMessage, setSuccessMessage] = useState("");
 	const [logout, setLogout] = useState(false);
 	const [loggingout, setLoggingout] = useState(false);
+	const [refreshing, setRefreshing] = useState(false);
 
 	const hostlerData = data;
 
+	const fetchHostlerData = async () => {
+		try {
+			const response = await fetch(
+				`${localhost}/api/hostler/getdetails`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Cookie: cookie,
+					},
+				}
+			);
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(
+					result.message || "Failed to fetch hosteller data."
+				);
+			}
+
+			setData(result); // Update the store with fetched data
+		} catch (error) {
+			console.error("Error fetching hosteller data:", error);
+			setAlertMessage(
+				"Failed to fetch hosteller data. Please try again."
+			);
+		} finally {
+			setLoading(false); // Set loading to false after the fetch is complete
+		}
+	};
+
 	useEffect(() => {
 		// Fetch hostler details when the component mounts
-		const fetchHostlerData = async () => {
-			try {
-				const response = await fetch(
-					`${localhost}/api/hostler/getdetails`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-							Cookie: cookie,
-						},
-					}
-				);
-
-				const result = await response.json();
-
-				if (!response.ok) {
-					throw new Error(
-						result.message || "Failed to fetch hostler data."
-					);
-				}
-
-				setData(result); // Update the store with fetched data
-			} catch (error) {
-				console.error("Error fetching hostler data:", error);
-				setAlertMessage(
-					"Failed to fetch hostler data. Please try again."
-				);
-			} finally {
-				setLoading(false); // Set loading to false after the fetch is complete
-			}
-		};
-
 		fetchHostlerData();
 	}, [localhost, setData]);
+
+	const onRefresh = async () => {
+		setRefreshing(true);
+		fetchHostlerData();
+		setRefreshing(false);
+	};
 
 	// If still loading, show the loading spinner
 	if (loading) {
@@ -78,7 +85,7 @@ export default function Hostler() {
 		return (
 			<View style={styles.container}>
 				<Text style={styles.errorText}>
-					No data available for the Hostler.
+					No data available for the Hosteller.
 				</Text>
 			</View>
 		);
@@ -106,7 +113,7 @@ export default function Hostler() {
 				);
 			}
 
-			console.log("Logout response:", result);
+			//console.log("Logout response:", result);
 
 			// Clear stored cookie and navigate to home
 			setCookie(null); // Clear cookie in store
@@ -130,8 +137,15 @@ export default function Hostler() {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Hostler Details</Text>
-			<ScrollView>
+			<Text style={styles.title}>Hosteller Details</Text>
+			<ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+					/>
+				}
+			>
 				<View style={styles.detailsContainer}>
 					<Text style={styles.text}>Name: {hostlerData.name}</Text>
 					<Text style={styles.text}>

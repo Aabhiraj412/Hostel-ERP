@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
 import SuccessAlert from "../Components/SuccessAlert";
 import ErrorAlert from "../Components/ErrorAlert";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const HOutRegister = () => {
 	const { localhost, cookie } = useStore();
@@ -28,16 +29,14 @@ const HOutRegister = () => {
 	const [alertMessage, setAlertMessage] = useState("");
 	const [success, setSuccess] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
+	const [refreshing, setRefreshing] = useState(false);
 
 	// Fetch out register entries
 	const fetchEntries = async () => {
 		try {
-			const response = await fetch(
-				`${localhost}/api/hostler/getentry`,
-				{
-					headers: { Cookie: cookie },
-				}
-			);
+			const response = await fetch(`${localhost}/api/hostler/getentry`, {
+				headers: { Cookie: cookie },
+			});
 			const data = await response.json();
 			setEntries(data);
 		} catch (error) {
@@ -54,24 +53,21 @@ const HOutRegister = () => {
 			setAlert(true);
 			return;
 		}
-	
+
 		setOpen(true); // Set loading state only if validation passes
 
 		try {
 			const body = JSON.stringify({ purpose });
-			console.log("Request body:", body);
+			//console.log("Request body:", body);
 
-			const response = await fetch(
-				`${localhost}/api/hostler/openentry`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Cookie: cookie,
-					},
-					body: body,
-				}
-			);
+			const response = await fetch(`${localhost}/api/hostler/openentry`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Cookie: cookie,
+				},
+				body: body,
+			});
 
 			const result = await response.json();
 			// Check if response is OK
@@ -83,7 +79,9 @@ const HOutRegister = () => {
 
 			setModalVisible(false);
 			setPurpose("");
-			fetchEntries(); // Refresh the list
+			// fetchEntries(); // Refresh the list
+			setSuccessMessage("Entry opened successfully.");
+			setEntries((prevEntries) => [result, ...prevEntries]);
 		} catch (error) {
 			// Log error for debugging
 			console.error("Error in openEntry:", error);
@@ -132,6 +130,12 @@ const HOutRegister = () => {
 		fetchEntries();
 	}, []);
 
+	const onRefresh = async () => {
+		setRefreshing(true);
+		fetchEntries();
+		setRefreshing(false);
+	};
+
 	const renderEntry = ({ item }) => (
 		<TouchableOpacity
 			style={styles.card}
@@ -173,6 +177,12 @@ const HOutRegister = () => {
 								<Text style={styles.empty}>
 									No entries found
 								</Text>
+							}
+							refreshControl={
+								<RefreshControl
+									refreshing={refreshing}
+									onRefresh={onRefresh}
+								/>
 							}
 						/>
 

@@ -11,7 +11,7 @@ interface AttendanceCardProps {
 
 	present: string[];
 	
-    toggleSelection: (id: string) => void; // Function to update selected hostlers
+    toggleSelection: (id: string) => void; // Function to update selected hostelrs
 }
 
 const AttendanceCard: React.FC<AttendanceCardProps> = ({

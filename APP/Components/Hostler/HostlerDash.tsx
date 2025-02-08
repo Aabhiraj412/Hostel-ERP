@@ -150,7 +150,7 @@ const HostlerDash = () => {
 					<View style={styles.row}>
 						<MiniCard
 							title="Profile"
-							onPress={navigateTo("Hostler")}
+							onPress={navigateTo("Hosteller")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
 									name="person-circle"
@@ -161,7 +161,7 @@ const HostlerDash = () => {
 						/>
 						<MiniCard
 							title="View Attendance"
-							onPress={navigateTo("Hostler Attendance ")}
+							onPress={navigateTo("Hosteller Attendance ")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
 									name="checkmark-done"

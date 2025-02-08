@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import {
 	Text,
@@ -42,7 +42,28 @@ const AddHostler = () => {
 		setFormData({ ...formData, [key]: value });
 	};
 
+	const generatePassword = () => {
+		const chars =
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		let password = "";
+		for (let i = 0; i < 6; i++) {
+			password += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+		return password;
+	};
+	
+	useEffect(() => {
+		const temp = generatePassword();
+		//console.log(temp);
+		setFormData((prevFormData) => ({
+			...prevFormData,
+			password: temp,
+			confirm_password: temp,
+		}));
+	}, []);
+
 	const handleSubmit = async () => {
+		//console.log(formData);
 		const {
 			name,
 			roll_no,
@@ -61,43 +82,50 @@ const AddHostler = () => {
 			confirm_password,
 		} = formData;
 
-		if (!name || !roll_no || !email || !password || !confirm_password) {
+		if (
+			!name ||
+			!roll_no ||
+			!email ||
+			!phone_no ||
+			!address ||
+			!year ||
+			!college ||
+			!hostel ||
+			!room_no ||
+			!password ||
+			!confirm_password ||
+			!fathers_name ||
+			!mothers_name ||
+			!gender ||
+			!aadhar
+		) {
 			setAlertMessage("All required fields must be filled.");
-			setAlert(true);
-			return;
-		}
-
-		if (password !== confirm_password) {
-			setAlertMessage("Passwords do not match.");
 			setAlert(true);
 			return;
 		}
 
 		setLoading(true);
 		try {
-			const response = await fetch(
-				`${localhost}/api/warden/addhostler`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Cookie: cookie,
-					},
-					body: JSON.stringify(formData),
-				}
-			);
+			const response = await fetch(`${localhost}/api/warden/addhostler`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Cookie: cookie,
+				},
+				body: JSON.stringify(formData),
+			});
 
 			const result = await response.json();
 
 			if (response.ok) {
-				navigation.replace("Hostler Details", { hostler: result });
+				navigation.replace("Hosteller Details", { hostler: result });
 			} else {
-				setAlertMessage(result.message || "Failed to add hostler.");
+				setAlertMessage(result.message || "Failed to add hosteller.");
 				setAlert(true);
 			}
 		} catch (error) {
-			console.error("Error adding hostler: ", error);
-			setAlertMessage("Failed to add hostler.");
+			console.error("Error adding hosteller: ", error);
+			setAlertMessage("Failed to add hosteller.");
 			setAlert(true);
 		} finally {
 			setLoading(false);
@@ -113,7 +141,7 @@ const AddHostler = () => {
 	}
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
-			<Text style={styles.title}>Add Hostler</Text>
+			<Text style={styles.title}>Add Hosteller</Text>
 			<TextInput
 				style={styles.input}
 				placeholder="Name"
@@ -247,7 +275,7 @@ const AddHostler = () => {
 				onChangeText={(value) => handleInputChange("room_no", value)}
 				keyboardType="numeric"
 			/>
-			<TextInput
+			{/* <TextInput
 				style={styles.input}
 				placeholder="Password"
 				value={formData.password}
@@ -262,10 +290,10 @@ const AddHostler = () => {
 					handleInputChange("confirm_password", value)
 				}
 				secureTextEntry
-			/>
+			/> */}
 			<View style={styles.buttonContainer}>
 				<Button
-					title="Add Hostler"
+					title="Add Hosteller"
 					onPress={handleSubmit}
 					color="#2cb5a0"
 				/>

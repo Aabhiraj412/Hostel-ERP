@@ -26,7 +26,7 @@ const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 	const [success, setSuccess] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
 
-	const ForgetPass = () => {
+	const ForgetPass = async () => {
 		if (!userId) return setForerror("Please enter your UserID");
 
 		setForgetting(true);
@@ -40,9 +40,9 @@ const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 				user: userId,
 			}),
 		})
-			.then((response) => {
+			.then(async (response) => {
 				if (!response.ok) {
-					const errorResponse = response.json();
+					const errorResponse = await response.json();
 					throw new Error(
 						errorResponse.message ||
 							"Failed to send password reset email."
@@ -96,14 +96,14 @@ const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 			const cookies = response.headers.get("set-cookie");
 
 			if (cookies) setCookie(cookies);
-			setUser("Hostler");
+			setUser("Hosteller");
 
 			const data = await response.json();
 			setData(data);
 
 			navigation.reset({
 				index: 0,
-				routes: [{ name: "Hostler Dashboard" }],
+				routes: [{ name: "Hosteller Dashboard" }],
 			});
 		} catch (error: any) {
 			setError(error.message); // Handle errors
@@ -123,7 +123,7 @@ const HostlerLogin: React.FC<{ navigation: any }> = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
-				<Text style={styles.title}>Hostler Login</Text>
+				<Text style={styles.title}>Hosteller Login</Text>
 				<Text style={styles.subtitle}>
 					Please enter your UserID and Password
 				</Text>

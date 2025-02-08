@@ -20,13 +20,13 @@ const Landing: React.FC<{ navigation: any }> = ({ navigation }) => {
 	};
 
 	const navigateToHostler = () => {
-		if (cookie && user === "Hostler") {
+		if (cookie && user === "Hosteller") {
 			navigation.reset({
 				index: 0,
 				routes: [{ name: "Home Dashboard" }],
 			});
 		} else {
-			navigation.navigate("Hostler Login");
+			navigation.navigate("Hosteller Login");
 		}
 	};
 
@@ -49,7 +49,7 @@ const Landing: React.FC<{ navigation: any }> = ({ navigation }) => {
 					)}
 				/>
 				<Card
-					title="Hostler"
+					title="Hosteller"
 					onPress={navigateToHostler}
 					IconComponent={({ size, color }) => (
 						<MaterialCommunityIcons
