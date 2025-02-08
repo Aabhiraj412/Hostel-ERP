@@ -98,7 +98,7 @@ const AddDetails = () => {
 			if (response.ok) {
 				setSuccessMessage("Details added successfully!");
 				setSuccess(true);
-				navigation.replace("Hostler"); // Go back to the previous screen
+				navigation.replace("Hosteller"); // Go back to the previous screen
 			} else {
 				setAlertMessage(result.message || "Failed to add details.");
 				setAlert(true);

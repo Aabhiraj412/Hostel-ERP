@@ -272,7 +272,7 @@ const ViewAttendance = () => {
 						selectedValue={selectedHostel}
 						onValueChange={(value) => setSelectedHostel(value)}
 					>
-						<Picker.Item label="All Hostel" value="All" />
+						<Picker.Item label="All Hostels" value="All" />
 						<Picker.Item label="Aryabhatt" value="Aryabhatt" />
 						<Picker.Item label="RN Tagore" value="RN Tagore" />
 						<Picker.Item
@@ -297,21 +297,33 @@ const ViewAttendance = () => {
 
 			{/* Pagination Controls */}
 			<View style={styles.pagination}>
-				<TouchableOpacity style={styles.fetchButton} onPress={prevPage}>
-					<Text style={styles.fetchButtonText}>Previous</Text>
-				</TouchableOpacity>
+				{currentPage === 1 ? (
+					<View
+						style={styles.disabledButton}
+						// onPress={prevPage}
+					>
+						<Text style={styles.disabledButtonText}>Previous</Text>
+					</View>
+				) : (
+					<TouchableOpacity
+						style={styles.fetchButton}
+						onPress={prevPage}
+					>
+						<Text style={styles.fetchButtonText}>Previous</Text>
+					</TouchableOpacity>
+				)}
 				<Text style={styles.pageNumber}>
 					Page {currentPage} of {totalPages}
 				</Text>
 				{currentPage === totalPages ? (
-					<TouchableOpacity
+					<View
 						style={styles.disabledButton}
 						// onPress={nextPage}
 					>
 						<Text style={styles.disabledButtonText}>
 							Save & Next
 						</Text>
-					</TouchableOpacity>
+					</View>
 				) : (
 					<TouchableOpacity
 						style={styles.fetchButton}
@@ -387,24 +399,25 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 	disabledButton: {
-		paddingVertical: 12,
-		paddingHorizontal: 25,
-		backgroundColor: "#64748b", // Main button color
-		borderRadius: 10,
-		alignItems: "center",
-		marginBottom: 18,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.2,
-		shadowRadius: 6,
-		elevation: 5,
-	},
-	disabledButtonText: {
-		color: "#fff",
-		fontWeight: "bold",
-		fontSize: 16,
-	},
-	pagination: {
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    backgroundColor: "#A0A0A0", // Light gray to indicate disabled state
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 18,
+    opacity: 0.6, // Reduced opacity for a disabled effect
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
+},
+disabledButtonText: {
+    color: "#fff", // Slightly lighter gray for better readability
+    fontWeight: "bold",
+    fontSize: 16,
+},
+pagination: {
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",

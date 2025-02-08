@@ -7,22 +7,28 @@ import {
 	TouchableOpacity,
 	Modal,
 	TouchableWithoutFeedback,
+	RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
+import { ScrollView } from "react-native-gesture-handler";
 
 const PublicGrievances = () => {
 	const { localhost, cookie } = useStore();
 	const [grievances, setGrievances] = useState([]);
+	const [filtered, setFiltered] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedGrievance, setSelectedGrievance] = useState(null);
 	const [updating, setUpdating] = useState(false);
+	const [filterStatus, setFilterStatus] = useState("All"); // State for filter
+	const [refreshing, setRefreshing] = useState(false); // State for refresh control
 
-	// Fetch grievances
+	// Fetch grievances with optional status filter
 	const fetchGrievances = async () => {
 		try {
+			// setLoading(true);
 			const response = await fetch(
-				`${localhost}/api/warden/getpublicgrievance`,
+				`${localhost}/api/warden/getPublicgrievance`,
 				{
 					headers: { Cookie: cookie },
 				}
@@ -38,7 +44,36 @@ const PublicGrievances = () => {
 			console.error("Error fetching grievances:", error);
 		} finally {
 			setLoading(false);
+			setRefreshing(false); // Stop refreshing animation
 		}
+	};
+
+	const filterChange = () => {
+		//console.log(filterStatus);
+		if (filterStatus === "Pending") {
+			const filtered = grievances.filter(
+				(grievance) => grievance.status === "Pending"
+			);
+			setFiltered(filtered);
+		} else if (filterStatus === "Resolved") {
+			const filtered = grievances.filter(
+				(grievance) => grievance.status === "Resolved"
+			);
+			setFiltered(filtered);
+		} else if (filterStatus === "Cancelled") {
+			const filtered = grievances.filter(
+				(grievance) => grievance.status === "Cancelled"
+			);
+			setFiltered(filtered);
+		} else if (filterStatus === "Upvotes") {
+			const filtered = grievances.sort(
+				(a, b) => b.upvotes.length - a.upvotes.length
+			);
+			setFiltered(filtered);
+		} else {
+			setFiltered(grievances);
+		}
+		//console.log(filtered);
 	};
 
 	// Update grievance status
@@ -46,7 +81,7 @@ const PublicGrievances = () => {
 		setUpdating(true);
 		try {
 			const response = await fetch(
-				`${localhost}/api/warden/setpublicgrievance/${grievanceId}`,
+				`${localhost}/api/warden/setPublicgrievance/${grievanceId}`,
 				{
 					method: "POST",
 					headers: {
@@ -64,14 +99,20 @@ const PublicGrievances = () => {
 						"Failed to update grievance status."
 				);
 			}
-
 			// Update the local state
 			setGrievances((prevGrievances) =>
 				prevGrievances.map((grievance) =>
 					grievance._id === grievanceId ? updatedGrievance : grievance
 				)
 			);
-			setSelectedGrievance(null); // Close modal after updating
+
+			setFiltered((prevGrievances) =>
+				prevGrievances.map((grievance) =>
+					grievance._id === grievanceId ? updatedGrievance : grievance
+				)
+			);
+
+			setSelectedGrievance(null);
 		} catch (error) {
 			console.error("Error updating grievance status:", error);
 		} finally {
@@ -79,18 +120,30 @@ const PublicGrievances = () => {
 		}
 	};
 
+	// Call fetchGrievances whenever the filter changes
+	useEffect(() => {
+		filterChange();
+	}, [filterStatus, grievances]);
+
 	useEffect(() => {
 		fetchGrievances();
 	}, []);
 
+	// Handle pull-to-refresh
+	const onRefresh = () => {
+		setRefreshing(true);
+		fetchGrievances();
+	};
+
 	const renderGrievance = ({ item }) => (
 		<TouchableOpacity
 			style={styles.card}
-			onPress={() => setSelectedGrievance(item)}
+			onPress={() => {
+				setSelectedGrievance(item);
+			}}
 		>
 			<Text style={styles.title}>{item.title}</Text>
 			<Text style={styles.description}>{item.description}</Text>
-			<Text style={styles.upvote}>{item.upvotes.length} Upvotes</Text>
 			<Text style={styles.date}>
 				Date: {new Date(item.date).toLocaleDateString()}
 			</Text>
@@ -114,18 +167,57 @@ const PublicGrievances = () => {
 
 	return (
 		<View style={styles.container}>
+			{/* Filter Section */}
+			<View style={styles.filterContainer}>
+				<ScrollView
+					horizontal={true}
+					showsHorizontalScrollIndicator={false}
+				>
+					{["All", "Pending", "Resolved", "Cancelled", "Upvotes"].map(
+						(status) => (
+							<TouchableOpacity
+								key={status}
+								style={[
+									styles.filterButton,
+									filterStatus === status &&
+										styles.activeFilter,
+								]}
+								onPress={() => setFilterStatus(status)}
+							>
+								<Text
+									style={[
+										styles.filterText,
+										filterStatus === status &&
+											styles.activeFilterText,
+									]}
+								>
+									{status}
+								</Text>
+							</TouchableOpacity>
+						)
+					)}
+				</ScrollView>
+			</View>
+
+			{/* Grievances List */}
 			{loading ? (
 				<View style={styles.loading}>
 					<ActivityIndicator size="large" color="#2cb5a0" />
 				</View>
 			) : (
 				<FlatList
-					data={grievances}
+					data={filtered}
 					keyExtractor={(item) => item._id}
 					renderItem={renderGrievance}
 					contentContainerStyle={styles.list}
 					ListEmptyComponent={
-						<Text style={styles.empty}>No public grievances</Text>
+						<Text style={styles.empty}>No Public grievances</Text>
+					}
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={onRefresh}
+						/>
 					}
 				/>
 			)}
@@ -133,7 +225,9 @@ const PublicGrievances = () => {
 			{selectedGrievance && (
 				<Modal transparent={true} animationType="slide">
 					<TouchableWithoutFeedback
-						onPress={() => setSelectedGrievance(null)}
+						onPress={() => {
+							setSelectedGrievance(null);
+						}}
 					>
 						<View style={styles.modalContainer}>
 							<TouchableWithoutFeedback>
@@ -154,23 +248,11 @@ const PublicGrievances = () => {
 											selectedGrievance.date
 										).toLocaleDateString()}
 									</Text>
+
 									<Text style={styles.modalText}>
-										Status:{" "}
-										<Text
-											style={{
-												color:
-													selectedGrievance.status ===
-													"Pending"
-														? "orange"
-														: selectedGrievance.status ===
-														  "Resolved"
-														? "green"
-														: "red",
-											}}
-										>
-											{selectedGrievance.status}
-										</Text>
+										Status: {selectedGrievance.status}
 									</Text>
+
 									<Text style={styles.modalText}>
 										Upvotes:{" "}
 										{selectedGrievance.upvotes.length}
@@ -183,34 +265,55 @@ const PublicGrievances = () => {
 										/>
 									) : (
 										<View style={styles.buttonContainer}>
-											<TouchableOpacity
-												style={styles.resolveButton}
-												onPress={() =>
-													updateGrievanceStatus(
-														selectedGrievance._id,
-														"Resolved"
-													)
-												}
-												disabled={updating}
-											>
-												<Text style={styles.buttonText}>
-													Resolve
-												</Text>
-											</TouchableOpacity>
-											<TouchableOpacity
-												style={styles.cancelButton}
-												onPress={() =>
-													updateGrievanceStatus(
-														selectedGrievance._id,
-														"Cancelled"
-													)
-												}
-												disabled={updating}
-											>
-												<Text style={styles.buttonText}>
-													Cancel
-												</Text>
-											</TouchableOpacity>
+											{selectedGrievance.status ===
+												"Pending" && (
+												<View
+													style={
+														styles.buttonContainer
+													}
+												>
+													<TouchableOpacity
+														style={
+															styles.resolveButton
+														}
+														onPress={() =>
+															updateGrievanceStatus(
+																selectedGrievance._id,
+																"Resolved"
+															)
+														}
+														disabled={updating}
+													>
+														<Text
+															style={
+																styles.buttonText
+															}
+														>
+															Resolve
+														</Text>
+													</TouchableOpacity>
+													<TouchableOpacity
+														style={
+															styles.cancelButton
+														}
+														onPress={() =>
+															updateGrievanceStatus(
+																selectedGrievance._id,
+																"Cancelled"
+															)
+														}
+														disabled={updating}
+													>
+														<Text
+															style={
+																styles.buttonText
+															}
+														>
+															Cancel
+														</Text>
+													</TouchableOpacity>
+												</View>
+											)}
 										</View>
 									)}
 								</View>
@@ -260,12 +363,7 @@ const styles = StyleSheet.create({
 	description: {
 		fontSize: 14,
 		color: "#555",
-		marginBottom: 5,
-	},
-	upvote: {
-		fontSize: 14,
-		color: "#555",
-		marginBottom: 5,
+		marginBottom: 10,
 	},
 	date: {
 		fontSize: 12,
@@ -326,5 +424,28 @@ const styles = StyleSheet.create({
 		color: "#fff",
 		fontWeight: "bold",
 		textAlign: "center",
+	},
+	filterContainer: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		marginBottom: 10,
+	},
+	filterButton: {
+		paddingVertical: 10,
+		paddingHorizontal: 25,
+		borderRadius: 20,
+		borderWidth: 1,
+		margin: 5,
+		borderColor: "#2cb5a0",
+	},
+	activeFilter: {
+		backgroundColor: "#2cb5a0",
+	},
+	filterText: {
+		color: "#2cb5a0",
+		fontWeight: "bold",
+	},
+	activeFilterText: {
+		color: "#fff",
 	},
 });

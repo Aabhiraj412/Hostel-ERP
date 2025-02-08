@@ -2,8 +2,8 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
 
-// Type for the hostler data
-interface Hostler {
+// Type for the hosteller data
+interface hostler {
   name: string;
   roll_no: string;
   aadhar: string;
@@ -21,16 +21,16 @@ interface Hostler {
 }
 
 // Update the navigation prop with correct types
-interface HostlersCardProps {
-  data: Hostler;
+interface hostlersCardProps {
+  data: hostler;
 }
 
-const HostlersCard: React.FC<HostlersCardProps> = ({ data }) => {
+const hostlersCard: React.FC<hostlersCardProps> = ({ data }) => {
   const navigation = useNavigation<any>();  // If using TypeScript, ensure that navigation is typed
 
   const onPress = () => {
     // Pass the data to the next screen on button press
-    navigation.navigate("Hostler Details", { hostler: data });
+    navigation.navigate("Hosteller Details", { hostler: data });
   };
 
   return (
@@ -76,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HostlersCard;
+export default hostlersCard;

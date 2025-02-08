@@ -14,6 +14,7 @@ import ErrorAlert from "../Components/ErrorAlert";
 import { ActivityIndicator } from "react-native";
 import { TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 export default function Warden() {
 	const { data, localhost, setCookie, setUser, setData, cookie } = useStore();
@@ -30,7 +31,8 @@ export default function Warden() {
 	const [showPassword, setShowPassword] = useState(false); // Toggle for password visibility
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle for confirm password visibility
 	const [error, setError] = useState<string | null>(null);
-	
+	const [refreshing, setRefreshing] = useState(false);
+
 	const wardenData = data;
 
 	// Check if wardenData is available
@@ -50,12 +52,12 @@ export default function Warden() {
 			return;
 		}
 
-		if (password!== conpass) {
-            setError("Passwords do not match.");
-            return;
-        }
+		if (password !== conpass) {
+			setError("Passwords do not match.");
+			return;
+		}
 
-		if (password.length<6){
+		if (password.length < 6) {
 			setError("Password must be atleast 6 characters long.");
 			return;
 		}
@@ -64,37 +66,30 @@ export default function Warden() {
 		setLoggingout(true); // Set logging out to true to show loading indicator
 
 		try {
-			const response = await fetch(
-				`${localhost}/api/warden/resetpass`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Cookie: cookie
-					},
-					body: JSON.stringify({
-						password: password,
-						confirm_password: conpass
-					}),
-				}
-			);
+			const response = await fetch(`${localhost}/api/warden/resetpass`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Cookie: cookie,
+				},
+				body: JSON.stringify({
+					password: password,
+					confirm_password: conpass,
+				}),
+			});
 
 			const result = await response.json();
 
 			if (!response.ok) {
-				throw new Error(
-					result.message || "Password change failed."
-				);
+				throw new Error(result.message || "Password change failed.");
 			}
 
 			setSuccessMessage("Password changed successfully.");
 			setSuccess(true);
 			setPass(false);
-		}
-		catch (error: any) {
+		} catch (error: any) {
 			setError(error.message);
-		}
-		finally {
+		} finally {
 			setLoggingout(false);
 		}
 	};
@@ -102,15 +97,12 @@ export default function Warden() {
 	const Logout = async () => {
 		setLoggingout(true); // Set logging out to true to show loading indicator
 		try {
-			const response = await fetch(
-				`${localhost}/api/auth/wardenlogout`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-				}
-			);
+			const response = await fetch(`${localhost}/api/auth/wardenlogout`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
 
 			if (!response.ok) {
 				throw new Error(
@@ -137,9 +129,13 @@ export default function Warden() {
 		} catch (error: any) {
 			console.error("Logout error:", error.message);
 			if (error.message === "Network request failed") {
-				setAlertMessage("Network error. Please check your connection and try again.");
+				setAlertMessage(
+					"Network error. Please check your connection and try again."
+				);
 			} else {
-				setAlertMessage("An error occurred while logging out. Please try again.");
+				setAlertMessage(
+					"An error occurred while logging out. Please try again."
+				);
 			}
 			setAlert(true);
 		} finally {
@@ -147,162 +143,211 @@ export default function Warden() {
 		}
 	};
 
+	const onRefresh = async () => {
+		setRefreshing(true);
+		await fetchData();
+		setRefreshing(false);
+	};
+
+	const fetchData = async () => {
+		try {
+			const response = await fetch(`${localhost}/api/warden/getdetails`, {
+				headers: { Cookie: cookie },
+			});
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(
+					data.message || "Unable to fetch warden details"
+				);
+			}
+			setUser("Warden");
+			setData(data);
+		} catch (error) {
+			console.error("Error fetching warden details:", error);
+		}
+	};
+
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Warden Details</Text>
-			{/* Fixed the typo here */}
-			<View style={styles.detailsContainer}>
-				<Text style={styles.text}>Name: {wardenData.name}</Text>
-				<Text style={styles.text}>Phone No.: {wardenData.phone}</Text>
-				<Text style={styles.text}>Email: {wardenData.email}</Text>
-				<Text style={styles.text}>Aadhar No.: {wardenData.aadhar}</Text>
-				<Text style={styles.text}>
-					Gender: {wardenData.gender === "male" ? "Male" : "Female"}
-				</Text>
-				<Text style={styles.text}>Hostel: {wardenData.hostel}</Text>
-				<Text style={styles.text}>Post: {wardenData.post}</Text>
-				<Text style={styles.text}>Address: {wardenData.address}</Text>
+		<ScrollView
+		style={{ flex: 1 }}
+		contentContainerStyle={{ flexGrow: 1 }}
+			refreshControl={
+				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+			}
+		>
+			<View style={styles.container}>
+				<Text style={styles.title}>Warden Details</Text>
+				{/* Fixed the typo here */}
+				<View style={styles.detailsContainer}>
+					<Text style={styles.text}>Name: {wardenData.name}</Text>
+					<Text style={styles.text}>
+						Phone No.: {wardenData.phone}
+					</Text>
+					<Text style={styles.text}>Email: {wardenData.email}</Text>
+					<Text style={styles.text}>
+						Aadhar No.: {wardenData.aadhar}
+					</Text>
+					<Text style={styles.text}>
+						Gender:{" "}
+						{wardenData.gender === "male" ? "Male" : "Female"}
+					</Text>
+					<Text style={styles.text}>Hostel: {wardenData.hostel}</Text>
+					<Text style={styles.text}>Post: {wardenData.post}</Text>
+					<Text style={styles.text}>
+						Address: {wardenData.address}
+					</Text>
+				</View>
+				<TouchableOpacity
+					style={styles.ForgetButton}
+					onPress={() => setPass(true)}
+				>
+					<Text style={styles.logoutText}>Change Password</Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity
+					style={styles.logoutButton}
+					onPress={() => setLogout(true)}
+				>
+					<Text style={styles.logoutText}>Logout</Text>
+				</TouchableOpacity>
+				<ErrorAlert
+					message={alertMessage}
+					alert={alert}
+					setAlert={setAlert}
+				/>
+				<SuccessAlert
+					message={successMessage}
+					success={success}
+					setSuccess={setSuccess}
+				/>
+				<Modal
+					animationType="slide"
+					transparent={true}
+					visible={logout}
+				>
+					<TouchableWithoutFeedback onPress={() => setLogout(false)}>
+						<View style={styles.modalContainer}>
+							<View style={styles.modalContent}>
+								<Text style={styles.modalTitle}>Log Out</Text>
+
+								<Text style={styles.modalText}>
+									Are you sure you want to Logout?
+								</Text>
+
+								<View style={styles.modalButtonContainer}>
+									{loggingout ? (
+										<ActivityIndicator
+											size="large"
+											color="#e74c3c"
+										/>
+									) : (
+										<TouchableOpacity
+											style={styles.modalButton}
+											onPress={Logout}
+										>
+											<Text
+												style={styles.modalButtonText}
+											>
+												Confirm
+											</Text>
+										</TouchableOpacity>
+									)}
+								</View>
+							</View>
+						</View>
+					</TouchableWithoutFeedback>
+				</Modal>
+				<Modal animationType="slide" transparent={true} visible={pass}>
+					<TouchableWithoutFeedback onPress={() => setPass(false)}>
+						<View style={styles.modalContainer}>
+							<View style={styles.modalContent}>
+								<Text style={styles.modalTitle}>
+									Change Password
+								</Text>
+
+								<Text style={styles.modalText}>
+									Please enter your new password:
+								</Text>
+
+								<View style={styles.inputContainer}>
+									<TextInput
+										style={styles.input}
+										placeholder="New Password"
+										secureTextEntry={!showPassword}
+										value={password}
+										onChangeText={setPassword}
+									/>
+									<TouchableOpacity
+										onPress={() =>
+											setShowPassword(!showPassword)
+										}
+									>
+										<Ionicons
+											name={
+												showPassword
+													? "eye-outline"
+													: "eye-off-outline"
+											}
+											size={20}
+											color="#888"
+										/>
+									</TouchableOpacity>
+								</View>
+								<View style={styles.inputContainer}>
+									<TextInput
+										style={styles.input}
+										placeholder="Confirm Password"
+										secureTextEntry={!showConfirmPassword}
+										value={conpass}
+										onChangeText={setConpass}
+									/>
+									<TouchableOpacity
+										onPress={() =>
+											setShowConfirmPassword(
+												!showConfirmPassword
+											)
+										}
+									>
+										<Ionicons
+											name={
+												showConfirmPassword
+													? "eye-outline"
+													: "eye-off-outline"
+											}
+											size={20}
+											color="#888"
+										/>
+									</TouchableOpacity>
+								</View>
+
+								<View style={styles.modalButtonContainer}>
+									{loggingout ? (
+										<ActivityIndicator
+											size="large"
+											color="#2cb5a0"
+										/>
+									) : (
+										<TouchableOpacity
+											style={styles.changeButton}
+											onPress={() => changePassword()}
+										>
+											<Text
+												style={styles.modalButtonText}
+											>
+												Change Password
+											</Text>
+										</TouchableOpacity>
+									)}
+								</View>
+								{error && (
+									<Text style={styles.error}>{error}</Text>
+								)}
+							</View>
+						</View>
+					</TouchableWithoutFeedback>
+				</Modal>
 			</View>
-			<TouchableOpacity
-				style={styles.ForgetButton}
-				onPress={() => setPass(true)}
-			>
-				<Text style={styles.logoutText}>Change Password</Text>
-			</TouchableOpacity>
-
-			<TouchableOpacity
-				style={styles.logoutButton}
-				onPress={() => setLogout(true)}
-			>
-				<Text style={styles.logoutText}>Logout</Text>
-			</TouchableOpacity>
-			<ErrorAlert
-				message={alertMessage}
-				alert={alert}
-				setAlert={setAlert}
-			/>
-			<SuccessAlert
-				message={successMessage}
-				success={success}
-				setSuccess={setSuccess}
-			/>
-			<Modal animationType="slide" transparent={true} visible={logout}>
-				<TouchableWithoutFeedback onPress={() => setLogout(false)}>
-					<View style={styles.modalContainer}>
-						<View style={styles.modalContent}>
-							<Text style={styles.modalTitle}>Log Out</Text>
-
-							<Text style={styles.modalText}>
-								Are you sure you want to Logout?
-							</Text>
-
-							<View style={styles.modalButtonContainer}>
-								{loggingout ? (
-									<ActivityIndicator
-										size="large"
-										color="#e74c3c"
-									/>
-								) : (
-									<TouchableOpacity
-										style={styles.modalButton}
-										onPress={Logout}
-									>
-										<Text style={styles.modalButtonText}>
-											Confirm
-										</Text>
-									</TouchableOpacity>
-								)}
-							</View>
-						</View>
-					</View>
-				</TouchableWithoutFeedback>
-			</Modal>
-			<Modal animationType="slide" transparent={true} visible={pass}>
-				<TouchableWithoutFeedback onPress={() => setPass(false)}>
-					<View style={styles.modalContainer}>
-						<View style={styles.modalContent}>
-							<Text style={styles.modalTitle}>
-								Change Password
-							</Text>
-
-							<Text style={styles.modalText}>
-								Please enter your new password:
-							</Text>
-
-							<View style={styles.inputContainer}>
-								<TextInput
-									style={styles.input}
-									placeholder="New Password"
-									secureTextEntry={!showPassword}
-									value={password}
-									onChangeText={setPassword}
-								/>
-								<TouchableOpacity
-									onPress={() =>
-										setShowPassword(!showPassword)
-									}
-								>
-									<Ionicons
-										name={
-											showPassword
-												? "eye-outline"
-												: "eye-off-outline"
-										}
-										size={20}
-										color="#888"
-									/>
-								</TouchableOpacity>
-							</View>
-							<View style={styles.inputContainer}>
-								<TextInput
-									style={styles.input}
-									placeholder="Confirm Password"
-									secureTextEntry={!showConfirmPassword}
-									value={conpass}
-									onChangeText={setConpass}
-								/>
-								<TouchableOpacity
-									onPress={() =>
-										setShowConfirmPassword(
-											!showConfirmPassword
-										)
-									}
-								>
-									<Ionicons
-										name={
-											showConfirmPassword
-												? "eye-outline"
-												: "eye-off-outline"
-										}
-										size={20}
-										color="#888"
-									/>
-								</TouchableOpacity>
-							</View>
-
-							<View style={styles.modalButtonContainer}>
-								{loggingout ? (
-									<ActivityIndicator
-										size="large"
-										color="#2cb5a0"
-									/>
-								) : (
-									<TouchableOpacity
-										style={styles.changeButton}
-										onPress={() => changePassword()}
-									>
-										<Text style={styles.modalButtonText}>
-											Change Password
-										</Text>
-									</TouchableOpacity>
-								)}
-							</View>
-							{error && <Text style={styles.error}>{error}</Text>}
-						</View>
-					</View>
-				</TouchableWithoutFeedback>
-			</Modal>
-		</View>
+		</ScrollView>
 	);
 }
 

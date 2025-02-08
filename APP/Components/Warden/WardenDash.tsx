@@ -31,8 +31,8 @@ const WardenDash = () => {
 					{/* Row 1: Hostler Management */}
 					<View style={styles.row}>
 						<MiniCard
-							title="Add Hostler"
-							onPress={navigateTo("Add Hostler")}
+							title="Add Hosteller"
+							onPress={navigateTo("Add Hosteller")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
 									name="person-add"
@@ -42,8 +42,8 @@ const WardenDash = () => {
 							)}
 						/>
 						<MiniCard
-							title="View Hostlers"
-							onPress={navigateTo("Hostlers")}
+							title="View Hostellers"
+							onPress={navigateTo("Hostellers")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
 									name="people"
@@ -84,7 +84,7 @@ const WardenDash = () => {
 					<View style={styles.row}>
 						<MiniCard
 							title="Attendance"
-							onPress={navigateTo("Hostlers Attendance")}
+							onPress={navigateTo("Hostellers Attendance")}
 							IconComponent={({ size, color }) => (
 								<Ionicons
 									name="clipboard"

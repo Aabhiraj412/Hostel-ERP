@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import useStore from "../../Store/Store";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const OutRegister = () => {
 	const { localhost, cookie } = useStore();
@@ -19,10 +20,12 @@ const OutRegister = () => {
 	const [selectedStudent, setSelectedStudent] = useState(null);
 	const [fetching, setFetching] = useState(false);
 	const slideAnim = useRef(new Animated.Value(0)).current;
+	const [refreshing, setRefreshing] = useState(false);
 
 	// Fetch out register entries
 	const fetchEntries = async () => {
 		try {
+			// setLoading(true);
 			const response = await fetch(
 				`${localhost}/api/warden/getentries`,
 				{
@@ -64,6 +67,12 @@ const OutRegister = () => {
 		} finally {
 			setFetching(false);
 		}
+	};
+
+	const onRefresh = async () => {
+		setRefreshing(true);
+		await fetchEntries();
+		setRefreshing(false);
 	};
 
 	// Animation for sliding the popup
@@ -128,6 +137,12 @@ const OutRegister = () => {
 								<Text style={styles.empty}>
 									No entries found
 								</Text>
+							}
+							refreshControl={
+								<RefreshControl
+									refreshing={refreshing}
+									onRefresh={onRefresh}
+								/>
 							}
 						/>
 						{selectedStudent && (

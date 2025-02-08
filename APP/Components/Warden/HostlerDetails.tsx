@@ -12,8 +12,13 @@ import {
 import React, { useState } from "react";
 import useStore from "../../Store/Store";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
+import {
+	RefreshControl,
+	ScrollView,
+	TextInput,
+} from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
+// import setAlert
 
 // Define the prop types for better type safety
 interface HostlerDetailsProps {
@@ -43,6 +48,9 @@ const HostlerDetails = () => {
 	const [loading, setLoading] = useState(false);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [remove, setRemove] = useState(false);
+	const [refresh, setRefresh] = useState(false);
+	const [data, setData] = useState(null);
+	const [alertMessage, setAlertMessage] = useState("");
 
 	const route =
 		useRoute<
@@ -55,7 +63,7 @@ const HostlerDetails = () => {
 		return (
 			<View style={styles.container}>
 				<Text style={styles.errorText}>
-					No data available for the Hostler.
+					No data available for the Hosteller.
 				</Text>
 			</View>
 		);
@@ -109,27 +117,74 @@ const HostlerDetails = () => {
 			const response = await req.json();
 
 			if (req.status === 200) {
-				Alert.alert("Success", "Hostler removed successfully!");
+				Alert.alert("Success", "Hosteller removed successfully!");
 				navigation.goBack();
 			} else {
 				Alert.alert(
 					"Error",
-					response.message || "Failed to remove hostler."
+					response.message || "Failed to remove hosteller."
 				);
 			}
 		} catch (error) {
-			console.error("Error removing hostler:", error);
-			Alert.alert("Error", "Failed to remove hostler.");
+			console.error("Error removing hosteller:", error);
+			Alert.alert("Error", "Failed to remove hosteller.");
 		} finally {
 			setLoading(false);
 		}
 	};
 
+	const fetchHostlerData = async () => {
+		try {
+			const response = await fetch(
+				`${localhost}/api/warden/getdetail/${hostler._id}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Cookie: cookie,
+					},
+				}
+			);
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(
+					result.message || "Failed to fetch hosteller data."
+				);
+			}
+			//console.log(result);
+			setHostel(result); // Update the store with fetched data
+		} catch (error) {
+			console.error("Error fetching hosteller data:", error);
+			setAlertMessage(
+				"Failed to fetch hosteller data. Please try again."
+			);
+		} finally {
+			setLoading(false); // Set loading to false after the fetch is complete
+		}
+	};
+	const onRefresh = async () => {
+		setRefresh(true);
+		// Fetch hostler details when the component mounts
+		fetchHostlerData();
+		setRefresh(false);
+	};
+
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Hostler Details</Text>
+			<Text style={styles.title}>Hosteller Details</Text>
 
-			<ScrollView>
+			<ScrollView
+				// contentContainerStyle={styles.scrollContainer}
+				style={{ width: "100%" }}
+				refreshControl={
+					<RefreshControl
+						refreshing={refresh}
+						onRefresh={onRefresh}
+					/>
+				}
+			>
 				<View style={styles.detailsContainer}>
 					<Text style={styles.text}>Name: {hostler.name}</Text>
 					<Text style={styles.text}>
@@ -199,24 +254,24 @@ const HostlerDetails = () => {
 						Guardian Address: {hostler.local_guardian_address}
 					</Text>
 				</View>
-
-				<View style={styles.buttonContainer}>
-					<View style={{ marginBottom: 20 }}>
-						<Button
-							title="Change Room"
-							onPress={() => setModalVisible(true)}
-							color="#2cb5a0"
-						/>
-					</View>
-					<View style={{ marginBottom: 20 }}>
-						<Button
-							title="Remove Hostler"
-							onPress={() => setRemove(true)}
-							color="#e74c3c"
-						/>
-					</View>
-				</View>
 			</ScrollView>
+
+			<View style={styles.buttonContainer}>
+				<View style={{ marginBottom: 20 }}>
+					<Button
+						title="Change Room"
+						onPress={() => setModalVisible(true)}
+						color="#2cb5a0"
+					/>
+				</View>
+				<View style={{ marginBottom: 20 }}>
+					<Button
+						title="Remove Hosteller"
+						onPress={() => setRemove(true)}
+						color="#e74c3c"
+					/>
+				</View>
+			</View>
 
 			<Modal
 				animationType="slide"
@@ -298,11 +353,11 @@ const HostlerDetails = () => {
 					<View style={styles.modalContainer}>
 						<View style={styles.modalContent}>
 							<Text style={styles.modalTitle}>
-								Remove Hostler
+								Remove Hosteller
 							</Text>
 
 							<Text style={styles.modalText}>
-								Are you sure you want to remove this hostler?
+								Are you sure you want to remove this hosteller?
 							</Text>
 
 							{loading ? (
@@ -317,7 +372,7 @@ const HostlerDetails = () => {
 										onPress={removeHostler}
 									>
 										<Text style={styles.modalButtonText}>
-											Remove Hostler
+											Remove Hosteller
 										</Text>
 									</TouchableOpacity>
 								</View>
@@ -326,7 +381,6 @@ const HostlerDetails = () => {
 					</View>
 				</TouchableWithoutFeedback>
 			</Modal>
-
 		</View>
 	);
 };

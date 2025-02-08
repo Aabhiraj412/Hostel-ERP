@@ -8,25 +8,24 @@ import {
 } from "react-native";
 import useStore from "../../Store/Store";
 import NoticeCard from "../Components/NoticeCard";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const Notices = () => {
 	const { localhost, cookie } = useStore();
 	const [data, setData] = useState([]); // Initialize data as an empty array
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [refreshing, setRefreshing] = useState(false);
 
 	const getNotices = async () => {
-		setLoading(true);
+		// setLoading(true);
 		setError(null); // Reset error before fetching
 		try {
-			const response = await fetch(
-				`${localhost}/api/warden/getnotices`,
-				{
-					headers: {
-						Cookie: cookie,
-					},
-				}
-			);
+			const response = await fetch(`${localhost}/api/warden/getnotices`, {
+				headers: {
+					Cookie: cookie,
+				},
+			});
 			const result = await response.json();
 
 			// Handle unsuccessful responses
@@ -48,6 +47,12 @@ const Notices = () => {
 	useEffect(() => {
 		getNotices();
 	}, []);
+
+	const onRefresh = async () => {
+		setRefreshing(true); // Start the refresh animation
+		await getNotices(); // Fetch notices
+		setRefreshing(false); // Stop the refresh animation
+	};
 
 	if (loading) {
 		return (
@@ -75,7 +80,14 @@ const Notices = () => {
 
 	return (
 		<View style={styles.container}>
-			<ScrollView>
+			<ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+					/>
+				}
+			>
 				{data.map((notice: any) => (
 					<NoticeCard key={notice._id} data={notice} />
 				))}

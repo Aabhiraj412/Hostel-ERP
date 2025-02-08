@@ -10,19 +10,23 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const PrivateGrievances = () => {
 	const { localhost, cookie } = useStore();
 	const [grievances, setGrievances] = useState([]);
+	const [filtered, setFiltered] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedGrievance, setSelectedGrievance] = useState(null);
 	const [selectedHostler, setSelectedHostler] = useState(null);
 	const [updating, setUpdating] = useState(false);
+	const [filterStatus, setFilterStatus] = useState("All"); // State for filter
+	const [refreshing, setRefreshing] = useState(false); // State for refresh control
 
-	// Fetch grievances
+	// Fetch grievances with optional status filter
 	const fetchGrievances = async () => {
-		setLoading(true);
 		try {
+			// setLoading(true);
 			const response = await fetch(
 				`${localhost}/api/warden/getprivategrievance`,
 				{
@@ -30,9 +34,11 @@ const PrivateGrievances = () => {
 				}
 			);
 			const data = await response.json();
+
 			if (!response.ok) {
 				throw new Error(data.message || "Unable to fetch grievances");
 			}
+
 			setGrievances(data);
 		} catch (error) {
 			console.error("Error fetching grievances:", error);
@@ -52,11 +58,34 @@ const PrivateGrievances = () => {
 			);
 			const data = await response.json();
 			if (!response.ok) {
-				throw new Error(data.message || "Unable to fetch hostler data");
+				throw new Error(
+					data.message || "Unable to fetch hosteller data"
+				);
 			}
 			setSelectedHostler(data);
 		} catch (error) {
-			console.error("Error fetching hostler details:", error);
+			console.error("Error fetching hosteller details:", error);
+		}
+	};
+
+	const filterChange = () => {
+		if (filterStatus === "Pending") {
+			const filtered = grievances.filter(
+				(grievance) => grievance.status === "Pending"
+			);
+			setFiltered(filtered);
+		} else if (filterStatus === "Resolved") {
+			const filtered = grievances.filter(
+				(grievance) => grievance.status === "Resolved"
+			);
+			setFiltered(filtered);
+		} else if (filterStatus === "Cancelled") {
+			const filtered = grievances.filter(
+				(grievance) => grievance.status === "Cancelled"
+			);
+			setFiltered(filtered);
+		} else {
+			setFiltered(grievances);
 		}
 	};
 
@@ -79,7 +108,8 @@ const PrivateGrievances = () => {
 
 			if (!response.ok) {
 				throw new Error(
-					updatedGrievance.message || "Failed to update grievance status."
+					updatedGrievance.message ||
+						"Failed to update grievance status."
 				);
 			}
 			// Update the local state
@@ -88,6 +118,13 @@ const PrivateGrievances = () => {
 					grievance._id === grievanceId ? updatedGrievance : grievance
 				)
 			);
+
+			setFiltered((prevGrievances) =>
+				prevGrievances.map((grievance) =>
+					grievance._id === grievanceId ? updatedGrievance : grievance
+				)
+			);
+
 			setSelectedGrievance(null);
 		} catch (error) {
 			console.error("Error updating grievance status:", error);
@@ -96,9 +133,19 @@ const PrivateGrievances = () => {
 		}
 	};
 
+	// Call fetchGrievances whenever the filter changes
+	useEffect(() => {
+		filterChange();
+	}, [filterStatus, grievances]);
+
 	useEffect(() => {
 		fetchGrievances();
 	}, []);
+
+	const onRefresh = () => {
+		setRefreshing(true);
+		fetchGrievances().then(() => setRefreshing(false));
+	};
 
 	const renderGrievance = ({ item }) => (
 		<TouchableOpacity
@@ -133,18 +180,49 @@ const PrivateGrievances = () => {
 
 	return (
 		<View style={styles.container}>
+			{/* Filter Section */}
+			<View style={styles.filterContainer}>
+				{["All", "Pending", "Resolved", "Cancelled"].map((status) => (
+					<TouchableOpacity
+						key={status}
+						style={[
+							styles.filterButton,
+							filterStatus === status && styles.activeFilter,
+						]}
+						onPress={() => setFilterStatus(status)}
+					>
+						<Text
+							style={[
+								styles.filterText,
+								filterStatus === status &&
+									styles.activeFilterText,
+							]}
+						>
+							{status}
+						</Text>
+					</TouchableOpacity>
+				))}
+			</View>
+
+			{/* Grievances List */}
 			{loading ? (
 				<View style={styles.loading}>
 					<ActivityIndicator size="large" color="#2cb5a0" />
 				</View>
 			) : (
 				<FlatList
-					data={grievances}
+					data={filtered}
 					keyExtractor={(item) => item._id}
 					renderItem={renderGrievance}
 					contentContainerStyle={styles.list}
 					ListEmptyComponent={
 						<Text style={styles.empty}>No private grievances</Text>
+					}
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={onRefresh}
+						/>
 					}
 				/>
 			)}
@@ -160,25 +238,36 @@ const PrivateGrievances = () => {
 						<View style={styles.modalContainer}>
 							<TouchableWithoutFeedback>
 								<View style={styles.modalContent}>
-									<Text style={styles.modalTitle}>Grievance Details</Text>
+									<Text style={styles.modalTitle}>
+										Grievance Details
+									</Text>
 									<Text style={styles.modalText}>
 										Title: {selectedGrievance.title}
 									</Text>
 									<Text style={styles.modalText}>
-										Description: {selectedGrievance.description}
+										Description:{" "}
+										{selectedGrievance.description}
 									</Text>
 									<Text style={styles.modalText}>
 										Date:{" "}
-										{new Date(selectedGrievance.date).toLocaleDateString()}
+										{new Date(
+											selectedGrievance.date
+										).toLocaleDateString()}
 									</Text>
 
 									{selectedHostler && (
 										<>
 											<Text style={styles.modalText}>
-												Submitted By: {selectedHostler.name}
+												Submitted By:{" "}
+												{selectedHostler.name}
 											</Text>
 											<Text style={styles.modalText}>
-												Room No: {selectedHostler.room_no}
+												Room No:{" "}
+												{selectedHostler.room_no}
+											</Text>
+											<Text style={styles.modalText}>
+												Hostel:{" "}
+												{selectedHostler.hostel}
 											</Text>
 										</>
 									)}
@@ -188,33 +277,61 @@ const PrivateGrievances = () => {
 									</Text>
 
 									{updating ? (
-										<ActivityIndicator size="large" color="#2cb5a0" />
+										<ActivityIndicator
+											size="large"
+											color="#2cb5a0"
+										/>
 									) : (
 										<View style={styles.buttonContainer}>
-											<TouchableOpacity
-												style={styles.resolveButton}
-												onPress={() =>
-													updateGrievanceStatus(
-														selectedGrievance._id,
-														"Resolved"
-													)
-												}
-												disabled={updating}
-											>
-												<Text style={styles.buttonText}>Resolve</Text>
-											</TouchableOpacity>
-											<TouchableOpacity
-												style={styles.cancelButton}
-												onPress={() =>
-													updateGrievanceStatus(
-														selectedGrievance._id,
-														"Cancelled"
-													)
-												}
-												disabled={updating}
-											>
-												<Text style={styles.buttonText}>Cancel</Text>
-											</TouchableOpacity>
+											{selectedGrievance.status ===
+												"Pending" && (
+												<View
+													style={
+														styles.buttonContainer
+													}
+												>
+													<TouchableOpacity
+														style={
+															styles.resolveButton
+														}
+														onPress={() =>
+															updateGrievanceStatus(
+																selectedGrievance._id,
+																"Resolved"
+															)
+														}
+														disabled={updating}
+													>
+														<Text
+															style={
+																styles.buttonText
+															}
+														>
+															Resolve
+														</Text>
+													</TouchableOpacity>
+													<TouchableOpacity
+														style={
+															styles.cancelButton
+														}
+														onPress={() =>
+															updateGrievanceStatus(
+																selectedGrievance._id,
+																"Cancelled"
+															)
+														}
+														disabled={updating}
+													>
+														<Text
+															style={
+																styles.buttonText
+															}
+														>
+															Cancel
+														</Text>
+													</TouchableOpacity>
+												</View>
+											)}
 										</View>
 									)}
 								</View>
@@ -227,7 +344,6 @@ const PrivateGrievances = () => {
 	);
 };
 
-
 export default PrivateGrievances;
 
 const styles = StyleSheet.create({
@@ -239,7 +355,7 @@ const styles = StyleSheet.create({
 	list: {
 		paddingBottom: 20,
 	},
-	loading:{
+	loading: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
@@ -326,5 +442,27 @@ const styles = StyleSheet.create({
 		color: "#fff",
 		fontWeight: "bold",
 		textAlign: "center",
+	},
+	filterContainer: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		marginBottom: 10,
+	},
+	filterButton: {
+		paddingVertical: 8,
+		paddingHorizontal: 15,
+		borderRadius: 20,
+		borderWidth: 1,
+		borderColor: "#2cb5a0",
+	},
+	activeFilter: {
+		backgroundColor: "#2cb5a0",
+	},
+	filterText: {
+		color: "#2cb5a0",
+		fontWeight: "bold",
+	},
+	activeFilterText: {
+		color: "#fff",
 	},
 });

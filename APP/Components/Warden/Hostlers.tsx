@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
 import HostlersCard from "../Components/HostlersCards";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import Dropdown from "../Components/Dropdown";
 
 const Hostlers = () => {
@@ -18,9 +18,10 @@ const Hostlers = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [searchQuery, setSearchQuery] = useState(""); // Search query state
+	const [refreshing, setRefreshing] = useState(false);
 
 	const fetchHostlers = async () => {
-		setLoading(true);
+		// setLoading(true);
 		setError(null);
 		try {
 			const response = await fetch(
@@ -49,6 +50,12 @@ const Hostlers = () => {
 	useEffect(() => {
 		fetchHostlers();
 	}, []);
+
+	const onRefresh = async () => {
+		setRefreshing(true);
+		await fetchHostlers();
+		setRefreshing(false);
+	};
 
 	if (loading) {
 		return (
@@ -93,7 +100,10 @@ const Hostlers = () => {
 	});
 
 	return (
-		<View style={styles.container}>
+		<View
+			style={styles.container}
+			
+		>
 			<Dropdown
 				value={hostel}
 				setValue={setHostel}
@@ -106,14 +116,16 @@ const Hostlers = () => {
 				value={searchQuery}
 				onChangeText={setSearchQuery}
 			/>
-			<ScrollView style={styles.scrollView}>
+			<ScrollView style={styles.scrollView} refreshControl={
+				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+			}>
 				{searchedHostlers.length > 0 ? (
 					searchedHostlers.map((hostler) => (
 						<HostlersCard key={hostler._id} data={hostler} />
 					))
 				) : (
 					<Text style={styles.emptyText}>
-						No hostlers found for the selected hostel or search
+						No hostellers found for the selected hostel or search
 						criteria.
 					</Text>
 				)}

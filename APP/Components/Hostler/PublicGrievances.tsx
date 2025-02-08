@@ -13,6 +13,9 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import useStore from "../../Store/Store";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
+import SuccessAlert from "../Components/SuccessAlert";
+import ErrorAlert from "../Components/ErrorAlert";
 
 const PrivateGrievances = () => {
 	const { localhost, cookie, data } = useStore();
@@ -26,6 +29,15 @@ const PrivateGrievances = () => {
 		title: "",
 		description: "",
 	});
+
+	const [alert, setAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [success, setSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
+
+	const [filtered, setFiltered] = useState([]);
+	const [filterStatus, setFilterStatus] = useState("All"); // State for filter
+	const [refreshing, setRefreshing] = useState(false); // State for refresh control
 
 	// Fetch grievances
 	const fetchGrievances = async () => {
@@ -43,6 +55,34 @@ const PrivateGrievances = () => {
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const filterChange = () => {
+		//console.log(filterStatus);
+		if (filterStatus === "Pending") {
+			const filtered = grievances.filter(
+				(grievance) => grievance.status === "Pending"
+			);
+			setFiltered(filtered);
+		} else if (filterStatus === "Resolved") {
+			const filtered = grievances.filter(
+				(grievance) => grievance.status === "Resolved"
+			);
+			setFiltered(filtered);
+		} else if (filterStatus === "Cancelled") {
+			const filtered = grievances.filter(
+				(grievance) => grievance.status === "Cancelled"
+			);
+			setFiltered(filtered);
+		} else if (filterStatus === "Upvoted") {
+			const filtered = grievances.filter((grievance) =>
+				grievance.upvotes.includes(data._id)
+			);
+			setFiltered(filtered);
+		} else {
+			setFiltered(grievances);
+		}
+		//console.log(filtered);
 	};
 
 	const upvote = async () => {
@@ -76,7 +116,8 @@ const PrivateGrievances = () => {
 	const addGrievance = async () => {
 		const { title, description } = grievanceDetails;
 		if (!title || !description) {
-			Alert.alert("Error", "Please fill all fields.");
+			setAlertMessage("Please fill all fields.");
+			setAlert(true);
 			return;
 		}
 		setAdding(true);
@@ -99,16 +140,30 @@ const PrivateGrievances = () => {
 			setGrievances((prev) => [newGrievance, ...prev]); // Add at the start
 			setAddingGrievance(false);
 			setGrievanceDetails({ title: "", description: "" });
+			setSuccessMessage("Grievance added successfully.");
+			setSuccess(true);
 		} catch (error) {
-			Alert.alert("Error", error.message);
+			setAlertMessage("Failed to add grievance.");
+			setAlert(true);
 		} finally {
 			setAdding(false);
 		}
 	};
 
 	useEffect(() => {
+		filterChange();
+	}, [filterStatus, grievances]);
+
+	useEffect(() => {
 		fetchGrievances();
 	}, []);
+
+	// Handle pull-to-refresh
+	const onRefresh = () => {
+		setRefreshing(true);
+		fetchGrievances();
+		setRefreshing(false);
+	};
 
 	const renderGrievance = ({ item }) => (
 		<TouchableOpacity
@@ -141,18 +196,56 @@ const PrivateGrievances = () => {
 
 	return (
 		<View style={styles.container}>
+			<View style={styles.filterContainer}>
+				<ScrollView
+					horizontal={true}
+					showsHorizontalScrollIndicator={false}
+					// style={{ margin: 10 }}
+				>
+					{["All", "Pending", "Resolved", "Cancelled", "Upvoted"].map(
+						(status) => (
+							<TouchableOpacity
+								key={status}
+								style={[
+									styles.filterButton,
+									filterStatus === status &&
+										styles.activeFilter,
+								]}
+								onPress={() => setFilterStatus(status)}
+							>
+								<Text
+									style={[
+										styles.filterText,
+										filterStatus === status &&
+											styles.activeFilterText,
+									]}
+								>
+									{status}
+								</Text>
+							</TouchableOpacity>
+						)
+					)}
+				</ScrollView>
+			</View>
+
 			{loading ? (
 				<View style={styles.loading}>
 					<ActivityIndicator size="large" color="#2cb5a0" />
 				</View>
 			) : (
 				<FlatList
-					data={grievances}
+					data={filtered}
 					keyExtractor={(item) => item._id}
 					renderItem={renderGrievance}
 					contentContainerStyle={styles.list}
 					ListEmptyComponent={
 						<Text style={styles.empty}>No private grievances</Text>
+					}
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={onRefresh}
+						/>
 					}
 				/>
 			)}
@@ -293,6 +386,17 @@ const PrivateGrievances = () => {
 					</TouchableWithoutFeedback>
 				</Modal>
 			)}
+
+			<ErrorAlert
+				message={alertMessage}
+				alert={alert}
+				setAlert={setAlert}
+			/>
+			<SuccessAlert
+				message={successMessage}
+				success={success}
+				setSuccess={setSuccess}
+			/>
 		</View>
 	);
 };
@@ -322,7 +426,7 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		textAlign: "center",
 	},
-	loading:{
+	loading: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
@@ -443,5 +547,28 @@ const styles = StyleSheet.create({
 		color: "#fff",
 		fontWeight: "bold",
 		textAlign: "center",
+	},
+	filterContainer: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		marginBottom: 10,
+	},
+	filterButton: {
+		paddingVertical: 10,
+		paddingHorizontal: 25,
+		borderRadius: 20,
+		borderWidth: 1,
+		margin: 5,
+		borderColor: "#2cb5a0",
+	},
+	activeFilter: {
+		backgroundColor: "#2cb5a0",
+	},
+	filterText: {
+		color: "#2cb5a0",
+		fontWeight: "bold",
+	},
+	activeFilterText: {
+		color: "#fff",
 	},
 });

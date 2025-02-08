@@ -15,6 +15,7 @@ import useStore from "../../Store/Store";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import ErrorAlert from "../Components/ErrorAlert";
 import SuccessAlert from "../Components/SuccessAlert";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const HLeaves = () => {
 	const { localhost, cookie } = useStore();
@@ -39,15 +40,14 @@ const HLeaves = () => {
 		address: "",
 		contact_no: "",
 	});
+	const [filterStatus, setFilterStatus] = useState("All"); // State for filtering
+	const [refreshing, setRefreshing] = useState(false);
 
 	const fetchLeaves = async () => {
 		try {
-			const response = await fetch(
-				`${localhost}/api/Hostler/getleaves`,
-				{
-					headers: { Cookie: cookie },
-				}
-			);
+			const response = await fetch(`${localhost}/api/Hostler/getleaves`, {
+				headers: { Cookie: cookie },
+			});
 			const data = await response.json();
 			const sortedLeaves = data.sort(
 				(a, b) =>
@@ -83,7 +83,7 @@ const HLeaves = () => {
 
 	const applyLeave = async () => {
 		const { days, from, to, reason, address, contact_no } = leaveDetails;
-		
+
 		if (!days || !from || !to || !reason || !address || !contact_no) {
 			setAlertMessage("Please fill all the fields.");
 			setAlert(true);
@@ -144,6 +144,20 @@ const HLeaves = () => {
 		fetchLeaves();
 	}, []);
 
+	useEffect(() => {}, [selectedLeave]);
+
+	const onRefresh = () => {
+		setRefreshing(true);
+		fetchLeaves();
+		setRefreshing(false);
+	};
+
+	// Function to filter leaves based on the selected status
+	const filterLeaves = () => {
+		if (filterStatus === "All") return leaves;
+		return leaves.filter((leave) => leave.status === filterStatus);
+	};
+
 	const renderLeave = ({ item }) => (
 		<TouchableOpacity
 			style={styles.card}
@@ -177,13 +191,39 @@ const HLeaves = () => {
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 			<View style={styles.container}>
+				<View style={styles.filterContainer}>
+					{["All", "Pending", "Approved", "Rejected"].map(
+						(status) => (
+							<TouchableOpacity
+								key={status}
+								style={[
+									styles.filterButton,
+									filterStatus === status &&
+										styles.activeFilter,
+								]}
+								onPress={() => setFilterStatus(status)}
+							>
+								<Text
+									style={[
+										styles.filterText,
+										filterStatus === status &&
+											styles.activeFilterText,
+									]}
+								>
+									{status}
+								</Text>
+							</TouchableOpacity>
+						)
+					)}
+				</View>
+
 				{loading ? (
 					<View style={styles.loadingContainer}>
 						<ActivityIndicator size="large" color="#2cb5a0" />
 					</View>
 				) : (
 					<FlatList
-						data={leaves}
+						data={filterLeaves()}
 						keyExtractor={(item) => item._id}
 						renderItem={renderLeave}
 						contentContainerStyle={styles.list}
@@ -191,6 +231,12 @@ const HLeaves = () => {
 							<Text style={styles.empty}>
 								No leave applications
 							</Text>
+						}
+						refreshControl={
+							<RefreshControl
+								refreshing={refreshing}
+								onRefresh={onRefresh}
+							/>
 						}
 					/>
 				)}
@@ -562,5 +608,27 @@ const styles = StyleSheet.create({
 		color: "#fff",
 		fontWeight: "bold",
 		fontSize: 16,
+	},
+	filterContainer: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		marginBottom: 10,
+	},
+	filterButton: {
+		paddingVertical: 8,
+		paddingHorizontal: 15,
+		borderRadius: 20,
+		borderWidth: 1,
+		borderColor: "#2cb5a0",
+	},
+	activeFilter: {
+		backgroundColor: "#2cb5a0",
+	},
+	filterText: {
+		color: "#2cb5a0",
+		fontWeight: "bold",
+	},
+	activeFilterText: {
+		color: "#fff",
 	},
 });
