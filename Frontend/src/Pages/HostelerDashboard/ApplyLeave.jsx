@@ -84,7 +84,7 @@ const ApplyLeave = () => {
 	const [formData, setFormData] = useState({
 		address: "",
 		contact_no: "",
-		days: "",
+		days: 0,
 		from: "",
 		to: "",
 		reason: "",
@@ -94,7 +94,7 @@ const ApplyLeave = () => {
 		const { name, value } = e.target;
 		setFormData((prevData) => ({
 			...prevData,
-			[name]: value,
+			[name]: name === "days" ? parseInt(value) : value,
 		}));
 	};
 
@@ -121,6 +121,8 @@ const ApplyLeave = () => {
 			Math.ceil(
 				(toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
 			) + 1;
+
+		console.log(dayDifference, days);
 
 		if (dayDifference !== days) {
 			alert("Enetr correct no of Days");
