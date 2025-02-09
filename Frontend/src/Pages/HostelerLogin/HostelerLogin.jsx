@@ -23,8 +23,7 @@ const HostelerLogin = () => {
 		setLoading(true);
 		setError(null);
 		try {
-			// console.log(`${localhost}/api/auth/hostlerlogin`);
-
+			
 			const response = await fetch(
 				`${localhost}/api/auth/hostlerlogin`, // Consider using environment variables here
 				{

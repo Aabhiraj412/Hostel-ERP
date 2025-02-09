@@ -19,8 +19,8 @@ export const getHostlers = async (req, res) => {
 		}
 
 		const hostlers = await Hostler.find().sort(
-			{ gender: 1 },
-			{ room_no: 1 }
+			{ room_no: 1 },
+			{ hostel: 1 },
 		);
 		res.status(200).json(hostlers);
 		console.log("Hostlers details fetched successfully");
