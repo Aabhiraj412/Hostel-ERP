@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Card from "@/components/Card";
 import useStore from "../../../Store/Store";
 import ActivityIndicator from "../../components/ActivityIndicator";
+// import { set } from "react-datepicker/dist/date_utils";
 
 const FetchAttendance = () => {
 	const { localhost } = useStore();
@@ -14,7 +15,6 @@ const FetchAttendance = () => {
 	const [students, setStudents] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
-	const [formattedDate, setFormatedDate] = useState("");
 	const routing = {
 		title: "View Attendance",
 		Home: "/warden-dashboard",
@@ -45,17 +45,7 @@ const FetchAttendance = () => {
 		setLoading(true);
 		setErrorMessage("");
 
-		const localFormattedDate = `${date.toLocaleDateString("en-CA", {
-			timeZone: "Asia/Kolkata",
-		})}T18:30:00.000Z`;
-		setFormatedDate(localFormattedDate);
-
-		//console.log("Selected Date:", date);
-		//console.log("Formatted Date:", localFormattedDate);
-		//console.log("Selected Hostel:", selectedHostel);
-
 		try {
-			//console.log(formattedDate);
 			const response = await fetch(
 				`${localhost}/api/warden/gethostlers`,
 				{
@@ -72,13 +62,18 @@ const FetchAttendance = () => {
 			}
 
 			const fetchedStudents = await response.json();
-			//console.log(fetchedStudents);
 			setStudents(fetchedStudents);
 		} catch (error) {
 			setErrorMessage(error.message);
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const checkPresent = (dates) => {
+		const formattedDate = selectedDate.toISOString().split("T")[0];
+		const dateSet = new Set(dates.map((date) => date.split("T")[0]));
+		return dateSet.has(formattedDate) ? "Present" : "Absent";
 	};
 
 	useEffect(() => {
@@ -211,11 +206,7 @@ const FetchAttendance = () => {
 											}`}
 										>
 											Status:{" "}
-											{student.present_on.includes(
-												formattedDate
-											)
-												? "Present"
-												: "Absent"}
+											{checkPresent(student.present_on)}
 										</p>
 									</Card>
 								))
