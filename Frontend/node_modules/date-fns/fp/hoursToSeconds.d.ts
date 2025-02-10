@@ -1,4 +1,1 @@
-export declare const hoursToSeconds: import("./types.js").FPFn1<
-  number,
-  number
->;
+export declare const hoursToSeconds: import("./types.js").FPFn1<number, number>;
