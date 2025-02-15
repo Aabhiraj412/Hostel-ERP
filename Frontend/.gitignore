@@ -1,4 +1,4 @@
-# Logs
+node_modules# Logs
 logs
 *.log
 npm-debug.log*
@@ -10,7 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-Frontend/node_modules
+Frontend/node_modules/
+Backend/node_modules/
 *.local
 
 # Editor directories and files
@@ -19,8 +20,13 @@ Frontend/node_modules
 .idea
 .DS_Store
 *.suo
-*.ntvs*
+.ntvs
 *.njsproj
 *.sln
 *.sw?
-.vercel
+.env
+
+# Package Lock files
+package-lock.json
+Frontend/package-lock.json
+Backend/package-lock.json

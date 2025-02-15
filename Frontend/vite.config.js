@@ -17,6 +17,9 @@ export default defineConfig({
     },
   },
   server: {
-    historyApiFallback: true, // Ensures the dev server mimics the routing fallback behavior
+    historyApiFallback: true, 
+    host: '0.0.0.0', 
+    port: 5173,  
   },
+
 });

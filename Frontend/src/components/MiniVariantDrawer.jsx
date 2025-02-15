@@ -239,10 +239,10 @@ function MiniVariantDrawer(router) {
         <List>
           {menuItems.map((item, index) => (
             <ListItem
-              button
               key={index}
               onClick={() => navigate(item.route)} 
               sx={{
+                cursor: 'pointer',
                 justifyContent: open ? 'flex-start' : 'center', 
                 alignItems: 'center',
                 flexDirection: open ? 'row' : 'column', 

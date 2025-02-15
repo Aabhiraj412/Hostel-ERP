@@ -22,6 +22,7 @@ import ViewHosteler from "./Pages/WardenDashboard/ViewHosteler.jsx";
 import AddHosteler from "./Pages/WardenDashboard/AddHosteler.jsx";
 import FetchAttendance from "./Pages/WardenDashboard/FetchAttendance.jsx";
 import AddDetails from "./Pages/HostelerDashboard/AddDetails.jsx";
+import MarkAttendance from "./Pages/WardenDashboard/MarkAttendance.jsx";
 import "./index.css";
 
 import useStore from "../Store/Store.js";
@@ -40,6 +41,7 @@ function App() {
 		// <Router>
 		<>
 			<Routes>
+				<Route path="/mark-attendance" element={<MarkAttendance/>}/>
 				<Route
 					path="/"
 					element={

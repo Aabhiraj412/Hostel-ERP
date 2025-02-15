@@ -15,3 +15,20 @@ select option {
     color: black; /* Black text on hover */
   }
   
+
+  
+::-webkit-scrollbar{
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #555;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #121212;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #242424;
+}
