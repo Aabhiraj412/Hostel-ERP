@@ -23,6 +23,7 @@ import AddHosteler from "./Pages/WardenDashboard/AddHosteler.jsx";
 import FetchAttendance from "./Pages/WardenDashboard/FetchAttendance.jsx";
 import AddDetails from "./Pages/HostelerDashboard/AddDetails.jsx";
 import MarkAttendance from "./Pages/WardenDashboard/MarkAttendance.jsx";
+import ViewAttendance from "./Pages/HostelerDashboard/ViewAttendance.jsx";
 import "./index.css";
 
 import useStore from "../Store/Store.js";
@@ -33,15 +34,22 @@ function App() {
 
 	useEffect(() => {
 		// Hardcoded production URL for localhost
-		// setLocalhost("https://hostel-erp-9w6h.onrender.com");
-		setLocalhost("http://localhost:3000");
+		setLocalhost("https://hostel-erp-9w6h.onrender.com");
+		// setLocalhost("http://localhost:3000");
 	}, []);
 
 	return (
 		// <Router>
 		<>
 			<Routes>
-				<Route path="/mark-attendance" element={<MarkAttendance/>}/>
+				<Route 
+					path="/mark-attendance" 
+					element={
+						user === "Warden" ? (
+							<MarkAttendance/>
+						):(
+							<Navigate to="/" replace />
+						)}/>
 				<Route
 					path="/"
 					element={
@@ -277,6 +285,17 @@ function App() {
 						)
 					}
 				/>
+				<Route 
+					path="/view-attendance" 	
+					element={
+						user === "Hostler" ? (
+							<ViewAttendance />
+						):(
+							<Navigate to="/" replace />
+						)
+					} 
+				/> 
+
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</>
