@@ -12,7 +12,6 @@ Hostel ERP is a full-stack hostel management system designed to streamline hoste
 - **Room Allocation:** Assign rooms to students based on availability and preferences.
 - **Attendance & Leave Management:** Track student attendance and handle leave requests efficiently.
 - **Mess & Meal Tracking:** Manage mess subscriptions, meal preferences, and monthly mess charges.
-- **Fee & Payment Management:** Track student payments, pending dues, and generate invoices.
 - **Complaint & Maintenance System:** Allow students to report maintenance issues and track resolutions.
 - **Notifications & Announcements:** Send updates and alerts to students via push notifications.
 
@@ -22,7 +21,6 @@ Hostel ERP is a full-stack hostel management system designed to streamline hoste
 - **Leave Requests:** Apply for leave online and track approval status.
 - **Mess Preferences:** Update meal choices and view mess schedules.
 - **Issue Reporting:** Submit complaints about hostel maintenance and track progress.
-- **Fee Payment:** View due payments and receive reminders.
 - **Real-Time Notifications:** Stay informed with updates on hostel activities.
 
 ## Tech Stack
@@ -31,7 +29,7 @@ Hostel ERP is built using modern technologies to ensure performance, scalability
 
 ### Frontend
 
-- **React Native:** Provides a cross-platform mobile app for both Android and iOS.
+- **React:** Used to design Dynamic and Responsive User Interface for users.
 - **Tailwind CSS:** Used for styling the web components.
 - **Framer Motion:** Adds smooth animations for a better user experience.
 
@@ -40,6 +38,12 @@ Hostel ERP is built using modern technologies to ensure performance, scalability
 - **Node.js with Express.js:** Handles API requests efficiently.
 - **MongoDB:** Stores student, room, fee, and attendance data with a scalable NoSQL database.
 - **Mongoose:** Simplifies database interactions.
+- **Multer:** Used for Uploading Images and PDF Documents.
+
+### Mobile APP
+
+- **React Native:** Provides a cross-platform mobile app for both Android and iOS.
+- **Framer Motion:** Adds smooth animations for a better user experience.
 
 ### Authentication & Security
 
@@ -51,6 +55,7 @@ Hostel ERP is built using modern technologies to ensure performance, scalability
 
 - **Backend Hosted on Railway & Render:** Ensures reliability with 99.9% uptime.
 - **Frontend Hosted on Vercel:** Delivers fast and optimized performance.
+- **Mobile APP:** Deployed on EXPO for better performance.
 - **Cloud Storage:** Manages documents and images securely.
 
 ## Impact
@@ -68,7 +73,7 @@ Hostel ERP is built using modern technologies to ensure performance, scalability
 
 ## Team
 
-This project was developed by a dedicated team of developers:
+A dedicated team of developers developed this project:
 
 - **Abhiraj Dixit** (@Aabhiraj412)
 - **Anamika Tiwari** (@Anamika0246)
@@ -77,7 +82,7 @@ This project was developed by a dedicated team of developers:
 
 ## Conclusion
 
-Hostel ERP is a powerful, efficient, and scalable solution designed to make hostel management smoother and more effective. By automating routine administrative tasks and improving transparency, it enhances the overall experience for students and staff, making hostel operations more efficient and manageable.
+Hostel ERP is a powerful, efficient, and scalable solution designed to make hostel management smoother and more effective. Automating routine administrative tasks and improving transparency enhances the overall experience for students and staff, making hostel operations more efficient and manageable.
 
 ## License
 
