@@ -53,7 +53,7 @@ Hostel ERP is built using modern technologies to ensure performance, scalability
 
 ## Deployment & Performance
 
-- **Backend Hosted on Railway & Render:** Ensures reliability with 99.9% uptime.
+- **Backend Hosted on Render:** Ensures reliability with 99.9% uptime.
 - **Frontend Hosted on Vercel:** Delivers fast and optimized performance.
 - **Mobile APP:** Deployed on EXPO for better performance.
 - **Cloud Storage:** Manages documents and images securely.
