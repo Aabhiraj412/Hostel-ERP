@@ -31,7 +31,7 @@ Hostel ERP is built using modern technologies to ensure performance, scalability
 
 - **React:** Used to design Dynamic and Responsive User Interface for users.
 - **Tailwind CSS:** Used for styling the web components.
-- **Framer Motion:** Adds smooth animations for a better user experience.
+- **Material UI:** Adds smooth animations for a better user experience.
 
 ### Backend
 
