@@ -2,7 +2,7 @@
 
 ## Overview
 
-Hostel ERP is a full-stack hostel management system designed to streamline hostel administration for students and staff. With a user-friendly interface and robust backend, it automates daily operations, reducing administrative workload and improving efficiency. The system serves 500+ students and staff, managing 1000+ daily transactions while ensuring a 99.9% uptime.
+Hostel ERP is a full-stack Hostel management system designed to streamline hostel administration for students and staff. With a user-friendly interface and robust backend, it automates daily operations, reducing administrative workload and improving efficiency. The system serves 500+ students and staff, managing 1000+ daily transactions while ensuring a 99.9% uptime.
 
 ## Key Features
 
