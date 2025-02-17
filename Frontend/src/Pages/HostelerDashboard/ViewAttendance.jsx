@@ -12,7 +12,7 @@ const ViewAttendance = () => {
     const {data,  localhost } = useStore();
     console.log(data);
     const routing = {
-        title: "Add details",
+        title: "Attendance Calendar",
         Home: "/hosteler-dashboard",
         Profile: "/profile-hosteler",
         Notice: "/view-notice",
