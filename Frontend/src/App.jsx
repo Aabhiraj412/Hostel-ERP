@@ -30,7 +30,7 @@ import useStore from "../Store/Store.js";
 import { useEffect } from "react";
 import NotFound from "./NotFound.jsx";
 function App() {
-	const { setLocalhost, localhost, user } = useStore();
+	const { setLocalhost, user } = useStore();
 
 	useEffect(() => {
 		// Hardcoded production URL for localhost
