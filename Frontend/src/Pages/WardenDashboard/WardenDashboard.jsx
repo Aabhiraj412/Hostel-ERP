@@ -82,7 +82,7 @@ const WardenDashboard = () => {
 		title: "Warden dashboard",
 		Home: "/warden-dashboard",
 		Profile: "/profile-warden",
-		Attendence: "/fetch-attendance",
+		Attendance: "/mark-attendance",
 		Notice: "/view-notice",
 		Menu: "/view-mess-menu",
 	};

@@ -75,6 +75,7 @@ const ApplyLeave = () => {
 		title: "Apply for Leave",
 		Home: "/hosteler-dashboard",
 		Profile: "/profile-hosteler",
+		Attendance:"/view-attendance",
 		Notice: "/view-notice",
 		Menu: "/view-mess-menu",
 	};
