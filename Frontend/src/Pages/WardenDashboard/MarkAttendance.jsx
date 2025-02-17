@@ -160,7 +160,7 @@ export default function AttendancePage() {
     title: "Mark Attendance",
     Home: "/warden-dashboard",
     Profile: "/profile-warden",
-    Attendence: "/fetch-attendance",
+    Attendance: "/mark-attendance",
     Notice: "/view-notice",
     Menu: "/view-mess-menu",
   };

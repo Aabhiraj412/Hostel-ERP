@@ -33,6 +33,7 @@ const AddDetails = () => {
 		title: "Add details",
 		Home: "/hosteler-dashboard",
 		Profile: "/profile-hosteler",
+		Attendance:"/view-attendance",
 		Notice: "/view-notice",
 		Menu: "/view-mess-menu",
 	};

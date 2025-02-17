@@ -74,6 +74,7 @@ const ViewNotice = () => {
 		title: "Notices/Circulars",
 		Home: user === "Hostler" ? "/hosteler-dashboard" : "/warden-dashboard",
 		Profile: user === "Hostler" ? "/profile-hosteler" : "/profile-warden",
+		Attendance:"/view-attendance",
 		Notice: "/view-notice",
 		Menu: "/view-mess-menu",
 	};

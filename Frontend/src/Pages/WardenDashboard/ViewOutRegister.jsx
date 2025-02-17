@@ -16,7 +16,7 @@ const OutRegister = () => {
 		title: "View Out Register",
 		Home: "/warden-dashboard",
 		Profile: "/profile-warden",
-		Attendence: "/fetch-attendance",
+		Attendance: "/fetch-attendance",
 		Notice: "/view-notice",
 		Menu: "/view-mess-menu",
 	};

@@ -15,7 +15,7 @@ const ViewPublicGrievances = () => {
 		title: "View Public Grievances",
 		Home: "/warden-dashboard",
 		Profile: "/profile-warden",
-		Attendence: "/fetch-attendance",
+		Attendance: "/fetch-attendance",
 		Notice: "/view-notice",
 		Menu: "/view-mess-menu",
 	};
