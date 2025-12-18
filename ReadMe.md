@@ -2,61 +2,93 @@
 
 ## Overview
 
-Hostel ERP is a full-stack Hostel management system designed to streamline hostel administration for students and staff. With a user-friendly interface and robust backend, it automates daily operations, reducing administrative workload and improving efficiency. The system serves 500+ students and staff, managing 1000+ daily transactions while ensuring a 99.9% uptime.
+Hostel ERP is a full-stack hostel management system that streamlines administration for students and staff. It provides an intuitive interface and a reliable backend to automate daily operations, reduce administrative workload, and improve efficiency.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Quick Start](#quick-start)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [Team](#team)
+- [License](#license)
 
 ## Key Features
 
 ### For Administrators & Warden
 
-- **Student Registration & Management:** Easily add, update, and manage student records.
-- **Room Allocation:** Assign rooms to students based on availability and preferences.
-- **Attendance & Leave Management:** Track student attendance and handle leave requests efficiently.
+- **Student Registration & Management:** Add, update, and manage student records.
+- **Room Allocation:** Assign rooms based on availability and preferences.
+- **Attendance & Leave Management:** Track attendance and manage leave requests.
 - **Mess & Meal Tracking:** Manage mess subscriptions, meal preferences, and monthly mess charges.
-- **Complaint & Maintenance System:** Allow students to report maintenance issues and track resolutions.
-- **Notifications & Announcements:** Send updates and alerts to students via push notifications.
+- **Complaint & Maintenance System:** Report and track maintenance issues.
+- **Notifications & Announcements:** Send updates to students and staff.
 
 ### For Students
 
 - **Profile Dashboard:** View room details, meal plans, attendance, and payment history.
-- **Leave Requests:** Apply for leave online and track approval status.
+- **Leave Requests:** Apply for leave and track approval status.
 - **Mess Preferences:** Update meal choices and view mess schedules.
-- **Issue Reporting:** Submit complaints about hostel maintenance and track progress.
-- **Real-Time Notifications:** Stay informed with updates on hostel activities.
+- **Issue Reporting:** Submit and monitor maintenance requests.
+- **Real-Time Notifications:** Receive timely updates and alerts.
 
 ## Tech Stack
 
-Hostel ERP is built using modern technologies to ensure performance, scalability, and ease of use.
+- **Frontend:** React, Tailwind CSS, Material UI
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB with Mongoose
+- **File Uploads:** Multer
+- **Mobile Apps:** Flutter and React Native (cross-platform mobile clients)
+- **Authentication & Security:** JWT, bcrypt
+- **State Management:** Provider (Flutter), Zustand (React, React-Native)
 
-### Frontend
+## Quick Start
 
-- **React:** Used to design Dynamic and Responsive User Interface for users.
-- **Tailwind CSS:** Used for styling the web components.
-- **Material UI:** Adds smooth animations for a better user experience.
+### Prerequisites
 
-### Backend
+- Node.js
+- npm or bun
+- MongoDB (local or cloud)
 
-- **Node.js with Express.js:** Handles API requests efficiently.
-- **MongoDB:** Stores student, room, fee, and attendance data with a scalable NoSQL database.
-- **Mongoose:** Simplifies database interactions.
-- **Multer:** Used for Uploading Images and PDF Documents.
+### Run Backend (example)
 
-### Mobile APP
+1. Install dependencies:
 
-- **React Native:** Provides a cross-platform mobile app for both Android and iOS.
-- **Framer Motion:** Adds smooth animations for a better user experience.
+```bash
+cd Backend
+npm install
+```
 
-### Authentication & Security
+2. Start the server:
 
-- **JWT (JSON Web Token):** Ensures secure authentication and session management.
-- **Bcrypt.js:** Hashes passwords for secure storage.
-- **Role-Based Access Control (RBAC):** Differentiates access levels for students, staff, and admins.
+```bash
+npm start
+```
 
-## Deployment & Performance
+### Run Frontend (example)
 
-- **Backend Hosted on Render:** Ensures reliability with 99.9% uptime.
-- **Frontend Hosted on Vercel:** Delivers fast and optimized performance.
-- **Mobile APP:** Deployed on EXPO for better performance.
-- **Cloud Storage:** Manages documents and images securely.
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+### Run Flutter App (example)
+
+```bash
+cd app_flutter
+flutter pub get
+flutter run
+```
+
+## Deployment
+
+- **Backend:** Render / other Node hosting
+- **Frontend:** Vercel or static hosting
+- **Cloud Storage:** Manages documents, data and images securely.
+<!-- - **Mobile apps:** Upload builds to Play Store / App Store or use EXPO for OTA updates -->
 
 ## Impact
 
@@ -71,18 +103,17 @@ Hostel ERP is built using modern technologies to ensure performance, scalability
 - **Predictive Analytics** for meal planning and room allocation.
 - **Integration with College ERP** for seamless data exchange.
 
-## Team
 
-A dedicated team of developers developed this project:
+## Contributing
+
+Contributions are welcome. Please open issues for bugs or feature requests and submit pull requests for fixes or enhancements. Include tests and update documentation where applicable.
+
+## Team
 
 - **Abhiraj Dixit** (@Aabhiraj412)
 - **Anamika Tiwari** (@Anamika0246)
 - **Anant Pratap Singh** (@anantx0023)
 - **Ananya Singh** (@Ananya904)
-
-## Conclusion
-
-Hostel ERP is a powerful, efficient, and scalable solution designed to make hostel management smoother and more effective. Automating routine administrative tasks and improving transparency enhances the overall experience for students and staff, making hostel operations more efficient and manageable.
 
 ## License
 
