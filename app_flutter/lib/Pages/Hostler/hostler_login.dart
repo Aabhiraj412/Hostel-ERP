@@ -1,22 +1,22 @@
 import 'dart:convert';
-import 'package:app_flutter/Pages/Warden/warden_dashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import '../../Store/app_state.dart';
+import '../../Components/nav.dart';
 import '../../Components/success_alert.dart';
 import '../../Components/error_alert.dart';
-import '../../Components/nav.dart';
+import 'hostler_dashboard.dart';
 
-class WardenLogin extends StatefulWidget {
-  const WardenLogin({super.key});
+class HostlerLogin extends StatefulWidget {
+  const HostlerLogin({super.key});
 
   @override
-  State<WardenLogin> createState() => _WardenLoginState();
+  State<HostlerLogin> createState() => _HostlerLoginState();
 }
 
-class _WardenLoginState extends State<WardenLogin> {
+class _HostlerLoginState extends State<HostlerLogin> {
   final TextEditingController userCtrl = TextEditingController();
   final TextEditingController passCtrl = TextEditingController();
 
@@ -27,9 +27,18 @@ class _WardenLoginState extends State<WardenLogin> {
 
   bool success = false;
   String successMessage = '';
+
   bool errorAlert = false;
   String errorMessage = '';
 
+  @override
+  void dispose() {
+    userCtrl.dispose();
+    passCtrl.dispose();
+    super.dispose();
+  }
+
+  // ---------------- LOGIN ----------------
   Future<void> login() async {
     final appState = context.read<AppState>();
 
@@ -37,25 +46,31 @@ class _WardenLoginState extends State<WardenLogin> {
 
     try {
       final res = await http.post(
-        Uri.parse('${appState.localhost}/api/auth/wardenlogin'),
+        Uri.parse('${appState.localhost}/api/auth/hostlerlogin'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'user': userCtrl.text, 'password': passCtrl.text}),
+        body: jsonEncode({
+          'user': userCtrl.text.trim(),
+          'password': passCtrl.text,
+        }),
       );
 
+      final data = jsonDecode(res.body);
+
       if (res.statusCode != 200) {
-        final err = jsonDecode(res.body);
-        throw err['message'] ?? 'Login failed';
+        throw data['message'] ?? 'Login failed';
       }
 
-      appState.setUser('Warden');
-      appState.setCookie(res.headers['set-cookie'] ?? '');
-      appState.setData(jsonDecode(res.body));
+      final cookie = res.headers['set-cookie'];
+      if (cookie != null) appState.setCookie(cookie);
 
-      // Navigator.pushReplacementNamed(context, '/warden-dashboard');
-      // Navigator.pushReplacement(
+      appState.setUser('Hosteller');
+      appState.setData(data);
+
+      if (!mounted) return;
+
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const WardenDashboard()),
+        MaterialPageRoute(builder: (_) => const HostlerDashboard()),
         (route) => false,
       );
     } catch (e) {
@@ -68,8 +83,9 @@ class _WardenLoginState extends State<WardenLogin> {
     }
   }
 
+  // ---------------- FORGET PASSWORD ----------------
   Future<void> forgetPassword() async {
-    if (userCtrl.text.isEmpty) {
+    if (userCtrl.text.trim().isEmpty) {
       setState(() {
         errorMessage = 'Please enter UserID';
         errorAlert = true;
@@ -82,18 +98,20 @@ class _WardenLoginState extends State<WardenLogin> {
 
     try {
       final res = await http.post(
-        Uri.parse('${appState.localhost}/api/warden/forgetpass'),
+        Uri.parse('${appState.localhost}/api/hostler/forgetpass'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'user': userCtrl.text}),
+        body: jsonEncode({'user': userCtrl.text.trim()}),
       );
 
+      final data = jsonDecode(res.body);
+
       if (res.statusCode != 200) {
-        throw 'Failed to send reset email';
+        throw data['message'] ?? 'Failed to send email';
       }
 
       setState(() {
         showForgetModal = false;
-        successMessage = 'Temporary password has been sent to your email.';
+        successMessage = 'Your temporary password has been sent to your email.';
         success = true;
       });
     } catch (e) {
@@ -109,7 +127,8 @@ class _WardenLoginState extends State<WardenLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Nav(title: "Warden Login", showBack: true),
+      appBar: const Nav(title: 'Hosteller Login', showBack: true),
+      backgroundColor: const Color(0xfff5f5f5),
       body: Stack(
         children: [
           Center(
@@ -120,24 +139,25 @@ class _WardenLoginState extends State<WardenLogin> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: const [
-                  BoxShadow(blurRadius: 5, color: Colors.black26),
+                  BoxShadow(color: Colors.black12, blurRadius: 5),
                 ],
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    'Warden Login',
+                    'Hosteller Login',
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
                       color: Color(0xff2cb5a0),
                     ),
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    'Enter your UserID & Password',
-                    style: TextStyle(color: Colors.grey),
+                    'Please enter your UserID and Password',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
 
@@ -179,7 +199,6 @@ class _WardenLoginState extends State<WardenLogin> {
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
                             'Login',
-                            textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -196,16 +215,12 @@ class _WardenLoginState extends State<WardenLogin> {
                       minimumSize: const Size(double.infinity, 50),
                     ),
                     onPressed: () => setState(() => showForgetModal = true),
-                    child: const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        'Forget Password',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                    child: const Text(
+                      'Forget Password',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -218,10 +233,11 @@ class _WardenLoginState extends State<WardenLogin> {
           if (showForgetModal)
             _ForgetModal(
               loading: forgetting,
+              controller: userCtrl,
               onClose: () => setState(() => showForgetModal = false),
               onSubmit: forgetPassword,
-              controller: userCtrl,
             ),
+
           SuccessAlert(
             message: successMessage,
             success: success,
@@ -260,7 +276,7 @@ class _ForgetModal extends StatelessWidget {
         color: Colors.black54,
         child: Center(
           child: GestureDetector(
-            onTap: () {}, // prevent closing when tapping inside
+            onTap: () {},
             child: Container(
               width: 320,
               padding: const EdgeInsets.all(20),

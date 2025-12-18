@@ -1,4 +1,6 @@
 import 'package:app_flutter/Components/nav.dart';
+import 'package:app_flutter/Pages/Hostler/hostler.dart';
+import 'package:app_flutter/Pages/Hostler/hostler_login.dart';
 import 'package:app_flutter/Pages/Warden/warden_dashboard.dart';
 import 'package:app_flutter/Pages/Warden/warden_login.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +34,17 @@ class Landing extends StatelessWidget {
     final appState = context.read<AppState>();
 
     if (appState.isLoggedIn && appState.user == 'Hosteller') {
-      Navigator.pushReplacementNamed(context, '/home-dashboard');
+      // Navigator.pushReplacementNamed(context, '/home-dashboard');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Hostler()),
+      );
     } else {
-      Navigator.pushNamed(context, '/hosteller-login');
+      // Navigator.pushNamed(context, '/hosteller-login');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HostlerLogin()),
+      );
     }
   }
 
