@@ -8,9 +8,9 @@ void main() {
   runApp(
     // const MyApp()
     ChangeNotifierProvider(
-      create: (_) => AppState()  
-      ..setLocalhost('https://hostel-erp-9w6h.onrender.com'), 
-      child: const MyApp()
+      create: (_) =>
+          AppState()..setLocalhost('https://hostel-erp-9w6h.onrender.com'),
+      child: const MyApp(),
     ),
   );
 }

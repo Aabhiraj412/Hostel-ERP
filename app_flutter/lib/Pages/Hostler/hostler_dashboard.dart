@@ -1,4 +1,11 @@
 import 'dart:convert';
+import 'package:app_flutter/Pages/Hostler/hostler_attendance.dart';
+import 'package:app_flutter/Pages/Hostler/hostler_leaves.dart';
+import 'package:app_flutter/Pages/Hostler/hostler_notices.dart';
+import 'package:app_flutter/Pages/Hostler/hostler_private_grievances.dart';
+import 'package:app_flutter/Pages/Hostler/hostler_public_grievances.dart';
+import 'package:app_flutter/Pages/Hostler/hostlers_outregister.dart';
+import 'package:app_flutter/Pages/Hostler/hostler_messmenu.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -160,37 +167,84 @@ class _HostlerDashboardState extends State<HostlerDashboard> {
               MiniCard(
                 title: 'View Attendance',
                 icon: Icons.check_circle,
-                onTap: () => go('/hosteller-attendance'),
+                // onTap: () => go('/hosteller-attendance'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const HostlerAttendance(),
+                    ),
+                  );
+                },
               ),
               MiniCard(
                 title: 'Leaves',
                 icon: Icons.calendar_month,
-                onTap: () => go('/leaves'),
+                // onTap: () => go('/leaves'),
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const HostlerLeaves()),
+                  ),
+                },
               ),
               MiniCard(
                 title: 'Out Register',
                 icon: Icons.assignment,
-                onTap: () => go('/out-register'),
+                // onTap: () => go('/out-register'),
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HostlerOutRegister(),
+                    ),
+                  ),
+                },
               ),
               MiniCard(
                 title: 'Public Grievances',
                 icon: Icons.help,
-                onTap: () => go('/public-grievances'),
+                // onTap: () => go('/public-grievances'),
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const HostlerPublicGrievances(),
+                    ),
+                  ),
+                },
               ),
               MiniCard(
                 title: 'Private Grievances',
                 icon: Icons.lock_outline,
-                onTap: () => go('/private-grievances'),
+                // onTap: () => go('/private-grievances'),
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const HostlerPrivateGrievances(),
+                    ),
+                  ),
+                },
               ),
               MiniCard(
                 title: 'Mess Menu',
                 icon: Icons.restaurant,
-                onTap: () => go('/mess-menu'),
+                // onTap: () => go('/mess-menu'),
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const HostlerMessMenu()),
+                  ),
+                },
               ),
               MiniCard(
                 title: 'Notices',
                 icon: Icons.campaign,
-                onTap: () => go('/notices'),
+                // onTap: () => go('/notices'),
+                onTap: ()=>{
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const HostlerNotices()),)
+                },
               ),
             ],
           ),
