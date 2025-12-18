@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppState extends ChangeNotifier {
+  
   String cookie = '';
   String user = '';
   dynamic data;
@@ -33,4 +34,5 @@ class AppState extends ChangeNotifier {
   }
 
   bool get isLoggedIn => cookie.isNotEmpty;
+
 }
