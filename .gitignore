@@ -25,3 +25,10 @@ Frontend/node_modules
 *.sw?
 .env
 .qodo
+
+
+
+# Flutter / Android build artifacts
+app_flutter/android/build/
+build/
+
