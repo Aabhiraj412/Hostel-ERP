@@ -46,11 +46,37 @@ Hostel ERP is a full-stack hostel management system that streamlines administrat
 
 ## Quick Start
 
-### Prerequisites
+<!-- ### Prerequisites
 
 - Node.js
 - npm or bun
 - MongoDB (local or cloud)
+- Flutter
+- Java SDK -->
+### Prerequisites
+
+Ensure the following tools are installed before setting up the project:
+
+#### Backend & Web
+- **Node.js** (v18+ recommended)
+- **npm** or **bun** (bun preferred)
+- **MongoDB** (local installation or MongoDB Atlas)
+
+#### Mobile Applications
+- **Flutter SDK** (v3.x or above)
+- **Java JDK** (JDK 17 recommended for Android)
+- **Android Studio** (for Android emulator & SDK)
+- **Xcode** (macOS only, for iOS builds)
+
+#### React Native (Optional Client)
+- **Node.js**
+- **EXPO / React Native CLI**
+- **Android Studio / Xcode** (depending on platform)
+
+#### General
+- **Git**
+- **Internet connection** (for API access & cloud DB)
+
 
 ### Run Backend (example)
 
@@ -88,7 +114,7 @@ flutter run
 - **Backend:** Render / other Node hosting
 - **Frontend:** Vercel or static hosting
 - **Cloud Storage:** Manages documents, data and images securely.
-<!-- - **Mobile apps:** Upload builds to Play Store / App Store or use EXPO for OTA updates -->
+- **Mobile Apps:** Flutter & React Native (manual or store deployment)
 
 ## Impact
 
