@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
+import compression from "compression";
 
 import ConnectDB from "./DataBase/ConnectDB.js";
 import authRouter from "./Routes/Auth.routes.js";
@@ -39,6 +40,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // Preflight handling
+app.use(compression());
 
 // Helmet Security Middleware
 app.use(
