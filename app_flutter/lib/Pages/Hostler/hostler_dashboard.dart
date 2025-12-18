@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app_flutter/Pages/Hostler/hostler_add_details.dart';
 import 'package:app_flutter/Pages/Hostler/hostler_attendance.dart';
 import 'package:app_flutter/Pages/Hostler/hostler_leaves.dart';
 import 'package:app_flutter/Pages/Hostler/hostler_notices.dart';
@@ -145,7 +146,14 @@ class _HostlerDashboardState extends State<HostlerDashboard> {
                 MiniCard(
                   title: 'Add Details',
                   icon: Icons.person_add,
-                  onTap: () => go('/add-details'),
+                  // onTap: () => go('/add-details'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const AddDetails()),
+                    );
+                  },
                 ),
                 MiniCard(
                   title: 'Set Password',

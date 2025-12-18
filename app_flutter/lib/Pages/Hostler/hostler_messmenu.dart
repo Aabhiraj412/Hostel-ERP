@@ -62,6 +62,8 @@ class _MessMenuState extends State<HostlerMessMenu> {
   }
 
   // ---------------- DOWNLOAD MENU ----------------
+
+  // ---------------- DOWNLOAD MENU ----------------
   Future<void> downloadMenu() async {
     if (imageFile == null) {
       setState(() {
@@ -72,14 +74,18 @@ class _MessMenuState extends State<HostlerMessMenu> {
     }
 
     try {
-      final permission = await PhotoManager.requestPermissionExtend();
-      if (!permission.isAuth) {
+      // Request storage/media permission
+      final status = await Permission.photos.request();
+
+      if (!status.isGranted) {
         throw 'Storage permission denied';
       }
 
-      await PhotoManager.editor.saveImageWithPath(
-        imageFile!.path,
-        title: 'Mess_Menu',
+      await PhotoManager.editor.saveImage(
+        imageFile!.readAsBytesSync(),
+        filename: 'mess_menu.png',
+        title: 'Mess Menu',
+        relativePath: 'Pictures/MessMenu',
       );
 
       setState(() {
@@ -132,18 +138,15 @@ class _MessMenuState extends State<HostlerMessMenu> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xff2cb5a0), width: 3),
+                          border: Border.all(
+                            color: const Color(0xff2cb5a0),
+                            width: 3,
+                          ),
                           boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6,
-                            )
+                            BoxShadow(color: Colors.black12, blurRadius: 6),
                           ],
                         ),
-                        child: Image.file(
-                          imageFile!,
-                          fit: BoxFit.contain,
-                        ),
+                        child: Image.file(imageFile!, fit: BoxFit.contain),
                       )
                     else
                       const Padding(
